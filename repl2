@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Graph</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        svg {
+            border: 1px solid black;
+        }
+        .tooltip {
+            position: absolute;
+            background-color: white;
+            padding: 5px;
+            border: 1px solid #ccc;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            pointer-events: none;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <svg width="1300" height="800"></svg>
+    <div class="tooltip" id="tooltip"></div>
+    <script>
+   function fetchData() {
+    const data = {
+        "responseStatus": "OK",
+        "totalrecords": 1,
+        "label": "app",
+        "names": [
+            "ccss & NBSTP",
+            "Delta-caesar",
+            "delta-online check request",
+            "fnms",
+            "TAI",
+            "pep+"
+        ]
+    };
+
+    const nodesData = data.names.map((name, index) => {
+        return {
+            id: index + 1,
+            responseStatus: data.responseStatus,
+            totalrecords: data.totalrecords,
+            label: data.label,
+            names: name
+        };
+    });
+
+    return nodesData;
+}
+
+
+function fetchNewData() {
+    const data = [
+        // Your static JSON data for new nodes here, e.g.
+        {
+            "id": 11,
+            "name": "ramu kaka",
+            "email": "jbanaea",
+            "phone": "45434",
+            "website": "gr",
+            "company": {
+                "name": " Enterprises"
+            }
+        }
+    ];
+
+    return data;
+}
+
+
+
+
+        function createLinks(nodes) {
+            const links = [];
+            nodes.forEach((source, i) => {
+                nodes.slice(i + 1).forEach(target => {
+                    links.push({source: source.id, target: target.id});
+                });
+            });
+            return links;
+        }
+
+        function showTooltip(event, nodeData) {
+    const tooltip = document.getElementById('tooltip');
+    tooltip.style.display = 'block';
+    tooltip.style.left = `${event.clientX}px`;
+    tooltip.style.top = `${event.clientY}px`;
+
+    tooltip.innerHTML = `
+        <strong>${nodeData.names}</strong><br>
+        Response Status: ${nodeData.responseStatus}<br>
+        Total Records: ${nodeData.totalrecords}<br>
+        Label: ${nodeData.label}
+    `;
+}
+
+
+
+        function hideTooltip() {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.style.display = 'none';
+        }
+
+        function getId(maxId) {
+            return maxId + Math.floor(Math.random() * 1000) + 1;
+        }
+
+        async function expandNode(event, nodeData, simulation) {
+    const newNodes = await fetchNewData();
+    const maxId = Math.max(...nodes.map(d => d.id));
+    newNodes.forEach(d => {
+        d.id = getId(maxId);
+        d.x = nodeData.x;
+        d.y = nodeData.y;
+        d.displayName = `${d.company.name} (${d.website})`; // Add website name to displayName property
+        nodes.push(d);
+        links.push({source: nodeData.id, target: d.id});
+    });
+
+    updateGraph(simulation);
+}
+
+
+
+        function updateGraph(simulation) {
+            link = link.data(links).join('line');
+            node = node.data(nodes, d => d.id).join(enter => enter.append('circle'));
+
+            node.attr('r', 5)
+                .attr('fill', '#69b3a2')
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 1.5)
+                .call(drag(simulation))
+                .on('mouseover', showTooltip)
+                .on('dblclick', (event, d) => expandNode(event, d, simulation))
+                .on('mouseout', hideTooltip);
+
+            simulation.nodes(nodes);
+          
+            simulation.force('link').links(links);
+            simulation.alpha(0.3).restart();
+        }
+
+        async function createNetworkGraph() {
+            nodes = await fetchData();
+            links = createLinks(nodes);
+
+            const svg = d3.select('svg');
+            const width = parseInt(svg.attr('width'));
+            const height = parseInt(svg.attr('height'));
+
+            simulation = d3.forceSimulation(nodes)
+                .force('link', d3.forceLink(links).id(d => d.id).distance(100))
+                .force('charge', d3.forceManyBody().strength(-200))
+                .force('center', d3.forceCenter(width / 2, height / 2));
+
+            link = svg.append('g')
+                .attr('stroke', '#999')
+                .attr('stroke-opacity', 0.6)
+                .selectAll('line')
+                .data(links)
+                .join('line')
+                .attr('stroke-width', 2);
+
+            node = svg.append('g')
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 1.5)
+                .selectAll('circle')
+                .data(nodes)
+                .join('circle');
+
+            updateGraph(simulation);
+
+            simulation.on('tick', () => {
+                link
+                    .attr('x1', d => d.source.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x)
+                    .attr('y2', d => d.target.y);
+
+                node
+                    .attr('cx', d => d.x)
+                    .attr('cy', d => d.y);
+            });
+        }
+
+        function drag(simulation) {
+            function dragstarted(event) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                event.subject.fx = event.subject.x;
+                event.subject.fy = event.subject.y;
+            }
+
+            function dragged(event) {
+                event.subject.fx = event.x;
+                event.subject.fy = event.y;
+            }
+
+            function dragended(event) {
+                if (!event.active) simulation.alphaTarget(0);
+                event.subject.fx = null;
+                event.subject.fy = null;
+            }
+
+            return d3.drag()
+                .on('start', dragstarted)
+                .on('drag', dragged)
+                .on('end', dragended);
+        }
+
+        let nodes, links, link, node, simulation;
+        createNetworkGraph();
+    </script>
+</body>
+</html>
