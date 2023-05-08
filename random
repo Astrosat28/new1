@@ -31,3 +31,22 @@ window.onload = function () {
     fetchDataFromAPI();
     selectElement.addEventListener("change", onDropdownChange);
 }
+
+
+function fetchGraphData() {
+    // Replace this URL with the actual API endpoint for graph data
+    const apiURL = "https://api.example.com/your/graph/endpoint";
+
+    fetch(apiURL)
+        .then(response => response.json())
+        .then(data => {
+            drawNetworkGraph(data);
+        })
+        .catch(error => {
+            console.error("Error fetching graph data:", error);
+        });
+}
+
+function onDropdownChange() {
+    fetchGraphData();
+}
