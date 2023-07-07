@@ -1,351 +1,56 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <style>
-.snap-point {
-  scroll-snap-align: start;
-}
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-
-     #trapezoid {
-  -webkit-box-sizing: content-box;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-  height: 0;
-  border: 80px solid rgba(0,0,0,0);
-  border-top: 0 solid;
-  border-bottom: 100px solid rgba(1, 1, 1, .4);
-  -webkit-border-radius: 20px 20px 0 0;
-  border-radius: 20px 20px 0 0;
-  font: normal 100%/normal Arial, Helvetica, sans-serif;
-  color: rgba(0,0,0,0.7);
-  -o-text-overflow: clip;
-  text-overflow: clip;
-  -webkit-transform: rotateX(180deg);
-  transform: rotateX(180deg);
-  margin-top:-53px;
-  width: 700px;
-  position: relative;
-  transition: all 0.7s ease;
-  padding-left:7%;
-}
-
-#trapezoid a, .subnavbtn {
- -webkit-transform: rotateX(180deg);
-  transform: rotateX(180deg);
-}
-
-.sub-home {
-  display: none;
-  position: absolute;
-  right: 0;
-  left: 0; 
-
-  z-index: 1;   
-  transform: perspective(-10px);
-}
-
-#trapezoid:hover .sub-home {
-  justify-content: center;
-  margin-top: 53px;
-}
-
-.navbar {
-  position: sticky;
-  top: 0;
-  display:flex;
-  overflow:hidden;
-  justify-content: center;
-  height: 100px;
-  z-index: 3;
-}
-
-.navbar a {
-  float: left;
-  font-size: 16px;
-  color: white;
-  text-align: center;
-  padding: 14px 25px;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 4px;
-  transition: all 0.5s ease;
-}
-
-.subnav {
-  float: left;
-  overflow: hidden;
-}
-
-.subnav .subnavbtn {
-  font-size: 16px; 
-  border: none;
-  outline: none;
-  color: white;
-  padding: 14px 25px;
-  background-color: inherit;
-  font-family: inherit;
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 4px;
-  transition: all 0.5s ease;
-}
-
-.navbar a:hover, .subnav:hover .subnavbtn {
-  background:#8CA6DB;
-  color: black;
-  border-radius:5px;
-}
-
-::-webkit-scrollbar {
-    display: none;
-}
+@Entity
+public class User {
     
-    .hexagon-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    overflow-y: auto; /* Enable vertical scrolling */
-    height: 100vh; /* Full height of the viewport */
-    padding: 20px;
-    box-sizing: border-box;
-    scroll-snap-type: y mandatory; /* Enable vertical scroll snapping */
-    padding-top: 250px;  /* CHANGED THIS LINE */
-    /* margin-top: 250px;  Removed this line */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-    .hexagon-row {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      justify-items: center;
-      align-items: center;
-      gap: 1px;
-      margin-bottom: 550px; /* Increased space between the rows */
-      scroll-snap-align: start; /* This row will align with the start of the scroll container when snapped */
-    }
-
-    .row-header {
-      grid-column: span 5;
-      text-align: center;
-      color: black;
-      margin-top: 190px;
-    }
-
-    .hexagon {
-      position: relative;
-      width: 100px;
-      height: 57.74px;
-      background-color: blue;
-      margin: 10px 0;
-      transition: background-color 0.3s ease, transform 0.3s ease;
-    }
-
-    .hexagon:before,
-    .hexagon:after {
-      content: "";
-      position: absolute;
-      width: 100px;
-      height: 57.74px;
-      background-color: inherit;
-    }
-
-    .hexagon:before,
-    .hexagon:after {
-      z-index: 1;
-    }
-
-    .hexagon-text {
-      position: relative;
-      z-index: 2;
-      font-size: 15px;
-    }
-
-    .hexagon:before {
-      transform: rotate(60deg);
-    }
-
-    .hexagon:after {
-      transform: rotate(-60deg);
-    }
-
-    .hexagon:hover {
-      background-color: darkblue;
-      transform: scale(1.1);
-    }
-
-    .hexagon:hover:before,
-    .hexagon:hover:after {
-      background-color: inherit;
-    }
-
-    .hexagon-text {
-      position: absolute;
-      width: 100%;
-      text-align: center;
-      color: white;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-
-
-    .navbar-logo {
-    height: 80px;  /* Adjust this to your needs */
-    margin-right: 20px;  /* Adjust this to your needs */
-    vertical-align: middle; 
-}
-
-
-
-
-
-    #scrollBtn {
-      display:flex;
-      position: fixed;
-      bottom: 120px;
-      right: 30px;
-      z-index: 99;
-      border: none;
-      background-color: #555;
-      color: white;
-      cursor: pointer;
-      padding: 15px;
-      border-radius: 4px;
-    }
-
-    #scrollBtn:hover {
-      background-color: #444;
-    }
-
-  </style>
-
-</head>
-<body>
-    <nav class="navbar">
-        <img style="height: 58px;  
-        margin-right: -40px;" src="R.png" alt="Logo"> 
-        <div id="trapezoid">
-          <a class="sub-home" href="#">Home</a>
-          <a href="#About" class="expandHome">About</a>
-          <a href="#About" class="expandHome">About</a>
-          <a href="#About" class="expandHome">About</a>
-          <a href="#About" class="expandHome">About</a>
-          <a href="#About" class="expandHome">About</a>
-          
-      </nav>
-
-  <div class="hexagon-container">
-    <div style="margin: 0em 10em 10em 10em; padding: 3em 10em 3em 10em" class="snap-point">
-        <h1 style ="text-align: center;">My Heading</h1> <!-- Your H1 heading -->
-    <p style ="text-align: center; ">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum, purus vel fringilla dictum, risus nulla iaculis ligula, sed sollicitudin nisi sem ac tellus. Praesent dignissim tellus a ante vehicula, in lacinia purus malesuada.</p> <!-- Your paragraph -->
-  </div>
-    <div class="hexagon-row">
-      <h2 class="row-header">Monitor</h2>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-    </div>
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
-    <div class="hexagon-row">
-      <h2 class="row-header">Monitor</h2>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-    </div>
-
-    <div class="hexagon-row">
-      <h2 class="row-header">Monitor</h2>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-    </div>
-
-    <div class="hexagon-row">
-      <h2 class="row-header">Monitor</h2>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-      <div class="hexagon">
-        <span class="hexagon-text">Monitor</span>
-      </div>
-    </div>
-  </div>
- 
-  <button onclick="topFunction()" id="scrollBtn" title="Go to top">⬆️</button>
-</body>
-
-<script>
-
-
-window.onload = function() {
-  //Get the button
-  let scrollBtn = document.getElementById("scrollBtn");
-
-  // When the user scrolls down 20px from the top of the document, show the button
-  window.onscroll = function() {
-    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-      scrollBtn.style.display = "block";
-    } else {
-      scrollBtn.style.display = "none";
-    }
-  };
-
-  // When the user clicks on the button, scroll to the top of the document
-  function topFunction() {
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-  }
-
-  // Assign the topFunction to the button's onclick property
-  scrollBtn.onclick = topFunction;
+    private String name;
+    private String company;
+    private String place;
+    private String language;
+    
+    // getters and setters
 }
-    </script>
-</html>
+
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.demo.model.User;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+}
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import com.example.demo.model.User;
+import com.example.demo.repository.UserRepository;
+
+@RestController
+public class UserController {
+
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @PostMapping("/users")
+    public User addUser(@RequestBody User user) {
+        return userRepository.save(user);
+    }
+}
+
+
+spring.datasource.url=jdbc:mysql://localhost:3306/your_database_name
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+spring.jpa.hibernate.ddl-auto=update
