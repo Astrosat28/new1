@@ -1,65 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        #banner {
-            text-align: center;
-            padding: 20px;
-            background-color: #4CAF50;
-            color: white;
-            margin-bottom: 20px;
-        }
-        .row {
-            display: flex;
-            justify-content: space-around;
-        }
-        .column {
-            flex: 1;
-            padding: 20px;
-            text-align: center;
-            height: 150px;  /* Define the height */
-            border-radius: 15px;  /* Round the edges */
-        }
-        .app {
-            background-color: #FF6347;
-        }
-        .jcl {
-            background-color: #FFD700;
-        }
-        .proc {
-            background-color: #6A5ACD;
-        }
-        .program {
-            background-color: #00CED1;
-        }
-        .IO_unit {
-            background-color: #32CD32;
-        }
-    </style>
-</head>
-<body>
-    <div id="banner">
-        <h1>Network Graph</h1>
-    </div>
-    <div class="row">
-        <div class="column app">
-            <h2>app</h2>
-        </div>
-        <div class="column jcl">
-            <h2>jcl</h2>
-        </div>
-        <div class="column proc">
-            <h2>proc</h2>
-        </div>
-        <div class="column program">
-            <h2>program</h2>
-        </div>
-        <div class="column IO_unit">
-            <h2>IO_unit</h2>
-        </div>
-    </div>
-</body>
-</html>
+package com.example;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
+
+@Component
+public class DBConnectionTest implements CommandLineRunner {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public DBConnectionTest(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        String sql = "SELECT 1";
+        jdbcTemplate.queryForObject(sql, Integer.class);
+        System.out.println("Database connection test successful!");
+    }
+}
+
+spring.datasource.url=jdbc:sqlserver://localhost;databaseName=myDb
+spring.datasource.username=testuser
+spring.datasource.password=testpassword
+spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
