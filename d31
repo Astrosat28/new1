@@ -1,108 +1,83 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Network Graph</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
- <style>  line {
-        stroke: #ccc;
-        stroke-width: 2;
-    
-}</style></head>
-  <body>
-    <svg></svg>
-    <script>
-      // Define the dimensions of the SVG element
-      const width = 800;
-      const height = 600;
+package com.example.myproject.controller;
 
-      // Create the SVG element
-      const svg = d3.select("svg")
-        .attr("width", width)
-        .attr("height", height);
+import com.example.myproject.model.FormData;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import com.example.myproject.repository.FormDataRepository;
 
-      // Fetch the data from the API
-      const url = 'https://jsonplaceholder.typicode.com/users';
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          // Transform the data into nodes and links
-          const nodes = data.map(user => ({ id: user.id, name: user.name }));
-          const links = data.flatMap(user =>
-            user.friends && user.friends.map(friend => ({ source: user.id, target: friend.id }))
-          ).filter(link => link); // Remove any undefined links
-          
-          console.log(links); // Log the links that were created
+@RestController
+public class FormController {
+    private final FormDataRepository repository;
 
-          // Create the force simulation
-          const simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id))
-            .force("charge", d3.forceManyBody())
-            .force("center", d3.forceCenter(width / 2, height / 2));
+    // Spring will automatically inject the repository here
+    public FormController(FormDataRepository repository) {
+        this.repository = repository;
+    }
+    @PostMapping("/api/endpoint")
+    public void handlePostRequest(@RequestBody FormData formData) {
+        System.out.println(formData);
+        // ... handle the data
+    }
 
-          // Create the links
-          const link = svg.selectAll("line")
-            .data(links)
-            .enter().append("line")
-            .attr("stroke", "#999")
-            .attr("stroke-opacity", 0.6)
-            .attr("stroke-width", 1);
+}
 
-          // Create the nodes
-          const node = svg.selectAll("circle")
-            .data(nodes)
-            .enter().append("circle")
-            .attr("r", 10)
-            .call(drag(simulation));
 
-          // Add labels to the nodes
-          const label = svg.selectAll("text")
-            .data(nodes)
-            .enter().append("text")
-            .text(d => d.name)
-            .attr("dx", 15)
-            .attr("dy", 4);
+  
 
-          // Update the positions of the links and nodes
-          simulation.on("tick", () => {
-            link.attr("x1", d => d.source.x)
-                .attr("y1", d => d.source.y)
-                .attr("x2", d => d.target.x)
-                .attr("y2", d => d.target.y);
+form controller.java
 
-            node.attr("cx", d => d.x)
-                .attr("cy", d => d.y);
 
-            label.attr("x", d => d.x)
-                 .attr("y", d => d.y);
-          });
-        })
-        .catch(error => console.log(error));
+package com.example.myproject.model;
 
-      // Define the drag behavior
-      function drag(simulation) {
-        function dragStarted(event, d) {
-          if (!event.active) simulation.alphaTarget(0.3).restart();
-          d.fx = d.x;
-          d.fy = d.y;
-        }
+public class FormData {
 
-        function dragged(event, d) {
-          d.fx = event.x;
-          d.fy = event.y;
-        }
+    private String name;
+    private String company;
+    private String place;
+    private String language;
 
-        function dragEnded(event, d) {
-          if (!event.active) simulation.alphaTarget(0);
-          d.fx = null;
-          d.fy = null;
-        }
+    // Getters and setters for all fields
 
-        return d3.drag()
-          .on("start", dragStarted)
-          .on("drag", dragged)
-          .on("end", dragEnded);
-      }
-    </script>
-  </body>
-</html>
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+}
+formdata.java
+
+package com.example.myproject.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.myproject.model.FormData;
+public interface FormDataRepository extends JpaRepository<FormData, String> {
+}
+formdatarepository.java
