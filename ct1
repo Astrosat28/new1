@@ -84,3 +84,55 @@ export class FarmComponent {
 
 
 ts
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-farm',
+  templateUrl: './farm.component.html',
+  styleUrls: ['./farm.component.css']
+})
+export class FarmComponent implements OnInit {
+  form: FormGroup;
+  names = ['John', 'Jane', 'Jack']; // Here are the prepopulated names for the dropdown
+
+  constructor(private fb: FormBuilder) {
+    this.form = this.fb.group({
+      name: [this.names[0]], // default selected name
+      issue: ['yes', Validators.required],
+      ticket: ['', Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      hours: ['', [Validators.pattern('^\\d*\\.?\\d*$')]] // Hours is not required as it is calculated automatically
+    });
+  }
+
+  ngOnInit() {
+    this.form.get('startDate').valueChanges.subscribe(value => {
+      this.updateHours();
+    });
+
+    this.form.get('endDate').valueChanges.subscribe(value => {
+      this.updateHours();
+    });
+  }
+
+  updateHours() {
+    const startDateValue = this.form.get('startDate').value;
+    const endDateValue = this.form.get('endDate').value;
+
+    if (startDateValue && endDateValue) {
+      const startDate = new Date(startDateValue);
+      const endDate = new Date(endDateValue);
+
+      const diffInMilliseconds = endDate.getTime() - startDate.getTime();
+      const diffInHours = diffInMilliseconds / (1000 * 60 * 60);
+
+      this.form.get('hours').setValue(diffInHours.toFixed(2));
+    }
+  }
+}
+
+
+
+
