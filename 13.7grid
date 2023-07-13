@@ -1,0 +1,32 @@
+displayedColumns: string[] = [
+    'Header 1', 'Header 2', 'Header 3', 'Header 4'// ... include your 30 headers here
+  ];
+
+  // Manually defined row data
+  initialRowData: string[][] = [
+    ['Row 1 Data 1', 'Row 1 Data 2', 'Row 1 Data 3', 'Row 1 Data 4'], // data for first row
+    ['Row 2 Data 1', 'Row 2 Data 2', 'Row 2 Data 3'], // data for second row
+    // ... include your 20 rows of data here
+  ];
+
+  // Create data source based on your column headers and row data
+  dataSource: any[] = this.initialRowData.map(rowData => {
+    return this.displayedColumns.reduce((prev, curr, index) => {
+      prev[curr] = rowData[index] || '';
+      return prev;
+    }, {});
+  });
+
+  ts
+   <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- Columns Definition -->
+        <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
+          <mat-header-cell *matHeaderCellDef>{{ column }}</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{ element[column] }}</mat-cell>
+        </ng-container>
+      
+        <!-- Header row and data rows -->
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+      html
