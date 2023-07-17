@@ -1,0 +1,142 @@
+html
+<br>
+<br>
+
+<div class="dropdown">
+    <select>
+      <option value="">Choose month</option>
+      <option value="March">March</option>
+      <option value="April">April</option>
+      <option value="May">May</option>
+      <option value="June">June</option>
+      <option value="July">July</option>
+    </select>
+  </div>
+  <br>
+  <br>
+
+<table>
+    <tr style="background-color:orange;">
+      <th *ngFor="let column of columns">{{column}}</th>
+    </tr>
+    <tr *ngFor="let row of rows; let i = index" [ngStyle]="{ 'background-color': i % 2 == 0 ? 'lightgray' : 'gray' }">
+      <td *ngFor="let column of columns">{{row[column]}}</td>
+    </tr>
+  </table>
+
+
+  <br>
+  <br><br>
+  <br>
+  <div class="flex-container">
+   
+    <!-- Second table -->
+    <table>
+      <tr style="background-color:green;">
+        <th>Ticket</th>
+        <th>Incident</th>
+      </tr>
+      <tr *ngFor="let row of newRows; let i = index" [ngStyle]="{ 'background-color': i % 2 == 0 ? 'lightgreen' : '#d2ffd2' }">
+        <td>{{row['Ticket']}}</td>
+        <td>{{row['Incident']}}</td>
+      </tr>
+    </table>
+    <br>
+    
+    <!-- Comment Text Box -->
+    <div class="box">
+      <h3>Comment Text Box</h3>
+      <p>User enter data here</p>
+      <p>Once user click</p>
+    </div>
+    
+  
+  <!-- Third table -->
+  <table>
+    <tr style="background-color:lightgreen;">
+      <th>Service Now</th>
+      <th>INC/PRB</th>
+    </tr>
+    <tr *ngFor="let row of serviceNowRows; let i = index" [ngStyle]="{ 'background-color': i % 2 == 0 ? 'lightgreen' : 'white' }">
+      <td>{{row['Column 1']}}</td>
+      <td>{{row['Column 2']}}</td>
+    </tr>
+  </table>
+  </div>
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-table',
+  templateUrl: './table.component.html',
+  styleUrls: ['./table.component.css']
+})
+export class TableComponent {
+  columns = ['Column 1', 'Column 2', 'Column 3', 'Column 4', 'Column 5', 
+             'Column 6', 'Column 7', 'Column 8', 'Column 9', 'Column 10', 
+             'Column 11', 'Column 12', 'Column 13', 'Column 14', 'Column 15', 'Column 16'];
+  
+  rows = [
+    { 'Column 1': 'Data 1-1', 'Column 2': 'Data 1-2', 'Column 3': 'Data 1-3', 'Column 4': 'Data 1-4', 
+      'Column 5': 'Data 1-5', 'Column 6': 'Data 1-6', 'Column 7': 'Data 1-7', 'Column 8': 'Data 1-8', 
+      'Column 9': 'Data 1-9', 'Column 10': 'Data 1-10', 'Column 11': 'Data 1-11', 'Column 12': 'Data 1-12',
+      'Column 13': 'Data 1-13', 'Column 14': 'Data 1-14', 'Column 15': 'Data 1-15', 'Column 16': 'Data 1-16'},
+      { 'Column 1': 'Data 1-1', 'Column 2': 'Data 1-2', 'Column 3': 'Data 1-3', 'Column 4': 'Data 1-4', 
+      'Column 5': 'Data 1-5', 'Column 6': 'Data 1-6', 'Column 7': 'Data 1-7', 'Column 8': 'Data 1-8', 
+      'Column 9': 'Data 1-9', 'Column 10': 'Data 1-10', 'Column 11': 'Data 1-11', 'Column 12': 'Data 1-12',
+      'Column 13': 'Data 1-13', 'Column 14': 'Data 1-14', 'Column 15': 'Data 1-15', 'Column 16': 'Data 1-16'},
+      {},
+      {},//... Repeat for each row
+  ];
+  newRows = [
+    { 'Ticket': 'Ticket 1', 'Incident': 'Incident 1' },
+    { 'Ticket': 'Ticket 2', 'Incident': 'Incident 2' },
+    { 'Ticket': 'Ticket 3', 'Incident': 'Incident 3' },
+    { 'Ticket': 'Ticket 4', 'Incident': 'Incident 4' },
+    { 'Ticket': 'Ticket 5', 'Incident': 'Incident 5' },
+    { 'Ticket': 'Ticket 6', 'Incident': 'Incident 6' },
+  ];
+  serviceNowRows = [
+    { 'Column 1': 'Data 1', 'Column 2': 'Data 2' },
+    { 'Column 1': 'Data 3', 'Column 2': 'Data 4' },
+    { 'Column 1': 'Data 5', 'Column 2': 'Data 6' },
+    { 'Column 1': 'Data 7', 'Column 2': 'Data 8' },
+    { 'Column 1': 'Data 9', 'Column 2': 'Data 10' },
+    { 'Column 1': 'Data 11', 'Column 2': 'Data 12' },
+  ];
+  constructor() { }
+}
+
+css
+table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  th, td {
+    border: 1px solid black;
+    padding: 8px;
+  }
+  
+  .light-grey-row {
+    background-color: #f1f1f1;
+  }
+  
+  .dark-grey-row {
+    background-color: #d3d3d3;
+  }
+  .box {
+    border: 1px solid black;
+    padding: 10px;
+    margin: 10px;
+    width: 200px;  /* You can adjust the width as needed */
+  }
+  
+  .flex-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+
