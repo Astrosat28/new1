@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+    <style>
+ body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.form-container {
+    background-color: #ffffff;
+   /* width: 300px; */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.1);
+    margin: auto;
+}
+
+form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+form input[type="text"], form input[type="date"] {
+    width: 25%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+}
+
+form input[type="checkbox"] {
+    margin-bottom: 20px;
+}
+
+form input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+form input[type="submit"]:hover {
+    background-color: #45a049;
+}
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.form-row > div {
+    flex: 0 0 calc(50% - 10px);  /* 50% width, minus a bit of space for margin */
+    margin-bottom: 10px;
+}
+
+    </style>
+
+
+    
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+    <div class="form-container">
+        <form action="/submit" method="post">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Your name..">
+
+            <label for="ba-lob">BA LOB</label>
+            <input type="text" id="ba-lob" name="ba-lob" placeholder="Your BA LOB..">
+
+            <!--<label for="date">Date</label>
+            <input type="date" id="date" name="date">
+
+            <label for="check">Check</label>
+            <input type="checkbox" id="check" name="check"> -->
+
+            <label for="snow">Any Existing SNOW Ticket ?</label>
+            <input type="checkbox" id="snow" name="check">
+
+            
+
+            <label for="dropdown">Ticket Type:</label>
+
+             <select id="dropdown" name="dropdown">
+                 <option value="option1">Incident Number</option>
+               <option value="option2">Pwrs</option>
+               <option value="option3">RPS</option>
+                 <option value="option4">Option 4</option>
+            </select>
+
+             <label for="enterprise" style="padding-top: 15px;">Enterprise Issue</label>
+             <input type="checkbox" id="snow" name="check">
+
+            <label for="snow">Issue Number</label>
+            <input type="text" id="name" name="name" placeholder="Enter Issue Number">
+
+            <label for="snow">Any Child Issue</label>
+            <input type="checkbox" id="snow" name="check">
+            <label for="snow">List Child Issue</label>
+            <input type="text" id="name" name="name" placeholder="Enter Child Issue">
+
+            <label for="date">Start Datetime</label>
+            <input type="date" id="date" name="date">
+
+            <label for="date">End Datetime</label>
+            <input type="date" id="date" name="date">
+
+            <label for="dropdown">Priority:</label>
+
+            <select id="dropdown" name="dropdown">
+                <option value="option1">Critical</option>
+              <option value="option2">High</option>
+              <option value="option3">Medium</option>
+                <option value="option4">Low</option>
+           </select>
+
+           <label for="message" style="padding-top: 15px;">Issue Description:</label>
+            <textarea id="message" name="message" rows="10" cols="40">
+            </textarea>
+            <div class="form-row">
+                <div>
+            <label for="snow" style="padding-top: 15px;">Business Area Impacted</label>
+            <input type="text" id="name" name="name" placeholder="Enter Problem">
+            <label for="snow">Business Impact</label>
+            <input type="text" id="name" name="name" placeholder="Enter Problem">
+            <label for="snow">External Impact</label>
+            <input type="text" id="name" name="name" placeholder="Enter Problem">
+            <label for="snow">Impacted Apps</label>
+            <input type="text" id="name" name="name" placeholder="Enter Problem">
+            <label for="snow">Disruption Hours</label>
+            <input type="text" id="name" name="name" placeholder="Enter Disruption Hours">
+            <label for="snow">BA Support Time</label>
+            <input type="text" id="name" name="name" placeholder="Enter BA Support Time">
+            <label for="snow">Annuity</label>
+            <input type="checkbox" id="snow" name="check">
+            </div>
+            <div>
+                <label for="business-area-impacted1">OverTime</label>
+                <input type="text" id="business-area-impacted1" name="businessAreaImpacted1" placeholder="Enter OverTime">
+
+                <label for="business-area-impacted1">Business Lost Production</label>
+                <input type="text" id="business-area-impacted1" name="businessAreaImpacted1" placeholder="Enter ">
+                <label for="business-area-impacted1">Life</label>
+                <input type="text" id="business-area-impacted1" name="businessAreaImpacted1" placeholder="Enter" >
+                <label for="business-area-impacted1">Overtime</label>
+                <input type="text" id="business-area-impacted1" name="businessAreaImpacted1" placeholder="Enter ">
+                <label for="business-area-impacted1">Business Lost Production</label>
+                <input type="text" id="business-area-impacted1" name="businessAreaImpacted1" placeholder="Enter">
+                <label for="business-area-impacted1">Life</label>
+                <input type="text" id="business-area-impacted1" name="businessAreaImpacted1" placeholder="Enter ">
+                <label for="business-area-impacted1">Overtime</label>
+                <input type="text" id="business-area-impacted1" name="businessAreaImpacted1" placeholder="Enter ">
+                 </div>
+            </div>
+
+            <label for="snow">Problem #</label>
+            <input type="text" id="name" name="name" placeholder="Enter Problem">
+
+            <label for="snow">Root Cause</label>
+            <input type="text" id="name" name="name" placeholder="Enter Root Cause">
+
+            <label for="snow">Root Cause Subcategory</label>
+            <input type="text" id="name" name="name" placeholder="Enter Root Cause Subcategory">
+
+            <label for="snow">Long Term Solution</label>
+
+            <input type="text" id="name" name="name" placeholder="Enter Long Term Solution">
+
+            <label for="snow">MTRS Hours</label>
+            <input type="text" id="name" name="name" placeholder="Enter Problem">
+
+            <label for="snow">Change/Release Details</label>
+            <input type="text" id="name" name="name" placeholder="Enter Problem">
+
+            <label for="snow">Comments</label>
+            <input type="text" id="name" name="name" placeholder="Enter Problem">
+
+            <label for="snow">Additional Comments</label>
+            <input type="text" id="name" name="name" placeholder="Enter Problem">
+
+<!--
+            <div class="form-row">
+                <div>
+                    <label for="business-area-impacted">Business Area Impacted</label>
+                    <input type="text" id="business-area-impacted" name="businessAreaImpacted" placeholder="Enter Problem">
+                </div>
+                <div>
+                    <label for="business-area-impacted1">Business Area Impacted</label>
+                    <input type="text" id="business-area-impacted1" name="businessAreaImpacted1" placeholder="Enter Problem">
+                </div>
+            </div>
+        -->
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+
+</body>
+</html>
