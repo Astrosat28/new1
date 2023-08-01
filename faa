@@ -1,0 +1,617 @@
+
+.center-header {
+    text-align: center;
+    font-size: 2em; /* adjust size as needed */
+    padding: 50px 0;
+    background-color: red;
+    /*height: 150px;
+    line-height: 150px;*/
+}
+.dropdown-container {
+    margin-bottom: 20px;
+    margin-top: 50px;
+    margin-left: 50px;
+}
+
+
+.month-box {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    margin-right: 10px;
+    
+}
+
+.dropdown {
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    outline: none;
+    height: 31px;
+}
+.scrollable-table {
+    overflow-x: auto;
+    margin-top: 50px;
+    margin-left: 50px;
+}
+
+table {
+    width: 2000px; /* Adjust this value as needed */
+    border-collapse: collapse;
+   
+}
+
+table, th, td {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: center;
+}
+
+.header {
+    background-color: orange;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #dcdcdc;
+}
+
+.blue-box {
+    border: 2px solid blue;
+    padding: 10px;
+    display: block;
+    /*width: 1300px;  Adjust as needed */
+   /*  height: 100px; Adjust as needed */
+    color: black;
+    margin-top: 10px;
+    margin-left: 50px;
+}
+
+.blue-box p {
+    margin: 0 0 10px;
+}
+.text-box {
+    background-color: blue;
+    display: inline-block;
+    color: white;
+    padding: 10px;
+    margin-right: 50px;
+    width:250px;
+    text-align: center;
+}
+.text-box p {
+    margin: 0;
+}
+.white-text-box {
+    background-color: rgb(255, 255, 255);
+    display: inline-block;
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    border: 1px solid black;
+    display: flexbox;
+    margin-right: 50px;
+    height: 20px;
+    margin-top: 5px;
+    width:250px;
+    text-align: center;
+   
+    
+}
+.blue-dropdown {
+    background-color: rgb(255, 255, 255);
+    color: rgb(2, 2, 2);
+    width: 100%; /* make the dropdown full width of the box */
+    box-sizing: border-box;
+    height:100%;
+}
+.full-width-input {
+    width: 100%; /* make the input full width */
+    box-sizing: border-box; /* include padding and border in the element's total width */
+    height: 125px;
+    padding: 0 10px; /* add some horizontal padding */
+}
+
+.full125pxwidthinput {
+    margin-top: 10px;
+    width: 270px; /* make the input full width */
+    box-sizing: border-box; /* include padding and border in the element's total width */
+    height: 125px;
+    padding: 0 10px; /* add some horizontal padding */
+    margin-right: 50px;
+}
+.blue-box2 {
+    border: 2px solid blue;
+    padding: 10px;
+    display: block;
+   /* width: 1300px; Adjust as needed */
+    /* height: 536px;  Adjust as needed */
+    color: black;
+    margin-top: 10px;
+    margin-left: 50px;
+}
+
+.blue-box2 p {
+    margin: 0 0 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header>
+    <h1 class="center-header">Disruption Reporting Automation</h1>
+</header>
+<div class="dropdown-container">
+    <label for="month" class="month-box">Select Month:</label>
+    <select id="month" class="dropdown">
+        <option>April</option>
+        <option>May</option>
+        <option>June</option>
+        <option>July</option>
+    </select>
+</div>
+<div class="scrollable-table">
+    <table>
+        <thead>
+            <tr class="header">
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+                <!--... Repeat this for 17 columns -->
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <!--... Repeat this for 17 columns -->
+            </tr>
+            <!--... Repeat this for 8 rows -->
+            <tr>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <!--... Repeat this for 17 columns -->
+            </tr>
+            <tr>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <!--... Repeat this for 17 columns -->
+            </tr>
+            <tr>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <!--... Repeat this for 17 columns -->
+            </tr>
+            <tr>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <!--... Repeat this for 17 columns -->
+            </tr>
+            <tr>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <!--... Repeat this for 17 columns -->
+            </tr>
+        </tbody>
+    </table>
+</div>
+<!--business analyst-->
+<div>
+    <h2 style="justify-content: left; margin-left: 50px; margin-top: 100px;">Business Analyst</h2>
+</div>
+<!--business analyst-->
+<div class="blue-box"> <!--blue border box-->
+    <div class="text-box">
+        <p>Name</p>
+    </div>
+    <div class="text-box">
+        <p>BA's LOB</p>
+    </div>
+
+<div> 
+    <div class="white-text-box">
+     <p>Name</p>
+     </div>
+     <div class="white-text-box">
+        <p>Text Data</p>
+    </div>  
+    </div>
+</div>
+
+<!--ticket information-->
+<div>
+    <h2 style="justify-content: left; margin-left: 50px; margin-top: 100px;">Ticket Information</h2>
+</div>
+<!--ticket information-->
+<div class="blue-box2"> <!--blue border box-->
+    <div class="text-box">
+        <p>Any Existing SNOW Ticket ?</p>
+    </div>
+    <div class="white-text-box">
+        <input type="checkbox" id="myCheckbox">
+       <label for="myCheckbox">Yes/No</label>
+    </div>
+
+    <!--2nd row of ticket-->
+    <div>
+      <div class="text-box" style="margin-top: 10px;">
+        <p>Ticket Type?</p>
+      </div>
+
+      <div class="white-text-box" style="margin-top: 10px;">
+        <select class="blue-dropdown">
+            <option value="option1">INCIDENT NUMBER</option>
+            <option value="option2">PSWR</option>
+            <option value="option3">RPS</option>
+            <option value="option4">Option 4</option>
+        </select>
+        </div>
+
+        <div class="text-box" style="margin-top: 10px;">
+            <p>Enterprise Issue</p>
+          </div>
+
+          <div class="white-text-box" style="margin-top: 10px;">
+            <input type="checkbox" id="myCheckbox">
+           <label for="myCheckbox">Yes/No</label>
+          </div>
+    </div>
+ <!--3RD row of ticket-->
+  <div>
+       <div class="text-box" style="margin-top: 10px;">
+        <p>Issue Number</p>
+       </div>
+
+     <div class="white-text-box" style="margin-top: 10px;">
+      <p>Primary Issue</p>
+     </div>
+
+     <div class="text-box" style="margin-top: 10px;">
+        <p>Is There Any Child Issues ?</p>
+       </div>
+
+       <div class="white-text-box" style="margin-top: 10px;">
+        <input type="checkbox" id="myCheckbox">
+       <label for="myCheckbox">Yes/No</label>
+    </div>
+  </div>
+
+   <!--4th row of ticket-->
+   <div>
+    <div class="text-box" style="margin-top: 10px;">
+     <p>Start Datetime</p>
+    </div>
+
+  <div class="white-text-box" style="margin-top: 10px;">
+    <input type="date" id="myDate">
+
+  </div>
+
+  <div class="text-box" style="margin-top: 10px;">
+     <p>List Child Issues</p>
+    </div>
+
+    <div class="white-text-box" style="margin-top: 10px;">
+     <p> Enter the child issues</p>
+    </div>
+  </div>
+  <!--5th-->
+
+  <div>
+    <div class="text-box" style="margin-top: 10px;">
+     <p>End Datetime</p>
+    </div>
+
+    <div class="white-text-box" style="margin-top: 10px;">
+        <input type="date" id="myDate">
+
+    </div>
+  </div>
+    <!--6th-->
+
+  <div>
+    <div class="text-box" style="margin-top: 10px;">
+     <p>Priority</p>
+    </div>
+
+    <div class="white-text-box" style="margin-top: 10px;">
+        <select class="blue-dropdown">
+            <option value="option1">Critical</option>
+            <option value="option2">High</option>
+            <option value="option3">Medium</option>
+            <option value="option4">Low</option>
+        </select>
+    </div>
+
+    <!--7th row-->
+    <div>
+        <div class="text-box" style="margin-top: 10px;">
+            <p>Issue Description</p>
+           </div>
+    </div>
+    <input type="text" class="full-width-input">
+  </div>
+
+</div>
+
+<!--business impact 3rd box-->
+<div>
+    <h2 style="justify-content: left; margin-left: 50px; margin-top: 100px;">Business Impact Analysis</h2>
+</div>
+
+
+<!--3rd box start business impact analysis-->
+<div class="blue-box2"> <!--blue border box-->
+    <div class="text-box">
+        <p>Any Existing SNOW Ticket ?</p>
+    </div>
+    <div class="text-box">
+        <p>Any Existing SNOW Ticket ?</p>
+    </div>
+    
+    <div class="text-box">
+        <p>Any Existing SNOW Ticket ?</p>
+    </div>
+    <div class="text-box">
+        <p>Any Existing SNOW Ticket ?</p>
+    </div>
+    <input type="text" class="full125pxwidthinput">
+    <input type="text" class="full125pxwidthinput">
+    <input type="text" class="full125pxwidthinput">
+    <input type="text" class="full125pxwidthinput">
+    
+
+    <div>
+        <div class="text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+    </div>
+    <div>
+        <div class="white-text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="white-text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+    </div>
+    <div>
+        <div class="text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+    </div>
+    <div>
+        <div class="white-text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="white-text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="white-text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+    </div>
+    <div>
+        <div class="text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+    </div>
+    <div>
+        <div class="white-text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="white-text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="white-text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+    </div>
+    <div>
+        <div class="text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+    </div>
+    <div>
+        <div class="white-text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="white-text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+        <div class="white-text-box">
+            <p>Any Existing SNOW Ticket ?</p>
+        </div>
+    </div>
+</div>
+
+<!-- problem  4th box-->
+<div>
+    <h2 style="justify-content: left; margin-left: 50px; margin-top: 100px;">Business Impact Analysis</h2>
+</div>
+<!-- 4th box-->
+<div class="blue-box2"> <!--blue border box-->
+    <div class="text-box">
+        <p>Any Existing SNOW Ticket ?</p>
+    </div>
+    <div class="text-box">
+        <p>Any Existing SNOW Ticket ?</p>
+    </div>
+    
+    <div class="text-box">
+        <p>Any Existing SNOW Ticket ?</p>
+    </div>
+    <div class="text-box">
+        <p>Any Existing SNOW Ticket ?</p>
+    </div>
+    <input type="text" class="full125pxwidthinput">
+    <input type="text" class="full125pxwidthinput">
+    <input type="text" class="full125pxwidthinput">
+    <input type="text" class="full125pxwidthinput">
+    
+
+    <div class="text-box">
+        <p>Any Existing SNOW Ticket ?</p>
+    </div>
+    <div class="text-box">
+        <p>Any Existing SNOW Ticket ?</p>
+    </div>
+    
+    <div class="text-box">
+        <p>Any Existing SNOW Ticket ?</p>
+    </div>
+    <div class="text-box">
+        <p>Any Existing SNOW Ticket ?</p>
+    </div>
+    <input type="text" class="full125pxwidthinput">
+    <input type="text" class="full125pxwidthinput">
+    <input type="text" class="full125pxwidthinput">
+    <input type="text" class="full125pxwidthinput">
+    
+</div>
