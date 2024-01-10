@@ -1,0 +1,61 @@
+import re
+import heapq
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize, sent_tokenize
+
+# Ensure you have the necessary components installed
+nltk.download('punkt')
+nltk.download('stopwords')
+
+def summarize_text(text):
+    # Tokenize the text into sentences
+    sentences = sent_tokenize(text)
+
+    # Tokenize words and create a frequency table
+    frequency_table = dict()
+    stopWords = set(stopwords.words("english"))
+    words = word_tokenize(text)
+
+    for word in words:
+        word = word.lower()
+        if word not in stopWords:
+            if word in frequency_table:
+                frequency_table[word] += 1
+            else:
+                frequency_table[word] = 1
+
+    # Score sentences based on frequency
+    sentence_scores = dict()
+
+    for sentence in sentences:
+        for word, freq in frequency_table.items():
+            if word in sentence.lower():
+                if sentence in sentence_scores:
+                    sentence_scores[sentence] += freq
+                else:
+                    sentence_scores[sentence] = freq
+
+    # Get the average score for a sentence
+    average_score = sum(sentence_scores.values()) / len(sentence_scores)
+
+    # Extract summary: sentences with a score above the average
+    summary = heapq.nlargest(3, sentence_scores, key=sentence_scores.get)
+
+    return ' '.join(summary)
+
+# Example usage
+text_description = most_similar_incident['description']
+text_close_notes = most_similar_incident['close_notes']
+text_comments = most_similar_incident['comments']
+
+description_summary = summarize_text(text_description)
+close_notes_summary = summarize_text(text_close_notes)
+comments_summary = summarize_text(text_comments)
+
+print("Summary of Description:")
+print(description_summary)
+print("\nSummary of Close Notes:")
+print(close_notes_summary)
+print("\nSummary of Comments:")
+print(comments_summary)
