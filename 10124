@@ -83,3 +83,53 @@ ai_solution = llm.complete(prompt=ai_input)
 
 # Output the solution
 print(ai_solution)
+
+
+
+
+
+
+
+import pandas as pd
+from transformers import BertTokenizer, BertModel, BertForSequenceClassification, pipeline
+from sklearn.metrics.pairwise import cosine_similarity
+import torch
+
+# Load your dataset
+df = pd.read_csv(r'C:/aiml python/your_dataset.csv')
+pd.set_option('display.max_colwidth', None)
+pd.set_option('display.max_columns', None)
+
+# Initialize BERT
+model_name = 'bert-base-nli-mean-tokens'
+tokenizer = BertTokenizer.from_pretrained(model_name)
+model = BertModel.from_pretrained(model_name)
+
+# Function to create embeddings
+def create_embeddings(text):
+    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
+    with torch.no_grad():
+        outputs = model(**inputs)
+    return outputs.last_hidden_state.mean(dim=1)
+
+# Embed all incidents
+incident_embeddings = df.apply(lambda row: create_embeddings(row['incident_number'] + ' ' + row['problem'] + ' ' + row['work_notes'] + ' ' + row['U_cause_description']), axis=1)
+
+# New incident
+new_incident = 'Your new incident text here'
+new_incident_embedding = create_embeddings(new_incident)
+
+# Find most similar incident
+similarities = cosine_similarity(new_incident_embedding, incident_embeddings)
+most_similar_idx = similarities.argmax()
+
+# Get the most similar incident
+most_similar_incident = df.iloc[most_similar_idx]
+
+# Summarization with BERT
+summarizer = pipeline("summarization", model="bert-large-cnn")
+fields_to_summarize = ['problem', 'work_notes', 'U_cause_description']
+
+for field in fields_to_summarize:
+    summarized_text = summarizer(most_similar_incident[field], max_length=130, min_length=30, do_sample=False)
+    print(f"\nSummarized {field}: {summarized_text[0]['summary_text']}")
