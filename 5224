@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Problem Solver</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding-top: 50px;
+        }
+        #problem-input {
+            min-height: 200px;
+        }
+        #submit-button {
+            margin-top: 20px;
+        }
+        #answers {
+            margin-top: 50px;
+        }
+        .incident {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Enter Your Problem</h1>
+        <div class="form-group">
+            <textarea id="problem-input" class="form-control"></textarea>
+        </div>
+        <div class="form-group text-center">
+            <button id="submit-button" class="btn btn-primary">Submit</button>
+        </div>
+        <p id="typing-text"></p>
+        <div id="answers" class="mt-5">
+            {% for paragraph in data.formattedparagraph %}
+                <div class="incident">
+                    <p>{{ paragraph }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        var problemInput = document.getElementById('problem-input');
+        var typingText = document.getElementById('typing-text');
+        var text1 = 'Describe your problem here...';
+        var text2 = 'Here are the answers I found...';
+        var index = 0;
+
+        function type(textElement, text) {
+            if (index < text.length) {
+                textElement.innerHTML += text[index];
+                index++;
+                setTimeout(function() { type(textElement, text); }, 100); // Adjust the typing speed by changing the timeout duration
+            } else {
+                index = 0; // Reset index for the next typing animation
+            }
+        }
+
+        type(problemInput, text1); // Start typing animation for problem input
+
+        document.getElementById('submit-button').addEventListener('click', function() {
+            type(typingText, text2); // Start typing animation for answers text when submit button is clicked
+        });
+    </script>
+</body>
+</html>
