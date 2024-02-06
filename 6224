@@ -1,0 +1,193 @@
+typing animati
+<html>
+    <style>
+                .wrapper {
+                height: 100vh;
+                /*This part is important for centering*/
+                display: grid;
+                place-items: center;
+                }
+
+                .typing-demo {
+                width: 22ch;
+                animation: typing 2s steps(22), blink .5s step-end infinite alternate;
+                white-space: nowrap;
+                overflow: hidden;
+                border-right: 3px solid;
+                font-family: monospace;
+                font-size: 2em;
+                }
+
+                @keyframes typing {
+                from {
+                    width: 0
+                }
+                }
+                    
+                @keyframes blink {
+                50% {
+                    border-color: transparent
+                }
+                }
+    </style>
+<div class="wrapper">
+    <div class="typing-demo">
+      This is a typing demo.
+    </div>
+</div>
+</html>
+
+neon ai
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Text Effect</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000; /* Dark background to enhance the effect */
+            font-family: 'Arial', sans-serif;
+            color: #333; /* Start with dark text */
+        }
+    
+        .neon-text {
+            font-size: 48px;
+            font-weight: bold;
+            color: #333; /* Initial dark color to simulate 'off' state */
+            animation: neonFlicker 5s forwards; /* Play the animation once */
+        }
+    
+        @keyframes neonFlicker {
+            0%, 9%, 11%, 19%, 21%, 29%, 50% {
+                color: #333; /* Text goes dark */
+                text-shadow: none; /* No glow effect */
+                opacity: 1;
+            }
+            10%, 20%, 30% , 80% {
+                color: rgb(210, 221, 210); /* Briefly show the neon color */
+                text-shadow:
+                    0 0 5px #03bcf4,
+                    0 0 10px #03bcf4,
+                    0 0 20px #03bcf4,
+                    0 0 40px #03bcf4,
+                    0 0 80px #03bcf4,
+                    0 0 120px #03bcf4,
+                    0 0 200px #03bcf4; /* Glow effect */
+                opacity: 1; /* Slightly dimmed for a flickering effect */
+            }
+            100% {
+                    color: rgb(228, 233, 238); /* Final neon color */
+                    text-shadow:
+                        0 0 5px #03bcf4,
+                        0 0 10px #03bcf4,
+                        0 0 20px #03bcf4,
+                        0 0 40px #03bcf4,
+                        0 0 80px #03bcf4,
+                        0 0 120px #03bcf4,
+                        0 0 200px #03bcf4; /* Full glow effect */
+                    opacity: 1;
+            }
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="neon-text">AI IS LIVE</div>
+</body>
+</html>
+
+
+searching 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Typing Animation</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body{
+    margin: 0;
+    padding: 0;
+    background-color: #2f3542;
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Montserrat", sans-serif;
+}
+
+.animated-text{
+    font-size: 34px;
+    font-weight: 600;
+    min-width: 280px;
+}
+
+.animated-text span{
+    position: relative;
+}
+
+.animated-text span::before{
+    content: "Youtuber";
+    color: #ff7f50;
+    animation: words 20s infinite;
+}
+
+.animated-text span::after{
+    content: "";
+    position: absolute;
+    width: calc(100% + 8px);
+    height: 100%;
+    background-color: #2f3542;
+    border-left: 2px solid #ff7f50;
+    right: -8px;
+    animation: cursor .8s infinite, typing 20s steps(14) infinite;
+}
+
+@keyframes cursor {
+    to{
+        border-left: 2px solid #ff7f5000;
+    }
+}
+
+@keyframes words {
+    0%,20%{
+        content: "Entire Database";
+    }
+    21%,40%{
+        content: "All The Incidents";
+    }
+    41%,60%{
+        content: "All References";
+    }
+    61%,80%{
+        content: "All Problems";
+    }
+    81%,100%{
+        content: "All Descriptions";
+    }
+}
+
+@keyframes typing {
+    10%,15%,30%,35%,50%,55%,70%,75%,90%,95%{
+        width: 0;
+    }
+    5%,20%,25%,40%,45%,60%,65%,80%,85%{
+        width: calc(100% + 8px);
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="animated-text">
+        Searching <span></span>
+    </div>
+</body>
+</html>
