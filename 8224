@@ -42,3 +42,54 @@
 
 </body>
 </html>
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple API Call Example</title>
+</head>
+<body>
+
+<input type="text" id="userInput" placeholder="Type 'hi' here">
+<button onclick="submitData()">Submit</button>
+
+<div id="apiResponse">Response will appear here</div>
+
+<script>
+function submitData() {
+    var input = document.getElementById("userInput").value;
+    if(input.toLowerCase() === "hi") {
+        // Define the API endpoint and data
+        var apiEndpoint = 'YOUR_API_ENDPOINT_HERE';
+        var data = {
+            "maxline": 5,
+            "context": "secure site was caused by server issue, aws resolved the issue by its logic"
+        };
+
+        // Call the API using fetch
+        fetch(apiEndpoint, {
+            method: 'POST', // or 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            document.getElementById("apiResponse").innerHTML = JSON.stringify(data, null, 2);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    } else {
+        alert("Please type 'hi' to submit.");
+    }
+}
+</script>
+
+</body>
+</html>
