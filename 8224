@@ -93,3 +93,61 @@ function submitData() {
 
 </body>
 </html>
+
+
+from flask import Flask, request, jsonify
+import requests
+
+app = Flask(__name__)
+
+@app.route('/send-post', methods=['POST'])
+def send_post():
+    url = "https://abc.com/1"  # Assuming https is needed, adjust accordingly.
+    data = {
+        "maxline": 5,
+        "context": "the resolution summary is as follows of the document - secure was unable to process data , now switched on so resolved"
+    }
+    headers = {'Content-Type': 'application/json'}
+
+    response = requests.post(url, json=data, headers=headers)
+
+    # Assuming the response is JSON and you want to forward it
+    if response.status_code == 200:
+        return jsonify(response.json())
+    else:
+        return jsonify({"error": "Failed to send POST request"}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>POST Request Example</title>
+</head>
+<body>
+    <h2>Response Data</h2>
+    <div id="response"></div>
+
+    <script>
+        async function sendPostRequest() {
+            const response = await fetch('http://localhost:5000/send-post', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+
+            document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+        }
+
+        // Send POST request immediately when the page loads
+        window.onload = function() {
+            sendPostRequest();
+        };
+    </script>
+</body>
+</html>
+
