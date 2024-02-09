@@ -191,3 +191,65 @@ searching
     </div>
 </body>
 </html>
+
+
+
+
+vector 
+
+
+from flask import Flask, render_template, request
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from annoy import AnnoyIndex
+import numpy as np
+import pickle
+
+app = Flask(__name__)
+
+# Load your dataset
+df = pd.read_csv('your_dataset.csv')  # Make sure this points to your dataset
+
+# Preprocess and vectorize your dataset
+vectorizer = TfidfVectorizer(stop_words='english')
+tfidf_matrix = vectorizer.fit_transform(df['description'])  # Assume 'description' column
+
+# Build and save the Annoy index
+f = tfidf_matrix.shape[1]  # Dimensionality of vectors
+index = AnnoyIndex(f, 'angular')
+
+for i in range(tfidf_matrix.shape[0]):
+    v = tfidf_matrix[i].toarray()[0]
+    index.add_item(i, v)
+
+index.build(10)  # 10 trees
+index.save('incident_index.ann')
+
+# Save the vectorizer for later use
+with open('vectorizer.pkl', 'wb') as f:
+    pickle.dump(vectorizer, f)
+
+# Function to load index and vectorizer
+def load_resources():
+    with open('vectorizer.pkl', 'rb') as f:
+        vectorizer = pickle.load(f)
+    index = AnnoyIndex(f, 'angular')
+    index.load('incident_index.ann')
+    return vectorizer, index
+
+vectorizer, index = load_resources()
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    summary = ""
+    if request.method == 'POST':
+        user_input = request.form['problem_description']
+        user_vec = vectorizer.transform([user_input]).toarray()[0]
+        nearest_neighbors = index.get_nns_by_vector(user_vec, 3)  # Find 3 nearest neighbors
+        similar_incidents = df.iloc[nearest_neighbors]
+        summary = similar_incidents['description'].str.cat(sep=' ')  # Concatenate descriptions as a simple summary
+        
+    return render_template('index.html', summary=summary)
+
+if __name__ == '__main__':
+    app.run(debug=True)
