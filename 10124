@@ -133,3 +133,43 @@ fields_to_summarize = ['problem', 'work_notes', 'U_cause_description']
 for field in fields_to_summarize:
     summarized_text = summarizer(most_similar_incident[field], max_length=130, min_length=30, do_sample=False)
     print(f"\nSummarized {field}: {summarized_text[0]['summary_text']}")
+
+
+
+newness new
+import json
+from transformers import T5Tokenizer, T5ForConditionalGeneration
+import torch
+
+# Initialize the model and tokenizer
+tokenizer = T5Tokenizer.from_pretrained('t5-small')
+model = T5ForConditionalGeneration.from_pretrained('t5-small')
+
+def summarize_text(text, max_length=200):
+    # Tokenize the text
+    inputs = tokenizer.encode("summarize: " + text, return_tensors="pt", max_length=512, truncation=True)
+    # Generate summary
+    summary_ids = model.generate(inputs, max_length=max_length, length_penalty=2.0, num_beams=4, early_stopping=True)
+    # Decode the summary
+    summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+    return summary
+
+def lambda_handler(event, context):
+    try:
+        # Get the text to summarize from the event body
+        text_to_summarize = event.get('text', '')
+
+        # Perform summarization
+        summary = summarize_text(text_to_summarize)
+
+        # Return the summarized text
+        return {
+            'statusCode': 200,
+            'body': json.dumps({'summary': summary})
+        }
+    except Exception as e:
+        # Handle any exceptions
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'error': str(e)})
+        }
