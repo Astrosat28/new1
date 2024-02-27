@@ -203,9 +203,63 @@ def lambda_handler(event, context):
         })
     }
 
+.....................
+import json
+import boto3
+import requests
 
+def lambda_handler(event, context):
+    # Example paragraph text from the event
+    paragraph_text = event.get('paragraph_text', '')
 
+    # Your Bedrock API endpoint and API key
+    bedrock_endpoint = 'https://api.openai.com/v1/engines/text-davinci-003/summarizations'
+    bedrock_api_key = 'your_bedrock_api_key_here'
 
+    headers = {
+        'Authorization': f'Bearer {bedrock_api_key}',
+        'Content-Type': 'application/json'
+    }
 
+    # Payload for the API request
+    payload = {
+        "inputs": paragraph_text,
+        "parameters": {
+            "max_tokens": 512,  # Adjust based on your needs
+            "temperature": 0.7, # Adjust for creativity
+            "top_p": 1,
+            "frequency_penalty": 0,
+            "presence_penalty": 0,
+        }
+    }
 
+    try:
+        # Make a request to the Bedrock API
+        response = requests.post(bedrock_endpoint, headers=headers, json=payload)
+        response_data = response.json()
+
+        # Assuming 'choices' contains the summaries or answers
+        if response.status_code == 200 and 'choices' in response_data:
+            summary = response_data['choices'][0]['text']
+            return {
+                'statusCode': 200,
+                'body': json.dumps({
+                    'summary': summary
+                })
+            }
+        else:
+            return {
+                'statusCode': 500,
+                'body': json.dumps({
+                    'message': 'Failed to generate summary',
+                    'error': response_data
+                })
+            }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': json.dumps({
+                'message': 'An error occurred',
+                'error': str(e)
+            })
         }
