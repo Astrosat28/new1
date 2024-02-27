@@ -172,4 +172,40 @@ def lambda_handler(event, context):
         return {
             'statusCode': 500,
             'body': json.dumps({'error': str(e)})
+
+
+
+.......................
+import json
+import boto3
+
+def lambda_handler(event, context):
+    # Create a comprehend client
+    comprehend = boto3.client('comprehend')
+    
+    # Assume 'formatted_paragraphs' is a list of strings passed in 'event'
+    formatted_paragraphs = event.get('formatted_paragraphs', [])
+    combined_text = ' '.join(formatted_paragraphs)
+
+    # Use AWS Comprehend to detect key phrases in the text
+    response = comprehend.detect_key_phrases(Text=combined_text, LanguageCode='en')
+    
+    # Extract key phrases
+    key_phrases = [phrase['Text'] for phrase in response['KeyPhrases']]
+
+    # Simplified "summarization" by joining key phrases or you can further process these key phrases
+    summary = '. '.join(key_phrases)
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps({
+            'summary': summary
+        })
+    }
+
+
+
+
+
+
         }
