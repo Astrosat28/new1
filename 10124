@@ -1,307 +1,125 @@
-import json
-import boto3
-import csv
-from io import StringIO
+<dependencies>
+    <!-- JavaMail API -->
+    <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>javax.mail-api</artifactId>
+        <version>1.6.2</version>
+    </dependency>
+    <dependency>
+        <groupId>com.sun.mail</groupId>
+        <artifactId>javax.mail</artifactId>
+        <version>1.6.2</version>
+    </dependency>
+    <!-- SQLite JDBC -->
+    <dependency>
+        <groupId>org.xerial</groupId>
+        <artifactId>sqlite-jdbc</artifactId>
+        <version>3.34.0</version>
+    </dependency>
+</dependencies>
+...........
+import javax.mail.*;
+import javax.mail.internet.MimeBodyPart;
+import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Properties;
 
-def lambda_handler(event, context):
-    user_query = event['queryStringParameters']['query']
-    
-    comprehend = boto3.client('comprehend')
-    s3 = boto3.client('s3')
-    
-    lang_response = comprehend.detect_dominant_language(Text=user_query)
-    dominant_language = lang_response['Languages'][0]['LanguageCode']
-    
-    key_phrases_response = comprehend.detect_key_phrases(Text=user_query, LanguageCode=dominant_language)
-    key_phrases = [phrase['Text'] for phrase in key_phrases_response['KeyPhrases']]
-    
-    bucket_name = 'bucket-name'
-    object_key = 'data-file.csv'
-    
-    file_obj = s3.get_object(Bucket=bucket_name, Key=object_key)
-    file_content = file_obj['Body'].read().decode('utf-8')
-    
-    # Parse CSV into dictionaries
-    csv_reader = csv.DictReader(StringIO(file_content))
-    relevant_entries = []
-    for row in csv_reader:
-        # Check if any key phrase is in the specified columns
-        if any(key_phrase.lower() in (row['description'] + row['comments'] + row['work_notes']).lower() for key_phrase in key_phrases):
-            relevant_entries.append(row)
-    
-    response = relevant_entries[:5]  # Limit to first 5 matches for brevity
-    
-    return {
-        'statusCode': 200,
-        'body': json.dumps({'matches': response})
-    }
+public class EmailReader {
 
+    private static Connection connect() {
 
-
-
-.....................................................
-import re
-import heapq
-import nltk
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize, sent_tokenize
-
-# Ensure you have the necessary components installed
-nltk.download('punkt')
-nltk.download('stopwords')
-
-def summarize_text(text):
-    # Tokenize the text into sentences
-    sentences = sent_tokenize(text)
-
-    # Tokenize words and create a frequency table
-    frequency_table = dict()
-    stopWords = set(stopwords.words("english"))
-    words = word_tokenize(text)
-
-    for word in words:
-        word = word.lower()
-        if word not in stopWords:
-            if word in frequency_table:
-                frequency_table[word] += 1
-            else:
-                frequency_table[word] = 1
-
-    # Score sentences based on frequency
-    sentence_scores = dict()
-
-    for sentence in sentences:
-        for word, freq in frequency_table.items():
-            if word in sentence.lower():
-                if sentence in sentence_scores:
-                    sentence_scores[sentence] += freq
-                else:
-                    sentence_scores[sentence] = freq
-
-    # Get the average score for a sentence
-    average_score = sum(sentence_scores.values()) / len(sentence_scores)
-
-    # Extract summary: sentences with a score above the average
-    summary = heapq.nlargest(3, sentence_scores, key=sentence_scores.get)
-
-    return ' '.join(summary)
-
-# Example usage
-text_description = most_similar_incident['description']
-text_close_notes = most_similar_incident['close_notes']
-text_comments = most_similar_incident['comments']
-
-description_summary = summarize_text(text_description)
-close_notes_summary = summarize_text(text_close_notes)
-comments_summary = summarize_text(text_comments)
-
-print("Summary of Description:")
-print(description_summary)
-print("\nSummary of Close Notes:")
-print(close_notes_summary)
-print("\nSummary of Comments:")
-print(comments_summary)
-
-
-# Pseudocode example
-from langchain.llms import OpenAI
-from some_search_library import search_similar_incidents
-from preprocessing import preprocess_data
-
-# Preprocess new incident data
-new_incident_data = preprocess_data(new_incident_data)
-
-# Find similar incidents from the database
-similar_incidents = search_similar_incidents(new_incident_data, historical_data)
-
-# Format the data for the AI
-ai_input = format_for_ai(new_incident_data, similar_incidents)
-
-# Initialize Langchain with your chosen model
-llm = OpenAI(api_key="your-api-key")
-
-# Generate a solution
-ai_solution = llm.complete(prompt=ai_input)
-
-# Output the solution
-print(ai_solution)
-
-
-
-
-
-
-
-import pandas as pd
-from transformers import BertTokenizer, BertModel, BertForSequenceClassification, pipeline
-from sklearn.metrics.pairwise import cosine_similarity
-import torch
-
-# Load your dataset
-df = pd.read_csv(r'C:/aiml python/your_dataset.csv')
-pd.set_option('display.max_colwidth', None)
-pd.set_option('display.max_columns', None)
-
-# Initialize BERT
-model_name = 'bert-base-nli-mean-tokens'
-tokenizer = BertTokenizer.from_pretrained(model_name)
-model = BertModel.from_pretrained(model_name)
-
-# Function to create embeddings
-def create_embeddings(text):
-    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
-    with torch.no_grad():
-        outputs = model(**inputs)
-    return outputs.last_hidden_state.mean(dim=1)
-
-# Embed all incidents
-incident_embeddings = df.apply(lambda row: create_embeddings(row['incident_number'] + ' ' + row['problem'] + ' ' + row['work_notes'] + ' ' + row['U_cause_description']), axis=1)
-
-# New incident
-new_incident = 'Your new incident text here'
-new_incident_embedding = create_embeddings(new_incident)
-
-# Find most similar incident
-similarities = cosine_similarity(new_incident_embedding, incident_embeddings)
-most_similar_idx = similarities.argmax()
-
-# Get the most similar incident
-most_similar_incident = df.iloc[most_similar_idx]
-
-# Summarization with BERT
-summarizer = pipeline("summarization", model="bert-large-cnn")
-fields_to_summarize = ['problem', 'work_notes', 'U_cause_description']
-
-for field in fields_to_summarize:
-    summarized_text = summarizer(most_similar_incident[field], max_length=130, min_length=30, do_sample=False)
-    print(f"\nSummarized {field}: {summarized_text[0]['summary_text']}")
-
-
-
-newness new
-import json
-from transformers import T5Tokenizer, T5ForConditionalGeneration
-import torch
-
-# Initialize the model and tokenizer
-tokenizer = T5Tokenizer.from_pretrained('t5-small')
-model = T5ForConditionalGeneration.from_pretrained('t5-small')
-
-def summarize_text(text, max_length=200):
-    # Tokenize the text
-    inputs = tokenizer.encode("summarize: " + text, return_tensors="pt", max_length=512, truncation=True)
-    # Generate summary
-    summary_ids = model.generate(inputs, max_length=max_length, length_penalty=2.0, num_beams=4, early_stopping=True)
-    # Decode the summary
-    summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
-    return summary
-
-def lambda_handler(event, context):
-    try:
-        # Get the text to summarize from the event body
-        text_to_summarize = event.get('text', '')
-
-        # Perform summarization
-        summary = summarize_text(text_to_summarize)
-
-        # Return the summarized text
-        return {
-            'statusCode': 200,
-            'body': json.dumps({'summary': summary})
+        String url = "jdbc:sqlite:path_to_your_database.db";
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
-    except Exception as e:
-        # Handle any exceptions
-        return {
-            'statusCode': 500,
-            'body': json.dumps({'error': str(e)})
-
-
-
-.......................
-import json
-import boto3
-
-def lambda_handler(event, context):
-    # Create a comprehend client
-    comprehend = boto3.client('comprehend')
-    
-    # Assume 'formatted_paragraphs' is a list of strings passed in 'event'
-    formatted_paragraphs = event.get('formatted_paragraphs', [])
-    combined_text = ' '.join(formatted_paragraphs)
-
-    # Use AWS Comprehend to detect key phrases in the text
-    response = comprehend.detect_key_phrases(Text=combined_text, LanguageCode='en')
-    
-    # Extract key phrases
-    key_phrases = [phrase['Text'] for phrase in response['KeyPhrases']]
-
-    # Simplified "summarization" by joining key phrases or you can further process these key phrases
-    summary = '. '.join(key_phrases)
-    
-    return {
-        'statusCode': 200,
-        'body': json.dumps({
-            'summary': summary
-        })
+        return conn;
     }
 
-.....................
-import json
-import boto3
-import requests
+    private static void insertEmail(String subject, String content, String attachmentName) {
+        String sql = "INSERT INTO emails(subject, body, attachment) VALUES(?,?,?)";
 
-def lambda_handler(event, context):
-    # Example paragraph text from the event
-    paragraph_text = event.get('paragraph_text', '')
-
-    # Your Bedrock API endpoint and API key
-    bedrock_endpoint = 'https://api.openai.com/v1/engines/text-davinci-003/summarizations'
-    bedrock_api_key = 'your_bedrock_api_key_here'
-
-    headers = {
-        'Authorization': f'Bearer {bedrock_api_key}',
-        'Content-Type': 'application/json'
-    }
-
-    # Payload for the API request
-    payload = {
-        "inputs": paragraph_text,
-        "parameters": {
-            "max_tokens": 512,  # Adjust based on your needs
-            "temperature": 0.7, # Adjust for creativity
-            "top_p": 1,
-            "frequency_penalty": 0,
-            "presence_penalty": 0,
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, subject);
+            pstmt.setString(2, content);
+            pstmt.setString(3, attachmentName);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    try:
-        # Make a request to the Bedrock API
-        response = requests.post(bedrock_endpoint, headers=headers, json=payload)
-        response_data = response.json()
+    public static void readEmails() {
+        try {
+        
+            Properties properties = new Properties();
+            properties.put("mail.store.protocol", "imaps");
+            properties.put("mail.imaps.host", "imap.gmail.com");
+            properties.put("mail.imaps.port", "993");
 
-        # Assuming 'choices' contains the summaries or answers
-        if response.status_code == 200 and 'choices' in response_data:
-            summary = response_data['choices'][0]['text']
-            return {
-                'statusCode': 200,
-                'body': json.dumps({
-                    'summary': summary
-                })
+          
+            Session session = Session.getDefaultInstance(properties);
+            Store store = session.getStore("imaps");
+            store.connect("your_email@gmail.com", "your_password");
+
+            Folder emailFolder = store.getFolder("INBOX");
+            emailFolder.open(Folder.READ_ONLY);
+
+            Message[] messages = emailFolder.getMessages();
+            for (int i = 0, n = messages.length; i < n; i++) {
+                Message message = messages[i];
+                String subject = message.getSubject();
+                String contentType = message.getContentType();
+                String messageContent = "";
+
+                if (contentType.contains("multipart")) {
+                    // content may contain attachments
+                    Multipart multiPart = (Multipart) message.getContent();
+                    int numberOfParts = multiPart.getCount();
+                    for (int partCount = 0; partCount < numberOfParts; partCount++) {
+                        MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(partCount);
+                        if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
+                            // This part is an attachment
+                            // Code to handle attachment...
+                            String fileName = part.getFileName();
+                            insertEmail(subject, messageContent, fileName);
+                        } else {
+                            // This part may be the message content
+                            messageContent = part.getContent().toString();
+                        }
+                    }
+                } else if (contentType.contains("text/plain")
+                        || contentType.contains("text/html")) {
+                    Object content = message.getContent();
+                    if (content != null) {
+                        messageContent = content.toString();
+                    }
+                }
+
+                
+                insertEmail(subject, messageContent, "No Attachment");
             }
-        else:
-            return {
-                'statusCode': 500,
-                'body': json.dumps({
-                    'message': 'Failed to generate summary',
-                    'error': response_data
-                })
-            }
-    except Exception as e:
-        return {
-            'statusCode': 500,
-            'body': json.dumps({
-                'message': 'An error occurred',
-                'error': str(e)
-            })
+
+          
+            emailFolder.close(false);
+            store.close();
+
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        readEmails();
+    }
+}
