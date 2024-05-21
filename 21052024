@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hexagon Layout</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #000;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+main {
+    padding: 1em;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hexagon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.hex-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.hexagon {
+    width: 100px;
+    height: 115px;
+    background-color: #ff9900;
+    position: relative;
+    margin: 5px;
+    text-align: center;
+    line-height: 115px;
+    color: #fff;
+    font-weight: bold;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hexagon a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.blue .hexagon {
+    background-color: #0000ff;
+}
+
+footer {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 1em;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+    </style>
+</head>
+<header>
+    <h1>ABI</h1>
+    <img src="logo.png" alt="Logo" class="logo">
+</header>
+<body>
+    <main>
+        <div class="hexagon-container orange">
+            <div class="hex-row">
+                <div class="hexagon"><a href="#link1">Text 1</a></div>
+                <div class="hexagon"><a href="#link2">Text 2</a></div>
+                <div class="hexagon"><a href="#link3">Text 3</a></div>
+                <div class="hexagon"><a href="#link4">Text 4</a></div>
+                <div class="hexagon"><a href="#link5">Text 5</a></div>
+                <div class="hexagon"><a href="#link6">Text 6</a></div>
+                <div class="hexagon"><a href="#link7">Text 7</a></div>
+                <div class="hexagon"><a href="#link8">Text 8</a></div>
+            </div>
+            <div class="hex-row">
+                <div class="hexagon"><a href="#link9">Text 9</a></div>
+                <div class="hexagon"><a href="#link10">Text 10</a></div>
+                <div class="hexagon"><a href="#link11">Text 11</a></div>
+                <div class="hexagon"><a href="#link12">Text 12</a></div>
+                <div class="hexagon"><a href="#link13">Text 13</a></div>
+                <div class="hexagon"><a href="#link14">Text 14</a></div>
+                <div class="hexagon"><a href="#link15">Text 15</a></div>
+                <div class="hexagon"><a href="#link16">Text 16</a></div>
+            </div>
+        </div>
+        <div class="hexagon-container blue">
+            <div class="hex-row">
+                <div class="hexagon"><a href="#link17">Text 17</a></div>
+                <div class="hexagon"><a href="#link18">Text 18</a></div>
+                <div class="hexagon"><a href="#link19">Text 19</a></div>
+                <div class="hexagon"><a href="#link20">Text 20</a></div>
+                <div class="hexagon"><a href="#link21">Text 21</a></div>
+                <div class="hexagon"><a href="#link22">Text 22</a></div>
+                <div class="hexagon"><a href="#link23">Text 23</a></div>
+                <div class="hexagon"><a href="#link24">Text 24</a></div>
+            </div>
+            <div class="hex-row">
+                <div class="hexagon"><a href="#link25">Text 25</a></div>
+                <div class="hexagon"><a href="#link26">Text 26</a></div>
+                <div class="hexagon"><a href="#link27">Text 27</a></div>
+                <div class="hexagon"><a href="#link28">Text 28</a></div>
+                <div class="hexagon"><a href="#link29">Text 29</a></div>
+                <div class="hexagon"><a href="#link30">Text 30</a></div>
+                <div class="hexagon"><a href="#link31">Text 31</a></div>
+                <div class="hexagon"><a href="#link32">Text 32</a></div>
+            </div>
+            <div class="hex-row">
+                <div class="hexagon"><a href="#link33">Text 33</a></div>
+                <div class="hexagon"><a href="#link34">Text 34</a></div>
+                <div class="hexagon"><a href="#link35">Text 35</a></div>
+                <div class="hexagon"><a href="#link36">Text 36</a></div>
+                <div class="hexagon"><a href="#link37">Text 37</a></div>
+                <div class="hexagon"><a href="#link38">Text 38</a></div>
+                <div class="hexagon"><a href="#link39">Text 39</a></div>
+                <div class="hexagon"><a href="#link40">Text 40</a></div>
+            </div>
+            <div class="hex-row">
+                <div class="hexagon"><a href="#link41">Text 41</a></div>
+                <div class="hexagon"><a href="#link42">Text 42</a></div>
+                <div class="hexagon"><a href="#link43">Text 43</a></div>
+                <div class="hexagon"><a href="#link44">Text 44</a></div>
+                <div class="hexagon"><a href="#link45">Text 45</a></div>
+                <div class="hexagon"><a href="#link46">Text 46</a></div>
+                <div class="hexagon"><a href="#link47">Text 47</a></div>
+                <div class="hexagon"><a href="#link48">Text 48</a></div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
