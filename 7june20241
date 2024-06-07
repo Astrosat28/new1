@@ -1,0 +1,82 @@
+import win32com.client
+from bs4 import BeautifulSoup
+import pandas as pd
+import pyodbc
+
+# Connect to Outlook
+outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
+inbox = outlook.GetDefaultFolder(6)  # 6 refers to the inbox
+messages = inbox.Items
+messages.Sort("[ReceivedTime]", True)  # Sort messages by received time, newest first
+
+# Get the latest email
+latest_message = messages.GetFirst()
+if latest_message is None:
+    print("No emails found.")
+    exit()
+
+# Extract the HTML body
+body = latest_message.HTMLBody
+
+# Parse the HTML to find the table
+soup = BeautifulSoup(body, "html.parser")
+table = soup.find("table")
+if table is None:
+    print("No table found in the latest email.")
+    exit()
+
+# Extract table data into a DataFrame
+rows = table.find_all("tr")
+data = []
+for row in rows:
+    cols = row.find_all(["td", "th"])
+    cols = [ele.text.strip() for ele in cols]
+    data.append(cols)
+
+# Create a DataFrame
+df = pd.DataFrame(data)
+
+# Assume the first row is the header
+df.columns = df.iloc[0]
+df = df[1:]
+
+# Split 'Priority and Incident Number' into 'Priority' and 'Incident Number'
+df[['Priority', 'Incident Number']] = df['Priority and Incident Number'].str.split(' - ', expand=True)
+
+# Drop the original 'Priority and Incident Number' column
+df = df.drop(columns=['Priority and Incident Number'])
+
+# Example: Display the DataFrame
+print(df)
+
+# Connect to MSSQL Database
+server = 'YOUR_SERVER'
+database = 'YOUR_DATABASE'
+username = 'YOUR_USERNAME'
+password = 'YOUR_PASSWORD'
+driver = 'ODBC Driver 17 for SQL Server'
+
+connection_string = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}'
+conn = pyodbc.connect(connection_string)
+cursor = conn.cursor()
+
+# Insert data into SQL table
+for index, row in df.iterrows():
+    cursor.execute(
+        """
+        INSERT INTO YourTableName (Priority, [Incident Number], [Incident Description], [Application Affected], Business, [Online/Offline])
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        row['Priority'],
+        row['Incident Number'],
+        row['Incident Description'],
+        row['Application Affected'],
+        row['Business'],
+        row['Online/Offline']
+    )
+
+conn.commit()
+cursor.close()
+conn.close()
+
+print("Data inserted successfully into MSSQL database.")
