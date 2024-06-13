@@ -1,0 +1,50 @@
+import os
+import re
+
+# Define the directory containing the email files
+email_directory = "unread_emails"
+
+# Define a function to parse and extract the required information from email content
+def extract_information(file_content):
+    patterns = {
+        "Priority": r"Priority & Incident Number\s*([^\n]+)",
+        "Incident Number": r"Priority & Incident Number\s*[^\n]+\s*(\S+)",
+        "Incident Description": r"Incident Description \(What happened\?\)\s*([^\n]+)",
+        "Line and Application Affected": r"Line and Application Affected\s*([^\n]+)",
+        "Impact on B": r"Impact on B\s*([\s\S]+?)(?:Online/Batch|Current Status)",
+        "Online/Batch": r"Online/Batch\s*([^\n]+)",
+        "Current Status": r"Current Status\s*([^\n]+)",
+        "Date & Time": r"Date & Time\s*([^\n]+)",
+        "Status Updates": r"Status Updates\s*([^\n]+)"
+    }
+    
+    extracted_info = {}
+    for key, pattern in patterns.items():
+        match = re.search(pattern, file_content, re.DOTALL)
+        if match:
+            extracted_info[key] = match.group(1).strip()
+        else:
+            extracted_info[key] = "N/A"
+    
+    return extracted_info
+
+# Iterate through the files in the directory and extract information
+for filename in os.listdir(email_directory):
+    if filename.endswith(".txt"):
+        file_path = os.path.join(email_directory, filename)
+        with open(file_path, "r", encoding="utf-8") as file:
+            content = file.read()
+            extracted_info = extract_information(content)
+            print(f"File: {filename}")
+            print(f"Priority: {extracted_info['Priority']}")
+            print(f"Incident Number: {extracted_info['Incident Number']}")
+            print(f"Incident Description: {extracted_info['Incident Description']}")
+            print(f"Line and Application Affected: {extracted_info['Line and Application Affected']}")
+            print(f"Impact on B: {extracted_info['Impact on B']}")
+            print(f"Online/Batch: {extracted_info['Online/Batch']}")
+            print(f"Current Status: {extracted_info['Current Status']}")
+            print(f"Date & Time: {extracted_info['Date & Time']}")
+            print(f"Status Updates: {extracted_info['Status Updates']}")
+            print("\n")
+
+# You can now push the extracted_info dictionary to your database as required.
