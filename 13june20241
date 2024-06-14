@@ -1,4 +1,152 @@
 import win32com.client
+import os
+import re
+import logging
+import pyodbc
+
+# Setup logging
+logging.basicConfig(filename='email_processing.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Database connection details
+db_server = 'YOUR_SERVER'
+db_database = 'abianalysis'
+db_username = 'YOUR_USERNAME'
+db_password = 'YOUR_PASSWORD'
+
+# Function to connect to the database
+def get_db_connection():
+    connection_string = (
+        f'DRIVER={{ODBC Driver 17 for SQL Server}};'
+        f'SERVER={db_server};'
+        f'DATABASE={db_database};'
+        f'UID={db_username};'
+        f'PWD={db_password}'
+    )
+    return pyodbc.connect(connection_string)
+
+# Function to extract and save unread emails to the database
+def extract_and_save_emails():
+    try:
+        # Connect to Outlook
+        outlook = win32com.client.Dispatch("Outlook.Application")
+        mapi = outlook.GetNamespace("MAPI")
+
+        # Access the inbox
+        inbox = mapi.GetDefaultFolder(6)  # 6 refers to the inbox folder
+        messages = inbox.Items
+        messages = messages.Restrict("[Unread] = true")
+
+        # Access the "ProcessedEmails" folder, create it if it doesn't exist
+        try:
+            processed_folder = inbox.Folders["ProcessedEmails"]
+        except:
+            processed_folder = inbox.Folders.Add("ProcessedEmails")
+
+        if messages.Count == 0:
+            logging.info("No unread emails found.")
+            print("No unread emails found.")
+            return
+
+        # Connect to the database
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # Function to parse and extract the required information from email content
+        def extract_information(body):
+            patterns = {
+                "Priority": r"Priority & Incident Number\s*(P\d)",
+                "Incident Number": r"Priority & Incident Number\s*P\d - (\w+)",
+                "Incident Description": r"Incident Description \(What happened\?\)\s*([^\n]+)",
+                "Line and Application Affected": r"Line and Application Affected\s*([^\n]+)",
+                "Impact on B": r"Impact on B\s*([\s\S]+?)(?:Online/Batch|Current Status)",
+                "Online/Batch": r"Online/Batch\s*\n([^\n]+)",
+                "Current Status": r"Current Status\s*\n([^\n]+)",
+                "Date & Time": r"Date & Time\s*\n([^\n]+)",
+                "Status Updates": r"Status Updates\s*\n([^\n]+)"
+            }
+            
+            extracted_info = {}
+            for key, pattern in patterns.items():
+                match = re.search(pattern, body, re.DOTALL)
+                if match:
+                    extracted_info[key] = match.group(1).strip()
+                else:
+                    extracted_info[key] = "N/A"
+            
+            return extracted_info
+
+        # Iterate through unread emails
+        for message in messages:
+            try:
+                subject = message.Subject
+                sender = message.SenderName
+                received_time = message.ReceivedTime
+                body = message.Body
+
+                # Extract specific information from the body
+                extracted_info = extract_information(body)
+
+                # Log email details
+                logging.info(f"Processing email from {sender} with subject: {subject}")
+
+                # Print extracted information (for debugging purposes)
+                print(f"Filename: {subject}")
+                print(f"Subject: {subject}")
+                print(f"Sender: {sender}")
+                print(f"ReceivedTime: {received_time}")
+                print(f"Priority: {extracted_info['Priority']}")
+                print(f"Incident Number: {extracted_info['Incident Number']}")
+                print(f"Incident Description: {extracted_info['Incident Description']}")
+                print(f"Line and Application Affected: {extracted_info['Line and Application Affected']}")
+                print(f"Impact on B: {extracted_info['Impact on B']}")
+                print(f"Online/Batch: {extracted_info['Online/Batch']}")
+                print(f"Current Status: {extracted_info['Current Status']}")
+                print(f"Date & Time: {extracted_info['Date & Time']}")
+                print(f"Status Updates: {extracted_info['Status Updates']}")
+                print("\n")
+
+                # Insert extracted information into the database
+                insert_query = """
+                INSERT INTO neoload.emailtest (
+                    Subject, Sender, ReceivedTime, Priority, IncidentNumber, IncidentDescription,
+                    LineAndApplicationAffected, ImpactOnB, OnlineBatch, CurrentStatus, DateTime, StatusUpdates
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """
+                cursor.execute(insert_query, (
+                    subject, sender, received_time, extracted_info['Priority'], extracted_info['Incident Number'],
+                    extracted_info['Incident Description'], extracted_info['Line and Application Affected'],
+                    extracted_info['Impact on B'], extracted_info['Online/Batch'], extracted_info['Current Status'],
+                    extracted_info['Date & Time'], extracted_info['Status Updates']
+                ))
+
+                # Move email to "ProcessedEmails" folder
+                message.Move(processed_folder)
+
+            except Exception as e:
+                logging.error(f"Error processing email: {e}")
+
+        connection.commit()
+        connection.close()
+
+    except Exception as e:
+        logging.error(f"Error: {e}")
+        print(f"Error: {e}")
+
+# Extract and save unread emails to the database
+extract_and_save_emails()
+
+
+
+
+
+
+
+----------------------------------------------------
+
+
+
+
+import win32com.client
 from bs4 import BeautifulSoup
 import os
 import re
