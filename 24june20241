@@ -1,0 +1,93 @@
+import imaplib
+import email
+import spacy
+import pyodbc
+import requests
+
+# Configuration
+EMAIL = 'your_email@example.com'
+PASSWORD = 'your_password'
+IMAP_SERVER = 'imap.example.com'
+IMAP_PORT = 993
+
+DB_SERVER = 'your_db_server'
+DB_DATABASE = 'abianalytics'
+DB_USERNAME = 'your_db_username'
+DB_PASSWORD = 'your_db_password'
+
+GOOGLE_API_KEY = 'your_google_api_key'
+CX = 'your_cx'
+
+# Load the spacy model
+nlp = spacy.load("en_core_web_sm")
+
+def fetch_emails():
+    mail = imaplib.IMAP4_SSL(IMAP_SERVER, IMAP_PORT)
+    mail.login(EMAIL, PASSWORD)
+    mail.select('inbox')
+
+    status, data = mail.search(None, 'ALL')
+    mail_ids = data[0].split()
+
+    emails = []
+    for num in mail_ids:
+        status, data = mail.fetch(num, '(RFC822)')
+        msg = email.message_from_bytes(data[0][1])
+        for part in msg.walk():
+            if part.get_content_type() == "text/plain":
+                body = part.get_payload(decode=True).decode()
+                emails.append(body)
+    mail.logout()
+    return emails
+
+def extract_issue_description(email_body):
+    doc = nlp(email_body)
+    sentences = list(doc.sents)
+    return sentences[0].text
+
+def query_database(description):
+    conn_str = (
+        f"DRIVER={{ODBC Driver 17 for SQL Server}};"
+        f"SERVER={DB_SERVER};"
+        f"DATABASE={DB_DATABASE};"
+        f"UID={DB_USERNAME};"
+        f"PWD={DB_PASSWORD}"
+    )
+    conn = pyodbc.connect(conn_str)
+    cursor = conn.cursor()
+    
+    query = """
+    SELECT * FROM dbo.incident
+    WHERE notes LIKE ? OR explanation LIKE ? OR issues LIKE ?
+    """
+    cursor.execute(query, '%' + description + '%', '%' + description + '%', '%' + description + '%')
+    columns = [column[0] for column in cursor.description]
+    results = cursor.fetchall()
+    
+    conn.close()
+    return [dict(zip(columns, row)) for row in results]
+
+def search_internet(query):
+    url = f"https://www.googleapis.com/customsearch/v1?q={query}&key={GOOGLE_API_KEY}&cx={CX}"
+    response = requests.get(url)
+    return response.json()
+
+def process_emails():
+    emails = fetch_emails()
+    for email_body in emails:
+        description = extract_issue_description(email_body)
+        db_results = query_database(description)
+        
+        if db_results:
+            print("Found similar issues in database:")
+            for result in db_results:
+                print(result)
+        else:
+            print("No similar issues found in database. Searching the internet...")
+            internet_results = search_internet(description)
+            print("Internet search results:")
+            for item in internet_results['items']:
+                print(item['title'], item['link'])
+
+if __name__ == "__main__":
+    process_emails()
