@@ -1,3 +1,25 @@
+def insert_data_into_database(data):
+    conn = connect_to_database()
+    cursor = conn.cursor()
+
+    insert_main_query = """
+    INSERT INTO dbo.firlookup (PriorityIncidentNumber, IncidentDescription, LineOfBusiness, BusinessImpact, OnlineBatch)
+    VALUES (?, ?, ?, ?, ?)
+    """
+
+    cursor.execute(insert_main_query, 
+                   data['main'].get('PriorityIncidentNumber'), 
+                   data['main'].get('IncidentDescription'), 
+                   data['main'].get('LineOfBusiness'), 
+                   data['main'].get('BusinessImpact'), 
+                   data['main'].get('OnlineBatch'))
+    
+    conn.commit()
+    cursor.close()
+    conn.close()
+    logging.info("Data inserted into the database")
+..............
+
 import os
 import logging
 from bs4 import BeautifulSoup
