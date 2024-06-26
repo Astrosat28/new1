@@ -1,3 +1,42 @@
+# Extract relevant data to be inserted
+insert_data = (
+    processed_data.get('Priority & Incident Number', None),
+    processed_data.get('Incident Description (What happened?)', None),
+    processed_data.get('Line of Business & Application Affected', None),
+    processed_data.get('Business Impact', None),
+    processed_data.get('Online/Batch', None),
+    processed_data.get('Initial RCA', None),
+    processed_data.get('Initial RCA - Why It happened?', None)
+)
+
+# Insert into SQL database
+conn_str = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password};'
+print("Connecting to the database...")
+conn = pyodbc.connect(conn_str)
+print("Connected to the database successfully.")
+cursor = conn.cursor()
+
+# Insert data into the main table
+sql_main = '''
+INSERT INTO dbo.firlookup (
+    [Priority & Incident Number],
+    [Incident Description (What happened?)],
+    [Line of Business & Application Affected],
+    [Business Impact],
+    [Online/Batch],
+    [Initial RCA],
+    [Initial RCA - Why It happened?]
+) VALUES (?, ?, ?, ?, ?, ?, ?)
+'''
+
+cursor.execute(sql_main, insert_data)
+
+conn.commit()
+cursor.close()
+conn.close()
+
+print("Data inserted successfully.")
+----------------------------------------------
 <button (click)="fetchData()">Fetch Data</button>
 
 <select (change)="fetchDataInRange($event.target['value'])">
