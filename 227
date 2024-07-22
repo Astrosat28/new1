@@ -1,0 +1,179 @@
+ng new outlook-calendar
+cd outlook-calendar
+npm install @angular/material @angular/flex-layout
+npm install moment --save
+ng add @angular/material
+ng generate component calendar
+ng generate component event-dialog
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+
+import { AppComponent } from './app.component';
+import { CalendarComponent } from './calendar/calendar.component';
+import { EventDialogComponent } from './event-dialog/event-dialog.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    CalendarComponent,
+    EventDialogComponent
+  ],
+  imports: [
+    BrowserModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    FlexLayoutModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { EventDialogComponent } from '../event-dialog/event-dialog.component';
+import { CalendarService } from '../calendar.service';
+
+@Component({
+  selector: 'app-calendar',
+  templateUrl: './calendar.component.html',
+  styleUrls: ['./calendar.component.css']
+})
+export class CalendarComponent implements OnInit {
+  events: any[] = [];
+
+  constructor(public dialog: MatDialog, private calendarService: CalendarService) {}
+
+  ngOnInit(): void {
+    this.loadEvents();
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(EventDialogComponent, {
+      width: '250px',
+      data: { name: '', date: new Date() }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.calendarService.addEvent(result).subscribe(() => this.loadEvents());
+      }
+    });
+  }
+
+  loadEvents(): void {
+    this.calendarService.getEvents().subscribe(data => {
+      this.events = data;
+    });
+  }
+
+  deleteEvent(id: number): void {
+    this.calendarService.deleteEvent(id).subscribe(() => this.loadEvents());
+  }
+}
+
+
+
+<div>
+  <button mat-raised-button color="primary" (click)="openDialog()">Add Event</button>
+  <mat-calendar></mat-calendar>
+  <ul>
+    <li *ngFor="let event of events">
+      {{ event.name }} - {{ event.date }}
+      <button mat-button color="warn" (click)="deleteEvent(event.id)">Delete</button>
+    </li>
+  </ul>
+</div>
+
+
+
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
+@Component({
+  selector: 'app-event-dialog',
+  templateUrl: './event-dialog.component.html',
+  styleUrls: ['./event-dialog.component.css']
+})
+export class EventDialogComponent {
+  eventForm: FormGroup;
+
+  constructor(
+    public dialogRef: MatDialogRef<EventDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private fb: FormBuilder
+  ) {
+    this.eventForm = this.fb.group({
+      name: [data.name],
+      date: [data.date]
+    });
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  onSave(): void {
+    this.dialogRef.close(this.eventForm.value);
+  }
+}
+
+
+<h1 mat-dialog-title>Add Event</h1>
+<div mat-dialog-content>
+  <form [formGroup]="eventForm">
+    <mat-form-field>
+      <mat-label>Event Name</mat-label>
+      <input matInput formControlName="name">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Event Date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="date">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button (click)="onSave()">Save</button>
+</div>
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CalendarService {
+  private apiUrl = 'http://localhost:3000/events';
+
+  constructor(private http: HttpClient) { }
+
+  getEvents(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  addEvent(event: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, event);
+  }
+
+  deleteEvent(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+  }
+}
