@@ -1,51 +1,28 @@
-ng new outlook-calendar
-cd outlook-calendar
-npm install @angular/material @angular/flex-layout
-npm install moment --save
-ng add @angular/material
-ng generate component calendar
-ng generate component event-dialog
+<div class="calendar">
+    <mwl-calendar-month-view
+      [viewDate]="viewDate"
+      [events]="events"
+      (dayClicked)="dayClicked($event)"
+      (eventClicked)="eventClicked($event.event)">
+    </mwl-calendar-month-view>
+  </div>
+  
+  <!-- Modal for adding events -->
+  <div *ngIf="modalOpen">
+    <h2>Add Event</h2>
+    <form (ngSubmit)="addEvent()">
+      <input [(ngModel)]="newEvent.title" name="title" placeholder="Event Title" required>
+      <input [(ngModel)]="newEvent.start" name="start" type="datetime-local" required>
+      <input [(ngModel)]="newEvent.end" name="end" type="datetime-local" required>
+      <button type="submit">Add</button>
+    </form>
+    <button (click)="modalOpen = false">Cancel</button>
+  </div>
 
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
-
-import { AppComponent } from './app.component';
-import { CalendarComponent } from './calendar/calendar.component';
-import { EventDialogComponent } from './event-dialog/event-dialog.component';
-
-@NgModule({
-  declarations: [
-    AppComponent,
-    CalendarComponent,
-    EventDialogComponent
-  ],
-  imports: [
-    BrowserModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    FlexLayoutModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
-export class AppModule { }
-
-
+....................
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { EventDialogComponent } from '../event-dialog/event-dialog.component';
-import { CalendarService } from '../calendar.service';
+import { CalendarEvent } from 'angular-calendar';
+import { EventService } from '../event.service';
 
 @Component({
   selector: 'app-calendar',
@@ -53,106 +30,85 @@ import { CalendarService } from '../calendar.service';
   styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit {
-  events: any[] = [];
+  viewDate: Date = new Date();
+  events: CalendarEvent[] = [];
+  modalOpen: boolean = false;
+  newEvent: any = { title: '', start: '', end: '' };
 
-  constructor(public dialog: MatDialog, private calendarService: CalendarService) {}
+  constructor(private eventService: EventService) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.loadEvents();
   }
 
-  openDialog(): void {
-    const dialogRef = this.dialog.open(EventDialogComponent, {
-      width: '250px',
-      data: { name: '', date: new Date() }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.calendarService.addEvent(result).subscribe(() => this.loadEvents());
-      }
-    });
-  }
-
-  loadEvents(): void {
-    this.calendarService.getEvents().subscribe(data => {
-      this.events = data;
+  loadEvents() {
+    this.eventService.getEvents().subscribe((data: any) => {
+      this.events = data.map((event: any) => {
+        return {
+          id: event.id,
+          title: event.title,
+          start: new Date(event.start),
+          end: new Date(event.end),
+          color: { primary: '#ad2121', secondary: '#FAE3E3' }
+        };
+      });
     });
   }
 
-  deleteEvent(id: number): void {
-    this.calendarService.deleteEvent(id).subscribe(() => this.loadEvents());
+  dayClicked(event: any) {
+    this.modalOpen = true;
+    this.newEvent.start = event.day.date;
+    this.newEvent.end = event.day.date;
+  }
+
+  addEvent() {
+    this.eventService.addEvent(this.newEvent).subscribe(() => {
+      this.loadEvents();
+      this.modalOpen = false;
+    });
+  }
+
+  eventClicked(event: CalendarEvent) {
+    if (confirm('Do you want to delete this event?')) {
+      this.eventService.deleteEvent(Number(event.id)).subscribe(() => {
+        this.loadEvents();
+      });
+    }
   }
 }
+..........
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
+import { AppComponent } from './app.component';
+import { CalendarComponent } from './calendar/calendar.component';
+import { EventService } from './event.service';
 
-
-<div>
-  <button mat-raised-button color="primary" (click)="openDialog()">Add Event</button>
-  <mat-calendar></mat-calendar>
-  <ul>
-    <li *ngFor="let event of events">
-      {{ event.name }} - {{ event.date }}
-      <button mat-button color="warn" (click)="deleteEvent(event.id)">Delete</button>
-    </li>
-  </ul>
-</div>
-
-
-
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormGroup } from '@angular/forms';
-
-@Component({
-  selector: 'app-event-dialog',
-  templateUrl: './event-dialog.component.html',
-  styleUrls: ['./event-dialog.component.css']
+@NgModule({
+  declarations: [
+    AppComponent,
+    CalendarComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory
+    })
+  ],
+  providers: [EventService],
+  bootstrap: [AppComponent]
 })
-export class EventDialogComponent {
-  eventForm: FormGroup;
-
-  constructor(
-    public dialogRef: MatDialogRef<EventDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder
-  ) {
-    this.eventForm = this.fb.group({
-      name: [data.name],
-      date: [data.date]
-    });
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-
-  onSave(): void {
-    this.dialogRef.close(this.eventForm.value);
-  }
-}
-
-
-<h1 mat-dialog-title>Add Event</h1>
-<div mat-dialog-content>
-  <form [formGroup]="eventForm">
-    <mat-form-field>
-      <mat-label>Event Name</mat-label>
-      <input matInput formControlName="name">
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Event Date</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="date">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-  </form>
-</div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button (click)="onSave()">Save</button>
-</div>
-
+export class AppModule { }
+.........
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -160,20 +116,20 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class CalendarService {
-  private apiUrl = 'http://localhost:3000/events';
+export class EventService {
+  private apiUrl = 'http://localhost:8080/events';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  getEvents(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  getEvents(): Observable<any> {
+    return this.http.get(this.apiUrl);
   }
 
   addEvent(event: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, event);
+    return this.http.post(this.apiUrl, event);
   }
 
   deleteEvent(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }
