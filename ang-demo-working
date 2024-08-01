@@ -1,138 +1,119 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+import pyodbc
+import requests
 
-interface User {
-  id: number;
-  name: string;
-  number: number;
-  startDate: Date;
-  endDate: Date;
-  duration: number;
-}
+# Function to connect to the database and fetch data
+def fetch_data():
+    # Database connection
+    server = '*****'
+    database = '*****'
+    username = '*****'
+    password = '*****'
+    cnxn = pyodbc.connect(f'DRIVER={{ODBC DRIVER 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}')
+    
+    sql_query = "SELECT number, work_notes, short_description, close_notes, description FROM dbo.incident"
+    df = pd.read_sql(sql_query, cnxn)
+    cnxn.close()
+    
+    pd.set_option('display.max_colwidth', None)
+    pd.set_option('display.max_columns', None)
+    
+    return df
 
-@Component({
-  selector: 'app-input-form',
-  templateUrl: './input-form.component.html',
-  styleUrls: ['./input-form.component.css']
-})
-export class InputFormComponent {
-  user: User = {
-    id: 0,
-    name: '',
-    number: 0,
-    startDate: new Date(),
-    endDate: new Date(),
-    get duration() {
-      if (this.startDate && this.endDate) {
-        const start = new Date(this.startDate);
-        const end = new Date(this.endDate);
-        const differenceInMs = end.getTime() - start.getTime();
-        const differenceInHours = differenceInMs / 1000 / 60 / 60;
-        return Math.abs(differenceInHours); // return absolute value in case end date is before start date
-      }
-      return 0;
-    }
-  };
-  users: User[] = [];
+# Function to find the most similar incidents
+def find_similar_incidents(user_input_problem, df):
+    df['combined_text'] = df['short_description'].astype(str) + " " + df['description'].astype(str)
+    vectorizer = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = vectorizer.fit_transform(df['combined_text'])
+    user_vec = vectorizer.transform([user_input_problem])
+    cosine_sim = cosine_similarity(user_vec, tfidf_matrix).flatten()
+    
+    similarity_threshold = 0.2
+    similar_indices = np.where(cosine_sim >= similarity_threshold)[0]
+    similar_scores = cosine_sim[similar_indices]
+    
+    sorted_indices = similar_indices[np.argsort(similar_scores)][::-1][:5]  # Get top 5 indices
+    
+    return sorted_indices
 
-  constructor(private http: HttpClient) { }
+# Function to get detailed information for the similar incidents
+def get_detailed_information(sorted_indices, df):
+    formatted_paragraphs = []
+    server = '*****'
+    database = '*****'
+    username = '*****'
+    password = '*****'
+    cnxn = pyodbc.connect(f'DRIVER={{ODBC DRIVER 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}')
+    
+    for idx in sorted_indices:
+        incident_number = df.iloc[idx]['number']
+        detailed_sql_query = f"""
+        SELECT CONCAT(i.number, ' ', i.opened_at, ' ', i.short_description, ' ', i.close_notes, ' ', p.u_string_3, ' ', p.u_root_cause_description, ' ', p.u_root_cause_category, ' ', p.short_description)
+        FROM incident i
+        JOIN Incident_Problem_rel r ON i.number = r.number
+        JOIN problem p ON r.problem_id = p.number
+        WHERE i.number = '{incident_number}'
+        """
+        detailed_df = pd.read_sql(detailed_sql_query, cnxn)
+        if not detailed_df.empty:
+            formatted_paragraph = detailed_df.iloc[0, 0]
+            formatted_paragraphs.append(formatted_paragraph)
+    
+    cnxn.close()
+    return formatted_paragraphs
 
-  onSubmit(): void {
-    this.http.post('http://localhost:8080/api/user', this.user).subscribe();
-  }
-  fetchData() {
-    this.http.get<User[]>('http://localhost:8080/api/users').subscribe(data => {
-      this.users = data;
-    });
-  }
-  fetchDataInRange(range: string): void {
-    const [startId, endId] = range.split('-');
-    this.http.get<User[]>(`http://localhost:8080/api/users/${startId}/${endId}`).subscribe(data => {
-      this.users = data;
-    });
-  }
-  fetchDataByMonth(month: string): void {
-    this.http.get<User[]>(`http://localhost:8080/api/users/month/${month}`).subscribe(data => {
-      this.users = data;
-    });
-  }
-  editingUserId: number | null = null;  // ID of the user being edited
+# Function to summarize paragraphs independently
+def summarize_paragraphs(formatted_paragraphs):
+    summarized_paragraphs = []
+    for i, paragraph in enumerate(formatted_paragraphs, 1):
+        print(f"Formatted Paragraph {i}: {paragraph}")
+        payload = {
+            "maxline": 5,
+            "context": paragraph
+        }
+        try:
+            response = requests.post('https://abcd.amazon-aws/summarize', json=payload)
+            print(f"Response Status Code for Paragraph {i}:", response.status_code)  # Debugging statement
+            print(f"Response Text for Paragraph {i}:", response.text)  # Debugging statement
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                print(f"Response JSON Data for Paragraph {i}:", response_data)  # Debugging statement
+                if response_data.get('statusCode') == 200:
+                    summarized_paragraph = response_data.get('body', '')
+                    summarized_paragraphs.append(summarized_paragraph)
+                else:
+                    summarized_paragraphs.append("Error summarizing content, not 200")
+            else:
+                summarized_paragraphs.append("Error connecting to AWS")
+        except requests.exceptions.RequestException as e:
+            print(f"Request to AWS failed for Paragraph {i}: {e}")
+            summarized_paragraphs.append("Request to AWS failed")
+    
+    return summarized_paragraphs
 
-  startEditing(user: User): void {
-    this.editingUserId = user.id;
-  }
+# Main function
+def main():
+    user_input_problem = input("Enter the problem description: ")
+    
+    # Fetch data from the database
+    df = fetch_data()
+    
+    # Find the most similar incidents
+    sorted_indices = find_similar_incidents(user_input_problem, df)
+    
+    # Get detailed information for the similar incidents
+    formatted_paragraphs = get_detailed_information(sorted_indices, df)
+    
+    # Summarize paragraphs independently
+    summarized_paragraphs = summarize_paragraphs(formatted_paragraphs)
+    
+    # Print summarized results
+    for i, summary in enumerate(summarized_paragraphs, 1):
+        print(f"Summarized Result {i}: {summary}")
 
-  saveChanges(user: User): void {
-    this.editingUserId = null;
-    this.updateUser(user);
-  }
-
-  updateUser(user: User): void {
-    this.http.put(`http://localhost:8080/api/user/${user.id}`, user).subscribe();
-  }
-}
-
-
-
-html
-
-
-<button (click)="fetchData()">Fetch Data</button>
-
-<select (change)="fetchDataInRange($event.target['value'])">
-  <option value="1-3">ID 1 to 3</option>
-  <option value="4-6">ID 4 to 6</option>
-</select>
-
-<select (change)="fetchDataByMonth($event.target['value'])">
-  <option value="June">June</option>
-  <option value="July">July</option>
-</select>
-
-<table>
-  <thead>
-    <tr>
-      <th>Actions</th>
-      <th>Name</th>
-      <th>Number</th>
-      
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let user of users">
-      <td>
-        <button *ngIf="editingUserId === user.id" (click)="saveChanges(user)"><i class="bi bi-check"></i></button>
-        <button *ngIf="editingUserId !== user.id" (click)="startEditing(user)"><i class="bi bi-pencil"></i></button>
-      </td>
-      <td>
-        <input *ngIf="editingUserId === user.id" type="text" [(ngModel)]="user.name" />
-        <span *ngIf="editingUserId !== user.id">{{user.name}}</span>
-      </td>
-      <td>
-        <input *ngIf="editingUserId === user.id" type="number" [(ngModel)]="user.number" />
-        <span *ngIf="editingUserId !== user.id">{{user.number}}</span>
-      </td>
-      
-    </tr>
-  </tbody>
-</table>
-
-<form (submit)="onSubmit()">
-  <label for="name">Name:</label>
-  <input type="text" id="name" [(ngModel)]="user.name" name="name" required>
-  <label for="number">Number:</label>
-  <input type="number" id="number" [(ngModel)]="user.number" name="number" required>
-  <label for="start-date">Start Date:</label>
-  <input type="datetime-local" id="start-date" [(ngModel)]="user.startDate" name="startDate">
-
-  <label for="end-date">End Date:</label>
-  <input type="datetime-local" id="end-date" [(ngModel)]="user.endDate" name="endDate">
-  <div class="form-group">
-    <label for="duration">Difference in hours:</label>
-    <input type="text" id="duration" name="duration" class="form-control" [value]="user.duration" readonly>
-  </div>
-  
-  
-  <button type="submit">Submit</button>
-</form>
-
+if __name__ == '__main__':
+    main()
