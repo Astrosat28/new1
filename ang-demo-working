@@ -1,3 +1,4 @@
+from flask import Flask, jsonify, request
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -5,23 +6,30 @@ import numpy as np
 import pyodbc
 import requests
 
+app = Flask(__name__)
+
 # Function to connect to the database and fetch data
 def fetch_data():
-    # Database connection
-    server = '*****'
-    database = '*****'
-    username = '*****'
-    password = '*****'
-    cnxn = pyodbc.connect(f'DRIVER={{ODBC DRIVER 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}')
-    
-    sql_query = "SELECT number, work_notes, short_description, close_notes, description FROM dbo.incident"
-    df = pd.read_sql(sql_query, cnxn)
-    cnxn.close()
-    
-    pd.set_option('display.max_colwidth', None)
-    pd.set_option('display.max_columns', None)
-    
-    return df
+    server = 'YOUR_SERVER_NAME'
+    database = 'YOUR_DATABASE_NAME'
+    username = 'YOUR_USERNAME'
+    password = 'YOUR_PASSWORD'
+    connection_string = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
+
+    try:
+        cnxn = pyodbc.connect(connection_string)
+        sql_query = "SELECT number, work_notes, short_description, close_notes, description FROM dbo.incident"
+        df = pd.read_sql(sql_query, cnxn)
+        cnxn.close()
+        
+        pd.set_option('display.max_colwidth', None)
+        pd.set_option('display.max_columns', None)
+        
+        return df
+    except pyodbc.Error as ex:
+        sqlstate = ex.args[1]
+        print(f"Connection failed with error: {sqlstate}")
+        return None
 
 # Function to find the most similar incidents
 def find_similar_incidents(user_input_problem, df):
@@ -40,29 +48,36 @@ def find_similar_incidents(user_input_problem, df):
     return sorted_indices
 
 # Function to get detailed information for the similar incidents
-def get_detailed_information(sorted_indices, df):
+def get_detailed_information(sorted_indices, df, user_input_problem):
     formatted_paragraphs = []
-    server = '*****'
-    database = '*****'
-    username = '*****'
-    password = '*****'
-    cnxn = pyodbc.connect(f'DRIVER={{ODBC DRIVER 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}')
+    server = 'YOUR_SERVER_NAME'
+    database = 'YOUR_DATABASE_NAME'
+    username = 'YOUR_USERNAME'
+    password = 'YOUR_PASSWORD'
+    connection_string = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
     
-    for idx in sorted_indices:
-        incident_number = df.iloc[idx]['number']
-        detailed_sql_query = f"""
-        SELECT CONCAT(i.number, ' ', i.opened_at, ' ', i.short_description, ' ', i.close_notes, ' ', p.u_string_3, ' ', p.u_root_cause_description, ' ', p.u_root_cause_category, ' ', p.short_description)
-        FROM incident i
-        JOIN Incident_Problem_rel r ON i.number = r.number
-        JOIN problem p ON r.problem_id = p.number
-        WHERE i.number = '{incident_number}'
-        """
-        detailed_df = pd.read_sql(detailed_sql_query, cnxn)
-        if not detailed_df.empty:
-            formatted_paragraph = detailed_df.iloc[0, 0]
-            formatted_paragraphs.append(formatted_paragraph)
+    try:
+        cnxn = pyodbc.connect(connection_string)
+        
+        for idx in sorted_indices:
+            incident_number = df.iloc[idx]['number']
+            detailed_sql_query = f"""
+            SELECT CONCAT('As per this issue - {user_input_problem}, ', i.number, ' is most similar. Its solution included: ', i.close_notes, ' The business impact was: ', p.u_string_3, ' and the root cause was: ', p.u_root_cause_description, ' with root cause category: ', p.u_root_cause_category, '.')
+            FROM incident i
+            JOIN Incident_Problem_rel r ON i.number = r.number
+            JOIN problem p ON r.problem_id = p.number
+            WHERE i.number = '{incident_number}'
+            """
+            detailed_df = pd.read_sql(detailed_sql_query, cnxn)
+            if not detailed_df.empty:
+                formatted_paragraph = detailed_df.iloc[0, 0]
+                formatted_paragraphs.append(formatted_paragraph)
+        
+        cnxn.close()
+    except pyodbc.Error as ex:
+        sqlstate = ex.args[1]
+        print(f"Connection failed with error: {sqlstate}")
     
-    cnxn.close()
     return formatted_paragraphs
 
 # Function to summarize paragraphs independently
@@ -75,7 +90,7 @@ def summarize_paragraphs(formatted_paragraphs):
             "context": paragraph
         }
         try:
-            response = requests.post('https://abcd.amazon-aws/summarize', json=payload)
+            response = requests.post('https://abcd.amazon-aws/summarize', json=payload, verify=False)
             print(f"Response Status Code for Paragraph {i}:", response.status_code)  # Debugging statement
             print(f"Response Text for Paragraph {i}:", response.text)  # Debugging statement
             
@@ -95,25 +110,29 @@ def summarize_paragraphs(formatted_paragraphs):
     
     return summarized_paragraphs
 
-# Main function
-def main():
-    user_input_problem = input("Enter the problem description: ")
-    
+@app.route('/fetchdata', methods=['GET'])
+def get_data():
+    user_input_problem = request.args.get('problem')
+    if not user_input_problem:
+        return jsonify({"error": "Problem description is required"}), 400
+
     # Fetch data from the database
     df = fetch_data()
-    
+    if df is None:
+        return jsonify({"error": "Failed to fetch data from the database."}), 500
+
     # Find the most similar incidents
     sorted_indices = find_similar_incidents(user_input_problem, df)
-    
+
     # Get detailed information for the similar incidents
-    formatted_paragraphs = get_detailed_information(sorted_indices, df)
-    
+    formatted_paragraphs = get_detailed_information(sorted_indices, df, user_input_problem)
+
     # Summarize paragraphs independently
     summarized_paragraphs = summarize_paragraphs(formatted_paragraphs)
-    
-    # Print summarized results
-    for i, summary in enumerate(summarized_paragraphs, 1):
-        print(f"Summarized Result {i}: {summary}")
+
+    # Return summarized results
+    results = {f"Summarized Result {i+1}": summary for i, summary in enumerate(summarized_paragraphs)}
+    return jsonify(results)
 
 if __name__ == '__main__':
-    main()
+    app.run(debug=True)
