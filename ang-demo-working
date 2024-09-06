@@ -136,3 +136,201 @@ def get_data():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+------------------------------------------------------------------
+<div class="Section-1">
+  <div class="first-column" >
+    <div class="first-card">
+      <h2 style="margin-left: 15px; padding-top: 25px;">Fusion</h2>
+      <div class="link-container">
+        
+      <a href="www.example.com" target="_blank" class="link-css">
+        <img src="/assets/12.jpg" class="link-image">Abcd</a>
+      </div>
+
+      <div class="link-container">
+        
+        <a href="www.example.com" target="_blank" class="link-css">
+          <img src="/assets/12.jpg" class="link-image">Abcd</a>
+      </div>
+
+      <div class="link-container">
+        
+          <a href="www.example.com" target="_blank" class="link-css">
+            <img src="/assets/12.jpg" class="link-image">Abcd</a>
+      </div>
+
+      <div class="link-container">
+        
+            <a href="www.example.com" target="_blank" class="link-css">
+              <img src="/assets/12.jpg" class="link-image">Abcd</a>
+      </div>
+
+    </div>
+
+
+    <div class="second-card">
+      <h2 style="margin-left: 15px; padding-top: 25px;">Concord</h2>
+      <div class="link-container">
+        
+      <a href="www.example.com" target="_blank" class="link-css">
+        <img src="/assets/12.jpg" class="link-image">Abcd</a>
+      </div>
+
+      <div class="link-container">
+        
+        <a href="www.example.com" target="_blank" class="link-css">
+          <img src="/assets/12.jpg" class="link-image">Abcd</a>
+      </div>
+
+      <div class="link-container">
+        
+          <a href="www.example.com" target="_blank" class="link-css">
+            <img src="/assets/12.jpg" class="link-image">Abcd</a>
+      </div>
+
+      <div class="link-container">
+        
+            <a href="www.example.com" target="_blank" class="link-css">
+              <img src="/assets/12.jpg" class="link-image">Abcd</a>
+      </div>
+      
+    </div>
+
+  </div>
+
+  <div class="second-column">
+    
+      <iframe src="https://www.codepel.com/vanilla-javascript/simple-javascript-calendar-with-events/" style="height: 100%; width: 100%; border: none;"></iframe>
+   
+
+  </div>
+
+</div>
+
+
+<div class="Section-2">
+  <div class="Section-2-first-column">
+   <div class="Section-2-first-column-first-card">
+    <h2 style="margin-left: 15px;  padding-top: 25px;">Fusion</h2>
+    <div class="link-container">   
+      <a href="www.example.com" target="_blank" class="link-css">
+      <img src="/assets/12.jpg" class="link-image">Abcd</a>
+    </div>
+
+    <div class="link-container">   
+      <a href="www.example.com" target="_blank" class="link-css">
+      <img src="/assets/12.jpg" class="link-image">Abcdfcfsdfcasdcaca</a>
+    </div>
+    <div class="link-container">   
+      <a href="www.example.com" target="_blank" class="link-css">
+      <img src="/assets/12.jpg" class="link-image">Abcd</a>
+    </div>
+    <div class="link-container">   
+      <a href="www.example.com" target="_blank" class="link-css">
+      <img src="/assets/12.jpg" class="link-image">Abcd</a>
+    </div>
+
+   </div>
+  </div>
+
+</div>
+
+-----------------------------------------------------------------------------------------------
+.Section-1{
+    display: flex;
+    margin-left: 3%;
+    margin-right: 3%;
+    height: 100vh;
+}
+.first-column{
+    width:50%;
+    
+    border: none ;
+    padding: 2px;
+}
+.second-column{
+    width:50%;
+    
+    border: none ;
+    padding: 2px;
+}
+
+.first-card{
+    background-color:  #f8f9fa;
+    border: none;
+    
+    text-align: left;
+    /*justify-content: center;*/
+    width: 100%;
+    height:50%;
+    margin-bottom: 15px;
+}
+.second-card{
+    background-color: #f8f9fa;
+    border: none;
+    
+    text-align: left;
+    
+    width: 100%;
+    height:50%;
+    margin-bottom: 15px;
+}
+.first-card:hover {
+    transform: scale(1.01);
+    
+}
+.second-card:hover {
+    transform: scale(1.01);
+    
+}
+.link-container{
+    align-items: left;
+    margin-bottom: 15px;
+}
+.link-image{
+    width: 35px;
+    height: 22px;
+    border-radius: 5px;
+    margin-right: 15px;
+}
+.link-css{
+    text-decoration: none;
+    align-items: left;
+    font-size: 1.5rem;
+    color: black;
+    margin-left: 15px;
+}
+.iframe-container{
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: black;
+
+}
+
+.Section-2{
+    display: flex;
+    margin-left: 3%;
+    margin-right: 3%;
+    margin-top: 30px;
+}
+.Section-2-first-column{
+    width:50%;
+    
+    border: none ;
+    padding: 2px;
+}
+
+
+.Section-2-first-column-first-card{
+    background-color:  #f8f9fa;
+    border: none;
+    
+    text-align: left;
+    /*justify-content: center;*/
+    width: 100%;
+    
+    margin-top: 15px;
+}
