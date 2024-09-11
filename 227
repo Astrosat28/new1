@@ -96,6 +96,56 @@
     
   }
 
+-------------------------------------------------------------------
+package com.example.emailsearch.service;
+
+import javax.mail.*;
+import javax.mail.search.SubjectTerm;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import org.springframework.stereotype.Service;
+
+@Service
+public class EmailSearchService {
+
+    // Modify with your host and shared mailbox details
+    private final String host = "imap.yourcompany.com"; // Your IMAP host (Exchange or Office 365)
+    private final String user = "your-email@corporate.com"; // Your email
+    private final String password = "your-password"; // Your password
+    private final String sharedMailbox = "sharedmailbox@corporate.com"; // Shared mailbox email
+
+    public List<String> searchSharedFolderEmails(String searchTerm) throws Exception {
+        List<String> emails = new ArrayList<>();
+
+        // Setup IMAP properties for connection
+        Properties properties = new Properties();
+        properties.put("mail.store.protocol", "imaps");
+
+        // Create IMAP session and connect
+        Session session = Session.getInstance(properties, null);
+        Store store = session.getStore();
+        store.connect(host, user, password);
+
+        // Access the shared mailbox folder
+        Folder sharedFolder = store.getFolder("sharedmailbox@corporate.com/INBOX"); // Access shared folder
+        sharedFolder.open(Folder.READ_ONLY);
+
+        // Search for emails with the specified subject
+        Message[] messages = sharedFolder.search(new SubjectTerm(searchTerm));
+        for (Message message : messages) {
+            emails.add("Subject: " + message.getSubject() + ", From: " + message.getFrom()[0]);
+        }
+
+        // Close the folder and store connections
+        sharedFolder.close(false);
+        store.close();
+
+        return emails;
+    }
+}
+
+
   .iframe-container {
     
   }
