@@ -1,3 +1,58 @@
+const express = require('express');
+const sql = require('mssql');
+const cors = require('cors');
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Database configuration
+const config = {
+    user: 'abiuser',
+    password: 'abiuser1',
+    server: 'ct1abi01.us.abc.com',
+    port: 51009,
+    database: 'abianalytics',
+    options: {
+        encrypt: false, // adjust if needed for your environment
+        enableArithAbort: true
+    }
+};
+
+// Fetch all data from Fvrelease table
+app.get('/fvrelease', async (req, res) => {
+    try {
+        let pool = await sql.connect(config);
+        let result = await pool.request().query('SELECT * FROM Fvrelease');
+        res.json(result.recordset);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+// Search data from Fvrelease table
+app.get('/fvrelease/search', async (req, res) => {
+    const searchTerm = req.query.q;
+    try {
+        let pool = await sql.connect(config);
+        let result = await pool.request()
+            .input('searchTerm', sql.VarChar, `%${searchTerm}%`)
+            .query(`SELECT * FROM Fvrelease WHERE 
+                    column1 LIKE @searchTerm OR 
+                    column2 LIKE @searchTerm OR 
+                    column3 LIKE @searchTerm`);  // Update with actual column names
+        res.json(result.recordset);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+app.listen(3000, () => {
+    console.log('Server running on port 3000');
+});
+
+=-==================================
 <div class="two-columns">
     <div class="column">
       <!-- First Card in the First Row -->
