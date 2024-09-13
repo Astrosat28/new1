@@ -4,6 +4,152 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Folder and FileName Dropdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            width: 80%;
+            margin: 50px auto;
+        }
+
+        .card {
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .folder {
+            margin: 20px 0;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .folder:hover {
+            background-color: #e0e0e0;
+        }
+
+        .dropdown {
+            margin: 10px 0;
+            display: none; /* Initially hide the dropdown */
+        }
+
+        .dropdown select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Parent Folder and FileName Dropdown</h1>
+
+        <div class="card">
+            <!-- Loop through Parent Folders and generate dropdowns -->
+            {% for parent_folder, file_names in data.items() %}
+            <div class="folder" onclick="toggleDropdown('{{ parent_folder }}')">
+                {{ parent_folder }}
+            </div>
+            <div id="{{ parent_folder }}" class="dropdown">
+                <select>
+                    {% for file_name in file_names %}
+                    <option value="{{ file_name }}">{{ file_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Function to toggle dropdown visibility when Parent Folder is clicked
+        function toggleDropdown(folderId) {
+            const dropdown = document.getElementById(folderId);
+            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                dropdown.style.display = 'block';
+            } else {
+                dropdown.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+</html>
+
+--------------------------------------
+import pyodbc
+from flask import Flask, render_template, jsonify
+
+# SQL Server Configuration
+server = 'ct1abi01.us.abc.com,51009'
+database = 'abianalytics'
+username = 'abiuser'
+password = 'abiuser1'
+
+# Connect to SQL Server
+def get_db_connection():
+    conn = pyodbc.connect(f'DRIVER={{SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}')
+    return conn
+
+# Flask web app
+app = Flask(__name__)
+
+# Route to fetch parent folders and their associated filenames
+@app.route('/')
+def index():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Query to get ParentFolder and FileName
+    query = """
+    SELECT ParentFolder, FileName 
+    FROM FVRelease_eMails
+    ORDER BY ParentFolder
+    """
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    conn.close()
+
+    # Organize the data into a dictionary: {ParentFolder: [FileNames]}
+    data = {}
+    for row in rows:
+        parent_folder = row.ParentFolder
+        file_name = row.FileName
+        if parent_folder not in data:
+            data[parent_folder] = []
+        data[parent_folder].append(file_name)
+
+    return render_template('index.html', data=data)
+
+# Run the Flask web app
+if __name__ == '__main__':
+    app.run(debug=True)
+
+---------------------new functionality of dropdown above----------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FVRelease_eMails Data</title>
     <style>
         body {
