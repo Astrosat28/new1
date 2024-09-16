@@ -80,6 +80,239 @@
             font-size: 0.9rem;
             color: #777;
         }
+        /* New CSS for file links to look like normal text but change color on hover */
+        .file-link {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .file-link:hover {
+            color: red;
+        }
+    </style>
+    <script>
+        function toggleFiles(parentFolderId) {
+            var files = document.getElementById(parentFolderId);
+            if (files.style.display === "none") {
+                files.style.display = "block"; // Show the file rows
+            } else {
+                files.style.display = "none"; // Hide the file rows
+            }
+        }
+
+        function searchFolders() {
+            var input, filter, cards, card, folderTitle, i, txtValue, fileName, folderName;
+            input = document.getElementById('folderSearch');
+            filter = input.value.toUpperCase();
+            cards = document.getElementsByClassName('folder-card');
+
+            for (i = 0; i < cards.length; i++) {
+                card = cards[i];
+                folderTitle = card.getElementsByClassName('folder-title')[0];
+                fileInfo = card.getElementsByClassName('file-info')[0];
+                
+                let showCard = false;
+
+                // Check parent folder title
+                txtValue = folderTitle.textContent || folderTitle.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    showCard = true;
+                }
+
+                // Check within file items
+                fileItems = card.getElementsByClassName('file-item');
+                for (j = 0; j < fileItems.length; j++) {
+                    fileName = fileItems[j].getElementsByClassName('file-name')[0].textContent || '';
+                    folderName = fileItems[j].getElementsByClassName('folder-name')[0]?.textContent || '';
+
+                    if (fileName.toUpperCase().indexOf(filter) > -1 || folderName.toUpperCase().indexOf(filter) > -1) {
+                        showCard = true;
+                        break; // If any file matches, show the card
+                    }
+                }
+
+                if (showCard) {
+                    card.style.display = ""; // Show the card
+                } else {
+                    card.style.display = "none"; // Hide the card
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>FVRelease Emails Content</h1>
+
+        <!-- Search Input and Button -->
+        <div class="search-container">
+            <input
+                type="text"
+                id="folderSearch"
+                placeholder="Search for parent folders, filenames, or types..."
+                class="search-input"
+            />
+            <button class="search-button" onclick="searchFolders()">Search</button>
+        </div>
+
+        <!-- Parent Folder Cards -->
+        {% for parent_folder, files in grouped_data.items() %}
+        <div class="folder-card">
+            <div class="folder-title" onclick="toggleFiles('{{ parent_folder }}')">
+                {{ parent_folder }}
+            </div>
+            <div id="{{ parent_folder }}" class="file-info">
+                {% for file in files %}
+                <div class="file-item">
+                    <div class="file-name">
+                        <h4>Filename</h4>
+                        <p><a href="{{ file.Path }}" class="file-link">{{ file.FileName }}</a></p>
+                    </div>
+                    <div class="folder-name">
+                        {% if file.Folder != file.FileName %}
+                            <h4>Type</h4>
+                            <p>{{ file.Folder }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
+
+-==================================================
+from flask import Flask, render_template
+import pyodbc
+from collections import defaultdict
+
+app = Flask(__name__)
+
+# Database connection setup
+def get_db_connection():
+    conn = pyodbc.connect(
+        'DRIVER={ODBC Driver 17 for SQL Server};'
+        'SERVER=AADITYA;'
+        'DATABASE=mydb1;'
+        'Trusted_Connection=yes;'
+    )
+    return conn
+
+# Fetch and group data by ParentFolder
+def fetch_grouped_data():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT FileName, Folder, ParentFolder, Path FROM FVRelease_eMails_Content")
+    rows = cursor.fetchall()
+    
+    grouped_data = defaultdict(list)
+    for row in rows:
+        grouped_data[row.ParentFolder].append({
+            'FileName': row.FileName,
+            'Folder': row.Folder,
+            'Path': row.Path
+        })
+
+    cursor.close()
+    conn.close()
+    
+    return grouped_data
+
+@app.route('/')
+def index():
+    # Fetch grouped data from the database
+    grouped_data = fetch_grouped_data()
+    return render_template('index.html', grouped_data=grouped_data)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+==================added search and link on filename
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FVRelease Emails Content</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .search-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .search-button {
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .search-button:hover {
+            background-color: darkred;
+        }
+        .folder-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 15px;
+            display: block;
+        }
+        .folder-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .file-info {
+            display: none;
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        .file-item {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .file-item .file-name,
+        .file-item .folder-name {
+            width: 48%;
+        }
+        .file-item h4 {
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+            color: #555;
+        }
+        .file-item p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #777;
+        }
     </style>
     <script>
         function toggleFiles(parentFolderId) {
