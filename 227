@@ -19,6 +19,162 @@
             margin-bottom: 20px;
         }
         .search-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .search-button {
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .search-button:hover {
+            background-color: darkred;
+        }
+        .folder-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 15px;
+            display: block;
+        }
+        .folder-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .file-info {
+            display: none;
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        .file-item {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .file-item .file-name,
+        .file-item .folder-name {
+            width: 48%;
+        }
+        .file-item h4 {
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+            color: #555;
+        }
+        .file-item p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #777;
+        }
+    </style>
+    <script>
+        function toggleFiles(parentFolderId) {
+            var files = document.getElementById(parentFolderId);
+            if (files.style.display === "none") {
+                files.style.display = "block"; // Show the file rows
+            } else {
+                files.style.display = "none"; // Hide the file rows
+            }
+        }
+
+        function searchFolders() {
+            var input, filter, cards, card, folderTitle, i, txtValue;
+            input = document.getElementById('folderSearch');
+            filter = input.value.toUpperCase();
+            cards = document.getElementsByClassName('folder-card');
+
+            for (i = 0; i < cards.length; i++) {
+                card = cards[i];
+                folderTitle = card.getElementsByClassName('folder-title')[0];
+                txtValue = folderTitle.textContent || folderTitle.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    card.style.display = ""; // Show the card
+                } else {
+                    card.style.display = "none"; // Hide the card
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>FVRelease Emails Content</h1>
+
+        <!-- Search Input and Button -->
+        <div class="search-container">
+            <input
+                type="text"
+                id="folderSearch"
+                placeholder="Search for parent folders..."
+                class="search-input"
+            />
+            <button class="search-button" onclick="searchFolders()">Search</button>
+        </div>
+
+        <!-- Parent Folder Cards -->
+        {% for parent_folder, files in grouped_data.items() %}
+        <div class="folder-card">
+            <div class="folder-title" onclick="toggleFiles('{{ parent_folder }}')">
+                {{ parent_folder }}
+            </div>
+            <div id="{{ parent_folder }}" class="file-info">
+                {% for file in files %}
+                <div class="file-item">
+                    <div class="file-name">
+                        <h4>Filename</h4>
+                        <p>{{ file.FileName }}</p>
+                    </div>
+                    <div class="folder-name">
+                        {% if file.Folder != file.FileName %}
+                            <h4>Folder Name</h4>
+                            <p>{{ file.Folder }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
+
+==============================side by side folder above ==============
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FVRelease Emails Content</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .search-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .search-input {
             width: 50%;
             padding: 10px;
             font-size: 1rem;
