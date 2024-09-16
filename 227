@@ -1,6 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Font Awesome Icons Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FVRelease Emails Content</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .search-container {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 8px;
+            font-size: 0.95rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .search-button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .search-button:hover {
+            background-color: #0056b3;
+        }
+        .folder-card {
+            background-color: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            padding: 12px;
+            display: block;
+        }
+        .folder-title, .type-title {
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 8px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        .folder-title i, .type-title i {
+            margin-right: 8px;
+            color: #007bff;
+        }
+        .file-info, .type-info {
+            display: none;
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        .file-item {
+            background-color: #f7f7f7;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .file-item .file-name {
+            flex: 1;
+        }
+        /* New CSS for file links to look like normal text but change color on hover */
+        .file-link {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .file-link:hover {
+            color: #007bff;
+        }
+
+        /* Card hover effect */
+        .folder-card:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+    <script>
+        function toggleTypes(parentFolderId) {
+            var types = document.getElementById("types-" + parentFolderId);
+            if (types.style.display === "none") {
+                types.style.display = "block"; // Show the type rows
+            } else {
+                types.style.display = "none"; // Hide the type rows
+            }
+        }
+
+        function toggleFiles(typeId) {
+            var files = document.getElementById("files-" + typeId);
+            if (files.style.display === "none") {
+                files.style.display = "block"; // Show the file rows
+            } else {
+                files.style.display = "none"; // Hide the file rows
+            }
+        }
+
+        function searchFolders() {
+            var input, filter, cards, card, folderTitle, fileInfo, typeInfo, fileItem, typeTitle, fileName, i, j, k;
+            input = document.getElementById('folderSearch');
+            filter = input.value.toUpperCase();
+            cards = document.getElementsByClassName('folder-card');
+
+            for (i = 0; i < cards.length; i++) {
+                card = cards[i];
+                folderTitle = card.getElementsByClassName('folder-title')[0];
+                txtValue = folderTitle.textContent || folderTitle.innerText;
+
+                let folderMatch = txtValue.toUpperCase().indexOf(filter) > -1;
+                let showCard = folderMatch; // Show card if parent folder matches
+
+                // Check each type within the parent folder
+                typeInfo = card.getElementsByClassName('type-info')[0];
+                typeItems = typeInfo.getElementsByClassName('type-item');
+                for (j = 0; j < typeItems.length; j++) {
+                    let typeItem = typeItems[j];
+                    typeTitle = typeItem.getElementsByClassName('type-title')[0].textContent || '';
+
+                    let typeMatch = typeTitle.toUpperCase().indexOf(filter) > -1;
+                    let showType = typeMatch;
+
+                    // Check each file within the type
+                    fileInfo = typeItem.getElementsByClassName('file-info')[0];
+                    fileItem = fileInfo.getElementsByClassName('file-item');
+                    for (k = 0; k < fileItem.length; k++) {
+                        fileName = fileItem[k].getElementsByClassName('file-name')[0].textContent || '';
+
+                        let fileMatch = fileName.toUpperCase().indexOf(filter) > -1;
+
+                        if (fileMatch) {
+                            fileItem[k].style.display = ""; // Show the file if it matches
+                            showType = true; // Show the type if any file matches
+                        } else {
+                            fileItem[k].style.display = "none"; // Hide the file if it doesn't match
+                        }
+                    }
+
+                    if (showType) {
+                        typeItem.style.display = ""; // Show the type if it matches or contains matching files
+                        showCard = true; // Show the card if any type or file matches
+                    } else {
+                        typeItem.style.display = "none"; // Hide the type if it doesn't match
+                    }
+                }
+
+                if (showCard) {
+                    card.style.display = ""; // Show the card if any type or file matches
+                } else {
+                    card.style.display = "none"; // Hide the card if no match is found
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>FVRelease Emails Content</h1>
+
+        <!-- Search Input and Button -->
+        <div class="search-container">
+            <input
+                type="text"
+                id="folderSearch"
+                placeholder="Search for parent folders, types, or filenames..."
+                class="search-input"
+            />
+            <button class="search-button" onclick="searchFolders()">Search</button>
+        </div>
+
+        <!-- Parent Folder Cards -->
+        {% for parent_folder, types in grouped_data.items() %}
+        <div class="folder-card">
+            <div class="folder-title" onclick="toggleTypes('{{ parent_folder }}')">
+                <i class="fas fa-folder"></i> <!-- Font Awesome icon -->
+                {{ parent_folder }}
+            </div>
+            <div id="types-{{ parent_folder }}" class="type-info">
+                {% for type, files in types.items() %}
+                <div class="type-item">
+                    <div class="type-title" onclick="toggleFiles('{{ parent_folder }}-{{ type }}')">
+                        <i class="fas fa-folder-open"></i> <!-- Font Awesome icon -->
+                        {{ type }}
+                    </div>
+                    <div id="files-{{ parent_folder }}-{{ type }}" class="file-info">
+                        {% for file in files %}
+                        <div class="file-item">
+                            <div class="file-name">
+                                <h4>Filename</h4>
+                                <p><a href="{{ file.Path }}" class="file-link" target="_blank">{{ file.FileName }}</a></p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
+
+==================with 3 tier -==================
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FVRelease Emails Content</title>
