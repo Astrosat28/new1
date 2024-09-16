@@ -1,3 +1,49 @@
+from flask import Flask, render_template
+import pyodbc
+from collections import defaultdict
+
+app = Flask(__name__)
+
+# Database connection setup
+def get_db_connection():
+    conn = pyodbc.connect(
+        'DRIVER={ODBC Driver 17 for SQL Server};'
+        'SERVER=AADITYA;'
+        'DATABASE=mydb1;'
+        'Trusted_Connection=yes;'
+    )
+    return conn
+
+# Fetch and group data by ParentFolder and Type
+def fetch_grouped_data():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT FileName, Folder, ParentFolder, Path FROM FVRelease_eMails_Content")
+    rows = cursor.fetchall()
+    
+    grouped_data = defaultdict(lambda: defaultdict(list))
+    for row in rows:
+        grouped_data[row.ParentFolder][row.Folder].append({
+            'FileName': row.FileName,
+            'Path': row.Path
+        })
+
+    cursor.close()
+    conn.close()
+    
+    return grouped_data
+
+@app.route('/')
+def index():
+    # Fetch grouped data from the database
+    grouped_data = fetch_grouped_data()
+    return render_template('index.html', grouped_data=grouped_data)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+=====================================
 <!DOCTYPE html>
 <html lang="en">
 <head>
