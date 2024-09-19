@@ -1,3 +1,48 @@
+import { Component, OnInit } from '@angular/core';
+import { EmailContentService } from '../../services/email-content.service';
+import { EmailFile, EmailData } from '../../models/email-content.model';  // Import the interfaces
+
+@Component({
+  selector: 'app-email-content',
+  templateUrl: './email-content.component.html',
+  styleUrls: ['./email-content.component.css']
+})
+export class EmailContentComponent implements OnInit {
+  emailData: EmailData = {};  // Define the data type for emailData
+  filteredData: EmailData = {};  // Define the data type for filteredData
+  searchQuery: string = '';
+
+  constructor(private emailContentService: EmailContentService) {}
+
+  ngOnInit(): void {
+    this.loadEmailContent();
+  }
+
+  loadEmailContent() {
+    this.emailContentService.getEmailContent().subscribe((data: EmailData) => {
+      this.emailData = data;
+      this.filteredData = data;  // Initialize the filtered data
+    });
+  }
+
+  toggleFiles(parentFolder: string) {
+    const filesElement = document.getElementById(parentFolder);
+    if (filesElement) {
+      filesElement.style.display = filesElement.style.display === 'none' ? 'block' : 'none';
+    }
+  }
+
+  searchFolders() {
+    this.filteredData = Object.keys(this.emailData)
+      .filter(folder => folder.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      .reduce((acc: EmailData, key: string) => {
+        acc[key] = this.emailData[key];  // Now TypeScript knows the structure of acc
+        return acc;
+      }, {} as EmailData);
+  }
+}
+
+=============================
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
