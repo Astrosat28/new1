@@ -1,3 +1,226 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Import CommonModule
+import { FormsModule } from '@angular/forms'; // Import FormsModule for ngModel
+
+// Define interfaces directly in the component file
+interface File {
+  fileName: string;
+  path: string;
+}
+
+interface FolderType {
+  [type: string]: File[];
+}
+
+interface ParentFolder {
+  [parentFolder: string]: FolderType;
+}
+
+@Component({
+  selector: 'app-link',
+  standalone: true,
+  imports: [FormsModule, CommonModule], // Add CommonModule and FormsModule here
+  templateUrl: './link.component.html',
+  styleUrls: ['./link.component.css']
+})
+export class LinkComponent {
+  title = 'FVRelease Emails Content';
+
+  searchQuery: string = '';
+
+  // Static data simulating database content
+  groupedData: ParentFolder = {
+    'Parent Folder 1': {
+      'Type 1': [
+        { fileName: 'file1.txt', path: '/path/to/file1.txt' },
+        { fileName: 'file2.txt', path: '/path/to/file2.txt' },
+      ],
+      'Type 2': [
+        { fileName: 'file3.txt', path: '/path/to/file3.txt' },
+        { fileName: 'file4.txt', path: '/path/to/file4.txt' },
+      ]
+    },
+    'Parent Folder 2': {
+      'Type 1': [
+        { fileName: 'file5.txt', path: '/path/to/file5.txt' },
+        { fileName: 'file6.txt', path: '/path/to/file6.txt' },
+      ]
+    }
+  };
+
+  filteredData: ParentFolder = this.groupedData;
+
+  searchFolders() {
+    const filter = this.searchQuery.toLowerCase();
+    this.filteredData = {};
+
+    for (const [parentFolder, types] of Object.entries(this.groupedData)) {
+      const filteredTypes: FolderType = {};
+
+      for (const [type, files] of Object.entries(types)) {
+        const filteredFiles = files.filter(file =>
+          file.fileName.toLowerCase().includes(filter)
+        );
+
+        if (filteredFiles.length > 0 || type.toLowerCase().includes(filter)) {
+          filteredTypes[type] = filteredFiles;
+        }
+      }
+
+      if (Object.keys(filteredTypes).length > 0 || parentFolder.toLowerCase().includes(filter)) {
+        this.filteredData[parentFolder] = filteredTypes;
+      }
+    }
+  }
+
+  toggleTypes(parentFolderId: unknown) {
+    const folderId = String(parentFolderId); // Ensure it is converted to a string
+    const types = document.getElementById(`types-${folderId}`);
+    if (types) {
+      types.style.display = types.style.display === 'none' ? 'block' : 'none';
+    }
+  }
+
+  toggleFiles(typeId: string) {
+    const files = document.getElementById(`files-${typeId}`);
+    if (files) {
+      files.style.display = files.style.display === 'none' ? 'block' : 'none';
+    }
+  }
+}
+
+=====component.ts
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    padding: 20px;
+    margin: 0;
+  }
+  
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .search-container {
+    display: flex;
+    margin-bottom: 15px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 8px;
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+  }
+  
+  .search-button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  
+  .search-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .folder-card {
+    background-color: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    padding: 12px;
+    display: block;
+  }
+  
+  .folder-title {
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 8px;
+    color: #333;
+  }
+  
+  .type-info {
+    display: none;
+    padding-left: 20px;
+    margin-top: 10px;
+  }
+  
+  .file-info {
+    display: none;
+    padding-left: 20px;
+    margin-top: 10px;
+  }
+  
+  .file-item {
+    background-color: #f7f7f7;
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .file-name h4 {
+    margin: 0;
+  }
+  
+  .file-link {
+    color: #000;
+    text-decoration: none;
+  }
+  
+  .file-link:hover {
+    color: #007bff;
+  }
+  
+=====ccsss
+<div class="container">
+  <h1>{{ title }}</h1>
+
+  <!-- Search Input and Button -->
+  <div class="search-container">
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      placeholder="Search for parent folders, types, or filenames..."
+      class="search-input"
+    />
+    <button class="search-button" (click)="searchFolders()">Search</button>
+  </div>
+
+  <!-- Parent Folder Cards -->
+  <div *ngFor="let parentFolder of filteredData | keyvalue">
+    <div class="folder-card">
+      <div class="folder-title" (click)="toggleTypes(parentFolder.key)">
+        {{ parentFolder.key }}
+      </div>
+      <div id="types-{{ parentFolder.key }}" class="type-info">
+        <div *ngFor="let type of parentFolder.value | keyvalue" class="type-item">
+          <div class="type-title" (click)="toggleFiles(parentFolder.key + '-' + type.key)">
+            {{ type.key }}
+          </div>
+          <div id="files-{{ parentFolder.key }}-{{ type.key }}" class="file-info">
+            <div *ngFor="let file of type.value" class="file-item">
+              <div class="file-name">
+                <h4>Filename</h4>
+                <p><a href="{{ file.path }}" target="_blank" class="file-link">{{ file.fileName }}</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+===========
+
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f9;
