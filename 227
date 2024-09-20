@@ -1,3 +1,129 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.search-container {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.search-button {
+  padding: 10px 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: darkred;
+}
+
+.folder-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 15px;
+}
+
+.folder-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.file-info {
+  display: none;
+  padding-left: 20px;
+  margin-top: 10px;
+}
+
+.file-item {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.file-item .file-name,
+.file-item .folder-name {
+  width: 48%;
+}
+
+.file-item h4 {
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+.file-item p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+======
+<div class="container">
+  <h1>{{ title }}</h1>
+
+  <!-- Search Input and Button -->
+  <div class="search-container">
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      placeholder="Search for parent folders..."
+      class="search-input"
+    />
+    <button class="search-button" (click)="searchFolders()">Search</button>
+  </div>
+
+  <!-- Parent Folder Cards -->
+  <div *ngFor="let parentFolder of filteredData | keyvalue">
+    <div class="folder-card">
+      <div class="folder-title" (click)="toggleFiles(parentFolder.key)">
+        {{ parentFolder.key }}
+      </div>
+      <div id="{{ parentFolder.key }}" class="file-info">
+        <div *ngFor="let file of parentFolder.value" class="file-item">
+          <div class="file-name">
+            <h4>Filename</h4>
+            <p>{{ file.fileName }}</p>
+          </div>
+          <div class="folder-name" *ngIf="file.folder !== file.fileName">
+            <h4>Folder</h4>
+            <p>{{ file.folder }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+=====
+
 import { Component, OnInit } from '@angular/core';
 import { EmailContentService } from '../../services/email-content.service';
 import { EmailFile, EmailData } from '../../models/email-content.model';  // Import the interfaces
