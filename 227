@@ -1,3 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cards Layout</title>
+   
+</head>
+<body>
+
+    <!-- First set of cards -->
+    <div class="container">
+        <div class="card ">
+            <div class="card-header">Current Activity</div>
+            <div style="color: white;" class="subheader">Release Status</div>
+    
+            <!-- Small cards -->
+            <div class="small-card-container">
+                <div class="small-card">
+                    <a href="https://www.htkl.com" target="_blank">FV</a>
+                </div>
+                <div class="small-card">
+                    <a href="https://www.htkl.com" target="_blank">FV</a>
+                </div>
+            </div>
+            <div style="color: white;" class="subheader">Release Status</div>
+            <div class="small-card-container">
+                <div class="small-card">
+                    <a href="https://www.htkl.com" target="_blank">FV</a>
+                </div>
+                <div class="small-card">
+                    <a href="https://www.htkl.com" target="_blank">FV</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second card with arrow pointers and links -->
+        <div class="card">
+            <div class="card-header">Footprint</div>
+            <div style="color: rgb(255, 183, 0);" class="subheader">Rules & Regulations</div>
+            <ul class="arrow-list">
+                <li><a href="https://www.example.com/link1" target="_blank">Link 1</a></li>
+                <li><a href="https://www.example.com/link2" target="_blank">Link 2</a></li>
+                <li><a href="https://www.example.com/link3" target="_blank">Link 3</a></li>
+                <li><a href="https://www.example.com/link4" target="_blank">Link 4</a></li>
+            </ul>
+        </div>
+
+        <!-- Third card with fixed-width small cards and long text wrapping -->
+        <div class="card">
+            <div class="card-header">Program Management & Governance</div>
+
+            <!-- Grid with small cards and clickable text -->
+            <div class="third-card-grid card-body">
+                <!-- First row -->
+                <a href="https://www.htkl.com" target="_blank" class="third-card-link">
+                    <div class="third-card-item">
+                        <div class="third-card-small">KC</div>
+                        <span>Key Contacts</span>
+                    </div>
+                </a>
+                <a href="https://www.htkl.com" target="_blank" class="third-card-link">
+                    <div class="third-card-item">
+                        <div class="third-card-small">DX</div>
+                        <span>Operational Work Assigned to RM Team</span>
+                    </div>
+                </a>
+
+                <!-- Second row -->
+                <a href="https://www.htkl.com" target="_blank" class="third-card-link">
+                    <div class="third-card-item">
+                        <div class="third-card-small">DX</div>
+                        <span>DXC Run Tower CHG Dashboard</span>
+                    </div>
+                </a>
+                <a href="https://www.htkl.com" target="_blank" class="third-card-link">
+                    <div class="third-card-item">
+                        <div class="third-card-small">TBD</div>
+                        <span>TBD</span>
+                    </div>
+                </a>
+
+                <!-- Third row -->
+                <a href="https://www.htkl.com" target="_blank" class="third-card-link">
+                    <div class="third-card-item">
+                        <div class="third-card-small">OM</div>
+                        <span>Operational Monitoring</span>
+                    </div>
+                </a>
+                <a href="https://www.htkl.com" target="_blank" class="third-card-link">
+                    <div class="third-card-item">
+                        <div class="third-card-small">TBD</div>
+                        <span>TBD</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">Quick Links</div>
+            
+            <ul class="arrow-list">
+                <li><a href="https://www.example.com/link1" target="_blank">Annual Release Calendar</a></li>
+                <li><a href="https://www.example.com/link2" target="_blank">Model Office Weekly Policy</a></li>
+                
+            </ul>
+        </div>
+        <div class="card">
+            <div class="card-header">Developer Guidelines</div>
+            <ul class="arrow-list">
+                <li><a href="https://www.example.com/link1" target="_blank">Release Entry</a></li>
+                <li><a href="https://www.example.com/link2" target="_blank">Change Lists</a></li>
+                <li><a href="https://www.example.com/link3" target="_blank">Form Template</a></li>
+                <li><a href="https://www.example.com/link4" target="_blank">UAT</a></li>
+                <li><a href="https://www.example.com/link4" target="_blank">Emergency Release Procedure</a></li>
+                <li><a href="https://www.example.com/link4" target="_blank">Release Backout Procedures</a></li>
+            </ul>
+        </div>
+        <div class="card hidden">
+            <div class="card-header">Sample</div>
+            <div class="card-body">This is card 6 content.</div>
+        </div>
+    </div>
+</body>
+</html>
+
+-======
+.container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.card {
+    width: 30%;
+    background-color: rgb(208, 164, 177);
+    margin: 5px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.subheader {
+    padding-top: 2px;
+    margin-left: 10px;
+    margin-top: 2px;
+}
+
+.card:nth-child(3) {
+    width: 40%;
+}
+
+.card-header {
+    background-color: #ad112b;
+    color: white;
+    height: 30px;
+    font-size: 1.2em;
+    text-align: center;
+    width: 100%;
+}
+
+.small-card-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.arrow-list {
+    list-style: none;
+    padding: 0;
+}
+
+.arrow-list li::before {
+    content: "→";
+    margin-right: 10px;
+    margin-left: 10px;
+    color: rgb(255, 255, 255);
+}
+
+.arrow-list a {
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+}
+
+.small-card {
+    background-color: orange;
+    padding: 10px;
+    color: white;
+    font-size: 0.9em;
+    text-align: center;
+    border-radius: 5px;
+    width: 20%;
+}
+
+.small-card a {
+    color: white;
+    text-decoration: none;
+}
+
+.third-card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-left: 10px;
+}
+
+.third-card-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.third-card-item span {
+    color: black;
+}
+.third-card-small {
+    background-color: rgb(255, 170, 0);
+    padding: 5px;
+    color: white;
+    font-size: 0.9em;
+    text-align: center;
+    border-radius: 5px;
+    width: 50px;
+    margin-right: 10px;
+    text-align: center;
+    flex-shrink: 0; /* Prevent the small card from shrinking */
+}
+
+.third-card-item a {
+    text-decoration: none;
+    color: black;
+    word-wrap: break-word;
+    white-space: normal;
+    flex-shrink: 1; /* Allow text to wrap and shrink */
+}
+
+.third-card-item a:hover {
+    text-decoration: underline;
+}
+
+.third-card-link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-decoration: none;
+}
+.hidden{
+    visibility: hidden;
+}
+=======
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Import CommonModule
 import { FormsModule } from '@angular/forms'; // Import FormsModule for ngModel
