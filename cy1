@@ -1,3 +1,197 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f5f5dc; /* Cream background */
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* First Column - Cards */
+.column1 {
+  width: 60%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: normal;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-top: auto;
+}
+
+/* Second Column - Card */
+.column2 {
+  width: 40%;
+  background-color: #fff; /* Orange background */
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  
+}
+
+.column2:hover {
+  transform: translateY(-5px);
+}
+
+.column2 h2 {
+  margin-bottom: 5px;
+}
+
+.options-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  margin-top: 35px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer; /* Options are clickable */
+  width: 48%; /* Make sure the options fit within the row */
+}
+
+.option img {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.option h4 {
+  margin-bottom: 5px;
+}
+
+.option p {
+  font-size: 0.9em;
+}
+
+===
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Layout</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Column 1 -->
+    <div class="column1">
+      <div class="card">
+        <h3>Current Activity</h3>
+        <p>Subheader 1</p>
+       
+        <img src="https://via.placeholder.com/150" alt="Card Image">
+      </div>
+      <div class="card">
+        <h3>Footprint</h3>
+        <p>Subheader 1</p>
+        <img src="https://via.placeholder.com/150" alt="Card Image">
+      </div>
+      <div class="card">
+        <h3>Quick Links</h3>
+        <p>Subheader 1</p>
+        <img src="https://via.placeholder.com/150" alt="Card Image">
+      </div>
+      <div class="card">
+        <h3>Developer Guidelines</h3>
+        <p>Subheader 1</p>
+        <img src="https://via.placeholder.com/150" alt="Card Image">
+      </div>
+    </div>
+
+    <!-- Column 2 inside a card -->
+    <div class="card column2">
+      <h2>Program Management & Governance</h2>
+      <div class="options-row">
+        <div class="option" onclick="location.href='https://link1.com'">
+          <img src="https://via.placeholder.com/50" alt="Option Image">
+          <div>
+            <h4>Key Contacts</h4>
+            <p>Core Team Members</p>
+          </div>
+        </div>
+        <div class="option" onclick="location.href='https://link2.com'">
+          <img src="https://via.placeholder.com/50" alt="Option Image">
+          <div>
+            <h4>Operational Work Assigned</h4>
+            <p>Subheader 2</p>
+          </div>
+        </div>
+      </div>
+      <div class="options-row">
+        <div class="option" onclick="location.href='https://link3.com'">
+          <img src="https://via.placeholder.com/50" alt="Option Image">
+          <div>
+            <h4>DXC Run Tower</h4>
+            <p>Subheader 3</p>
+          </div>
+        </div>
+        <div class="option" onclick="location.href='https://link4.com'">
+          <img src="https://via.placeholder.com/50" alt="Option Image">
+          <div>
+            <h4>TBD</h4>
+            <p>Subheader 4</p>
+          </div>
+        </div>
+      </div>
+      <div class="options-row">
+        <div class="option" onclick="location.href='https://link5.com'">
+          <img src="https://via.placeholder.com/50" alt="Option Image">
+          <div>
+            <h4>Operational Monitoring</h4>
+            <p>Subheader 5</p>
+          </div>
+        </div>
+        <div class="option" onclick="location.href='https://link6.com'">
+          <img src="https://via.placeholder.com/50" alt="Option Image">
+          <div>
+            <h4>TBD</h4>
+            <p>Subheader 6</p>
+          </div>
+        </div>
+       
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+=====
+
 <!DOCTYPE html>
 <html>
 <head>
