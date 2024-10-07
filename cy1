@@ -1,3 +1,103 @@
+
+.parent-card {
+    display: grid;
+    margin-top:10px;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    grid-template-rows: repeat(2, 1fr);    /* Two rows */
+    width: 200px; /* Set your desired width */
+    height: 200px; /* Set your desired height */
+    gap: 0; /* No gap between grid items */
+    /* border: 2px solid black; Optional: border around the parent card */
+}
+
+.grid-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   
+    
+    text-align: center;
+    font-size: 18px;
+    color: white;
+    border: 1px solid black; /* Optional: border around each card */
+    text-decoration: none; 
+}
+
+/* Different styles for each card */
+.card1 {
+    background-color: #ad112b;
+}
+
+.card2 {
+    background-color: rgb(193, 73, 230);
+}
+
+.card3 {
+    background-color: rgb(217, 34, 129);
+}
+
+.card4 {
+    background-color: #ad112b;
+}
+.card-content h3 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.card-content span {
+    font-size: 0.875rem;
+}
+.card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+==
+==
+<div class="card-body">
+                    
+                  
+                        <div class="parent-card">
+                            <a href="https://example.com/link1" class="grid-card card1">
+                                <div class="card-content">
+                                    <h3>F V</h3>
+                                    <br>
+                                    <span>Release Status</span>
+                                </div>
+                            </a>
+                            <a href="https://example.com/link2" class="grid-card card2">
+                                <div class="card-content">
+                                    <h3>F V</h3>
+                                    <br>
+                                    <span>Release Status</span>
+                                </div>
+                            </a>
+                            <a href="https://example.com/link3" class="grid-card card3">
+                                <div class="card-content">
+                                    <h3>F V</h3>
+                                    <br>
+                                    <span>Weekly Model Office</span>
+                                </div>
+                            </a>
+                            <a href="https://example.com/link4" class="grid-card card4">
+                                <div class="card-content">
+                                    <h3>F V</h3>
+                                    <br>
+                                    <span>Weekly Model Office</span>
+                                </div>
+                            </a>
+                        </div>
+                    
+                    
+                    
+          
+                 
+                  
+                   
+                  
+                </div>
+===
 * {
   margin: 0;
   padding: 0;
