@@ -1,3 +1,345 @@
+/* Global styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #c3c3e2;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Outer container holding all cards */
+.outer-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    background-color: rgba(236, 224, 224, 0.4);
+    padding: 40px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Row container for each set of cards */
+.pricing-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Uniform Card styles */
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 250px; /* Fixed width for uniformity */
+    height: 300px; /* Fixed height for uniformity */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Header styles */
+.card-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.card-header span {
+    font-size: 1rem;
+    color: #999;
+}
+
+.card-header h3 {
+    font-size: 1.5rem;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Body styles */
+.card-body p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.card-body ul {
+    list-style: none;
+}
+
+.card-body ul li {
+    font-size: 1rem;
+    margin: 5px 0;
+    color: #333;
+}
+
+/* Footer styles */
+.card-footer {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Space between buttons */
+}
+
+.card-footer button {
+    background-color: #6936F5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.card-footer button:hover {
+    background-color: #4c29cc;
+}
+
+.card-footer button + button {
+    background-color: #4C4C4C; /* Second button in the card */
+}
+
+.card-footer button + button:hover {
+    background-color: #333;
+}
+
+/* Specific Plan Colors */
+.basic .card-header h3 {
+    background: linear-gradient(45deg, #7F50FF, #694DF5);
+}
+
+.standard .card-header h3 {
+    background: linear-gradient(45deg, #5A57FF, #4A45E8);
+}
+
+.premium .card-header h3 {
+    background: linear-gradient(45deg, #FF3E3E, #E83A50);
+}
+
+.basic .card-footer button {
+    background-color: #7F50FF;
+}
+
+.standard .card-footer button {
+    background-color: #5A57FF;
+}
+
+.premium .card-footer button {
+    background-color: #FF3E3E;
+}
+
+/* Grid layout for small cards */
+.parent-card {
+    display: grid;
+    margin-top: 10px;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    grid-template-rows: repeat(2, 1fr);    /* Two rows */
+    width: 200px; /* Set width */
+    height: 200px; /* Set height */
+    gap: 0; /* No gap between grid items */
+}
+
+/* Grid card styles */
+.grid-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 18px;
+    color: white;
+    border: 1px solid black; /* Optional: border around each card */
+    text-decoration: none; 
+}
+
+/* Different styles for each grid card */
+.card1 {
+    background-color: #ad112b;
+}
+
+.card2 {
+    background-color: rgb(193, 73, 230);
+}
+
+.card3 {
+    background-color: rgb(217, 34, 129);
+}
+
+.card4 {
+    background-color: #ad112b;
+}
+
+/* Content within grid cards */
+.card-content h3 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.card-content span {
+    font-size: 0.875rem;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Program management card styles */
+.program-management {
+    width: 40%; /* 40% of the container width */
+    height: calc(300px * 2 + 20px); /* Height of two cards + gap between them */
+    background-color: rgba(236, 224, 224, 0.4);
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Cards</title>
+    <link rel="stylesheet" href="8oct1.css">
+</head>
+<body>
+    <div class="outer-container">
+        <div class="pricing-row">
+            <!-- Basic Plan -->
+            <div class="card basic">
+                <div class="card-header">
+                    <h3>Current Activity</h3>
+                </div>
+                <div class="card-body">        
+                    <div class="parent-card">
+                        <a href="https://example.com/link1" class="grid-card card1">
+                            <div class="card-content">
+                                <h3>F V</h3>
+                                <br>
+                                <span>Release Status</span>
+                            </div>
+                        </a>
+                        <a href="https://example.com/link2" class="grid-card card2">
+                            <div class="card-content">
+                                <h3>F V</h3>
+                                <br>
+                                <span>Release Status</span>
+                            </div>
+                        </a>
+                        <a href="https://example.com/link3" class="grid-card card3">
+                            <div class="card-content">
+                                <h3>F V</h3>
+                                <br>
+                                <span>Weekly Model Office</span>
+                            </div>
+                        </a>
+                        <a href="https://example.com/link4" class="grid-card card4">
+                            <div class="card-content">
+                                <h3>F V</h3>
+                                <br>
+                                <span>Weekly Model Office</span>
+                            </div>
+                        </a>
+                    </div>               
+                </div>
+            </div>
+
+            <!-- Standard Plan -->
+            <div class="card standard" style="margin-top: 20px;">
+                <div class="card-header">
+                    <h3 style="font-size: 19px;">Rules & Regulations</h3>
+                </div>
+                <div class="card-body">
+                    <p>It involves the rules to be followed</p>
+                    <ul>
+                        <li>✔ High Level Procedures</li>
+                        <li>✔ Detailed Flow</li>
+                        <li>✔ Coding Standards</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <button>Link1</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row -->
+        <div class="pricing-row">
+            <!-- Basic Plan -->
+            <div class="card basic">
+                <div class="card-header">
+                    <h3>Quick Links</h3>
+                </div>
+                <div class="card-body">
+                    <p>Some Important Links</p>
+                    <ul>
+                        <li>✔ Annual Release Calendar</li>
+                        <li>✔ Model Weekly Policy</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <button>Link3</button>
+                </div>
+            </div>
+
+            <!-- Standard Plan -->
+            <div class="card standard"  style="margin-top: 20px;">
+                <div class="card-header">
+                    <h3 style="font-size: 17.5px;">Developer Guidelines</h3>
+                </div>
+                <div class="card-body">
+                    <p>Guidelines for the developers</p>
+                    <ul>
+                        <li>✔ Release Entry</li>
+                        <li>✔ Change Lists</li>
+                        <li>✔ Form Templates</li>
+                        <li>✔ UAT</li>
+                        <li>✔ Emergency Release</li>
+                        <li>✔ Release Backout Procedures</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Card for Program Management & Governance -->
+        <div class="card premium program-management">
+            <div class="card-header">
+                <h3 style="font-size: 13.5px;">Program Management & Governance</h3>
+            </div>
+            <div class="card-body">
+                <p>The management and governance initiatives</p>
+                <div class="card-footer">
+                    <button style="font-size: 10px;">Key Contacts</button>
+                    <button style="font-size: 10px;">Operational Work Assigned Team</button>
+                </div>
+                &nbsp;
+                <div class="card-footer">
+                    <button style="font-size: 9px;">Operational Monitoring</button>
+                    <button style="font-size: 10px;">DXC Run Tower CHG Dashboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+=====
 * {
   margin: 0;
   padding: 0;
