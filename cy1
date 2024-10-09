@@ -1,3 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Cards</title>
+    <link rel="stylesheet" href="8oct1.css">
+</head>
+<body>
+    <div class="outer-container">
+        <div class="pricing-row">
+            <!-- Basic Plan -->
+            <div class="card basic">
+                <div class="card-header">
+                    <h3>Current Activity</h3>
+                </div>
+                <div class="card-body">        
+                    <div class="parent-card">
+                        <a href="https://example.com/link1" class="grid-card card1">
+                            <div class="card-content">
+                                <h3>F V</h3>
+                                <br>
+                                <span>Release Status</span>
+                            </div>
+                        </a>
+                        <a href="https://example.com/link2" class="grid-card card2">
+                            <div class="card-content">
+                                <h3>F V</h3>
+                                <br>
+                                <span>Release Status</span>
+                            </div>
+                        </a>
+                        <a href="https://example.com/link3" class="grid-card card3">
+                            <div class="card-content">
+                                <h3>F V</h3>
+                                <br>
+                                <span>Weekly Model Office</span>
+                            </div>
+                        </a>
+                        <a href="https://example.com/link4" class="grid-card card4">
+                            <div class="card-content">
+                                <h3>F V</h3>
+                                <br>
+                                <span>Weekly Model Office</span>
+                            </div>
+                        </a>
+                    </div>               
+                </div>
+            </div>
+
+            <!-- Standard Plan -->
+            <div class="card standard" style="margin-top: 20px;">
+                <div class="card-header">
+                    <h3 style="font-size: 19px;">Rules & Regulations</h3>
+                </div>
+                <div class="card-body">
+                    <p>It involves the rules to be followed</p>
+                    <ul>
+                        <li>✔ High Level Procedures</li>
+                        <li>✔ Detailed Flow</li>
+                        <li>✔ Coding Standards</li>
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Second Row -->
+        <div class="pricing-row">
+            <!-- Basic Plan -->
+            <div class="card basic">
+                <div class="card-header">
+                    <h3>Quick Links</h3>
+                </div>
+                <div class="card-body">
+                    <p>Some Important Links</p>
+                    <ul>
+                        <li>✔ Annual Release Calendar</li>
+                        <li>✔ Model Weekly Policy</li>
+                    </ul>
+                </div>
+                
+            </div>
+
+            <!-- Standard Plan -->
+            <div class="card standard"  style="margin-top: 20px;">
+                <div class="card-header">
+                    <h3 style="font-size: 17.5px;">Developer Guidelines</h3>
+                </div>
+                <div class="card-body">
+                    <p>Guidelines for the developers</p>
+                    <ul>
+                        <li>✔ Release Entry</li>
+                        <li>✔ Change Lists</li>
+                        <li>✔ Form Templates</li>
+                        <li>✔ UAT</li>
+                        <li>✔ Emergency Release</li>
+                        <li>✔ Release Backout Procedures</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Card for Program Management & Governance -->
+        <div class="card premium program-management">
+            <div class="card-header">
+                <h3 style="font-size: 13.5px;">Program Management & Governance</h3>
+            </div>
+            <div class="card-body">
+                <div class="program-table">
+                    <a href="https://example.com/link5" class="program-card">
+                        <div class="card-content">
+                            <h4>Key Contacts</h4>
+                        </div>
+                    </a>
+                    <a href="https://example.com/link6" class="program-card">
+                        <div class="card-content">
+                            <h4>Operational Work Assigned Team</h4>
+                        </div>
+                    </a>
+                    <a href="https://example.com/link7" class="program-card">
+                        <div class="card-content">
+                            <h4>Operational Monitoring</h4>
+                        </div>
+                    </a>
+                    <a href="https://example.com/link8" class="program-card">
+                        <div class="card-content">
+                            <h4>DXC Run Tower CHG Dashboard</h4>
+                        </div>
+                    </a>
+                    <a href="https://example.com/link9" class="program-card">
+                        <div class="card-content">
+                            <h4>Change Management</h4>
+                        </div>
+                    </a>
+                    <a href="https://example.com/link10" class="program-card">
+                        <div class="card-content">
+                            <h4>Project Tracking</h4>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Cards</title>
+    <link rel="stylesheet" href="8oct1.css">
+</head>
+<body>
+    <div class="outer-container">
+        <div class="pricing-row">
+            <!-- Basic Plan -->
+            <div class="card basic">
+                <div class="card-header">
+                    <h3>Current Activity</h3>
+                </div>
+                <div class="card-body">        
+                    <div class="parent-card">
+                        <a href="https://example.com/link1" class="grid-card card1">
+                            <div class="card-content">
+                                <h3>F V</h3>
+                                <br>
+                                <span>Release Status</span>
+                            </div>
+                        </a>
+                        <a href="https://example.com/link2" class="grid-card card2">
+                            <div class="card-content">
+                                <h3>F V</h3>
+                                <br>
+                                <span>Release Status</span>
+                            </div>
+                        </a>
+                        <a href="https://example.com/link3" class="grid-card card3">
+                            <div class="card-content">
+                                <h3>F V</h3>
+                                <br>
+                                <span>Weekly Model Office</span>
+                            </div>
+                        </a>
+                        <a href="https://example.com/link4" class="grid-card card4">
+                            <div class="card-content">
+                                <h3>F V</h3>
+                                <br>
+                                <span>Weekly Model Office</span>
+                            </div>
+                        </a>
+                    </div>               
+                </div>
+            </div>
+
+            <!-- Standard Plan -->
+            <div class="card standard" style="margin-top: 20px;">
+                <div class="card-header">
+                    <h3 style="font-size: 19px;">Rules & Regulations</h3>
+                </div>
+                <div class="card-body">
+                    <p>It involves the rules to be followed</p>
+                    <ul>
+                        <li>✔ High Level Procedures</li>
+                        <li>✔ Detailed Flow</li>
+                        <li>✔ Coding Standards</li>
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Second Row -->
+        <div class="pricing-row">
+            <!-- Basic Plan -->
+            <div class="card basic">
+                <div class="card-header">
+                    <h3>Quick Links</h3>
+                </div>
+                <div class="card-body">
+                    <p>Some Important Links</p>
+                    <ul>
+                        <li>✔ Annual Release Calendar</li>
+                        <li>✔ Model Weekly Policy</li>
+                    </ul>
+                </div>
+                
+            </div>
+
+            <!-- Standard Plan -->
+            <div class="card standard"  style="margin-top: 20px;">
+                <div class="card-header">
+                    <h3 style="font-size: 17.5px;">Developer Guidelines</h3>
+                </div>
+                <div class="card-body">
+                    <p>Guidelines for the developers</p>
+                    <ul>
+                        <li>✔ Release Entry</li>
+                        <li>✔ Change Lists</li>
+                        <li>✔ Form Templates</li>
+                        <li>✔ UAT</li>
+                        <li>✔ Emergency Release</li>
+                        <li>✔ Release Backout Procedures</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Card for Program Management & Governance -->
+        <div class="card premium program-management">
+            <div class="card-header">
+                <h3 style="font-size: 13.5px;">Program Management & Governance</h3>
+            </div>
+            <div class="card-body">
+                <div class="program-table">
+                    <a href="https://example.com/link5" class="program-card">
+                        <div class="card-content">
+                            <h4>Key Contacts</h4>
+                        </div>
+                    </a>
+                    <a href="https://example.com/link6" class="program-card">
+                        <div class="card-content">
+                            <h4>Operational Work Assigned Team</h4>
+                        </div>
+                    </a>
+                    <a href="https://example.com/link7" class="program-card">
+                        <div class="card-content">
+                            <h4>Operational Monitoring</h4>
+                        </div>
+                    </a>
+                    <a href="https://example.com/link8" class="program-card">
+                        <div class="card-content">
+                            <h4>DXC Run Tower CHG Dashboard</h4>
+                        </div>
+                    </a>
+                    <a href="https://example.com/link9" class="program-card">
+                        <div class="card-content">
+                            <h4>Change Management</h4>
+                        </div>
+                    </a>
+                    <a href="https://example.com/link10" class="program-card">
+                        <div class="card-content">
+                            <h4>Project Tracking</h4>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+==
 /* Global styles */
 * {
     margin: 0;
