@@ -1,3 +1,249 @@
+/* Global styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #c3c3e2;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Outer container holding all cards */
+.outer-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    /*justify-content: space-between;*/
+    background-color: rgba(236, 224, 224, 0.4);
+    padding: 40px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Row container for each set of cards */
+.pricing-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Uniform Card styles */
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 250px; /* Fixed width for uniformity */
+    height: 300px; /* Fixed height for uniformity */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Header styles */
+.card-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.card-header span {
+    font-size: 1rem;
+    color: #999;
+}
+
+.card-header h3 {
+    font-size: 1.5rem;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Body styles */
+.card-body p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.card-body ul {
+    list-style: none;
+}
+
+.card-body ul li {
+    font-size: 1rem;
+    margin: 5px 0;
+    color: #333;
+}
+
+/* Footer styles */
+.card-footer {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Space between buttons */
+}
+
+.card-footer button {
+    background-color: #6936F5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.card-footer button:hover {
+    background-color: #4c29cc;
+}
+
+.card-footer button + button {
+    background-color: #4C4C4C; /* Second button in the card */
+}
+
+.card-footer button + button:hover {
+    background-color: #333;
+}
+
+/* Specific Plan Colors */
+.basic .card-header h3 {
+    background: linear-gradient(45deg, #7F50FF, #694DF5);
+}
+
+.standard .card-header h3 {
+    background: linear-gradient(45deg, #5A57FF, #4A45E8);
+}
+
+.premium .card-header h3 {
+    background: linear-gradient(45deg, #FF3E3E, #E83A50);
+}
+
+.basic .card-footer button {
+    background-color: #7F50FF;
+}
+
+.standard .card-footer button {
+    background-color: #5A57FF;
+}
+
+.premium .card-footer button {
+    background-color: #FF3E3E;
+}
+
+/* Grid layout for small cards */
+.parent-card {
+    display: grid;
+    margin-top: 10px;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    grid-template-rows: repeat(2, 1fr);    /* Two rows */
+    width: 200px; /* Set width */
+    height: 200px; /* Set height */
+    gap: 0; /* No gap between grid items */
+}
+
+/* Grid card styles */
+.grid-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 18px;
+    color: white;
+    border: 1px solid black; /* Optional: border around each card */
+    text-decoration: none; 
+}
+
+/* Different styles for each grid card */
+.card1 {
+    background-color: #ad112b;
+}
+
+.card2 {
+    background-color: rgb(193, 73, 230);
+}
+
+.card3 {
+    background-color: rgb(217, 34, 129);
+}
+
+.card4 {
+    background-color: #ad112b;
+}
+
+/* Content within grid cards */
+.card-content h3 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.card-content span {
+    font-size: 0.875rem;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Program management card styles */
+.program-management {
+    width: 40%; /* 40% of the container width */
+    height: calc(300px * 2 + 20px); /* Height of two cards + gap between them */
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+/* Program table layout for 2 columns and 3 rows */
+.program-table {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    grid-template-rows: repeat(3, auto);   /* 3 rows */
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Program card styles */
+.program-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    text-decoration: none;
+    color: #333;
+    font-size: 0.875rem;
+    word-wrap: break-word;
+}
+
+.program-card:hover {
+    background-color: #e0e0e0;
+}
+
+/* Ensure content inside program cards is centered */
+.program-card .card-content {
+    text-align: center;
+}
+.....
 <!DOCTYPE html>
 <html lang="en">
 <head>
