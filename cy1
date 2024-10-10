@@ -1,3 +1,314 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f5f5dc; /* Cream background */
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* First Column - Cards */
+.column1 {
+  width: 60%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: normal;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-top: auto;
+}
+
+/* Second Column - Card */
+.column2 {
+  width: 40%;
+  background-color: #fff; /* Orange background */
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  
+}
+
+.column2:hover {
+  transform: translateY(-5px);
+}
+
+.column2 h2 {
+  margin-bottom: 5px;
+}
+
+.options-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  margin-top: 35px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer; /* Options are clickable */
+  width: 48%; /* Make sure the options fit within the row */
+}
+
+.option img {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.option h4 {
+  margin-bottom: 5px;
+}
+
+.option p {
+  font-size: 0.9em;
+}
+.developerlink{
+  text-decoration: none;
+  color: black;
+  list-style-type: disc; /* Adds bullet signs */
+  padding-left: 20px;
+}
+.bullet-links {
+  list-style-type: disc; /* Adds bullet signs */
+  padding-left: 20px;
+  text-decoration: none;
+  color: black;
+}
+.parent-card {
+  display: grid;
+  margin-top: 10px;
+  grid-template-columns: repeat(2, 1fr); /* Two columns */
+  grid-template-rows: repeat(2, 1fr);    /* Two rows */
+  width: 350px; /* Set width */
+  height: 350px; /* Set height */
+  gap: 0; /* No gap between grid items */
+}
+
+/* Grid card styles */
+.grid-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 18px;
+  color: white;
+  border: 1px solid black; /* Optional: border around each card */
+  text-decoration: none; 
+}
+
+/* Different styles for each grid card */
+.card1 {
+  background-color: #ad112b;
+}
+
+.card2 {
+  background-color: rgb(193, 73, 230);
+}
+
+.card3 {
+  background-color: rgb(217, 34, 129);
+}
+
+.card4 {
+  background-color: #ad112b;
+}
+
+/* Content within grid cards */
+.card-content h3 {
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+.card-content span {
+  font-size: 0.875rem;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Layout</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Column 1 -->
+    <div class="column1">
+      <div class="card">
+        <h3>Current Activity</h3>
+      
+        <div class="parent-card">
+            <a href="https://example.com/link1" class="grid-card card1">
+                <div class="card-content">
+                    <h3>F V</h3>
+                    <br>
+                    <span>Release Status</span>
+                </div>
+            </a>
+            <a href="https://example.com/link2" class="grid-card card2">
+                <div class="card-content">
+                    <h3>F V</h3>
+                    <br>
+                    <span>Release Status</span>
+                </div>
+            </a>
+            <a href="https://example.com/link3" class="grid-card card3">
+                <div class="card-content">
+                    <h3>F V</h3>
+                    <br>
+                    <span>Weekly Model Office</span>
+                </div>
+            </a>
+            <a href="https://example.com/link4" class="grid-card card4">
+                <div class="card-content">
+                    <h3>F V</h3>
+                    <br>
+                    <span>Weekly Model Office</span>
+                </div>
+            </a>
+        </div>
+       
+      </div>
+      <div class="card">
+        <h3>Rules and Regulations</h3>
+        <br>
+        <ul class="developerlink">
+            
+            <li><a href="https://example.com/link5" class="developerlink">High Level Procedures</a></li>
+            <li><a href="https://example.com/link5" class="developerlink">Detailed Flow</a></li>
+            <li><a href="https://example.com/link5" class="developerlink">Coding Standards</a></li>
+            <li> <a href="https://example.com/link5" class="developerlink">SOX Audit</a></li>
+           
+        </ul>
+        
+      </div>
+      <div class="card">
+        <h3>Quick Links</h3>
+        <br>
+        <ul class="developerlink">
+            <li><a href="https://example.com/link5" class="developerlink">Annual Release Calendar</a></li>
+            <li><a href="https://example.com/link5" class="developerlink">Model Office Weekly Policy</a></li>
+            
+        </ul>
+        
+      </div>
+      <div class="card">
+        <h3>Developer Guidelines</h3>
+        <br>
+        <p> Guidelines to be followed by developers</p>
+        <br>
+                <ul class="developerlink">
+                    <li><a href="https://example.com/link5" class="developerlink">Release Entry</a></li>
+                    <li><a href="https://example.com/link5" class="developerlink">Change List</a></li>
+                    <li><a href="https://example.com/link5" class="developerlink">Form Template</a></li>
+                    <li> <a href="https://example.com/link5" class="developerlink">UAT</a></li>
+                    <li> <a href="https://example.com/link5" class="developerlink">Emergency Release Procedure</a></li>
+                    <li><a href="https://example.com/link5" class="developerlink">Release Backout Procedures</a></li>
+                </ul>
+       
+      </div>
+    </div>
+
+    <!-- Column 2 inside a card -->
+    <div class="card column2">
+      <h2>Program Management & Governance</h2>
+      <div class="options-row">
+        <div class="option" onclick="location.href='https://link1.com'">
+          <img src="https://via.placeholder.com/50" alt="Option Image">
+          <div>
+            <h4>Key Contacts</h4>
+            <p>Core Team Members</p>
+          </div>
+        </div>
+        <div class="option" onclick="location.href='https://link2.com'">
+          <img src="https://via.placeholder.com/50" alt="Option Image">
+          <div>
+            <h4>Operational Work Assigned</h4>
+            <p>Subheader 2</p>
+          </div>
+        </div>
+      </div>
+      <div class="options-row">
+        <div class="option" onclick="location.href='https://link3.com'">
+          <img src="https://via.placeholder.com/50" alt="Option Image">
+          <div>
+            <h4>DXC Run Tower</h4>
+            <p>Subheader 3</p>
+          </div>
+        </div>
+        <div class="option" onclick="location.href='https://link4.com'">
+          <img src="https://via.placeholder.com/50" alt="Option Image">
+          <div>
+            <h4>TBD</h4>
+            <p>Subheader 4</p>
+          </div>
+        </div>
+      </div>
+      <div class="options-row">
+        <div class="option" onclick="location.href='https://link5.com'">
+          <img src="https://via.placeholder.com/50" alt="Option Image">
+          <div>
+            <h4>Operational Monitoring</h4>
+            <p>Subheader 5</p>
+          </div>
+        </div>
+        <div class="option" onclick="location.href='https://link6.com'">
+          <img src="https://via.placeholder.com/50" alt="Option Image">
+          <div>
+            <h4>TBD</h4>
+            <p>Subheader 6</p>
+          </div>
+        </div>
+       
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+===
+
 /* Global styles */
 * {
     margin: 0;
