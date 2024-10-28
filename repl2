@@ -1,3 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.5.5</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.example</groupId>
+	<artifactId>demo</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>demo</name>
+	<description>Demo project for Spring Boot</description>
+	<properties>
+		<java.version>11</java.version>
+	</properties>
+	<dependencies>
+	
+	<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.20</version>
+    <scope>provided</scope>
+    </dependency>
+ <dependency>   
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+<dependency>
+    <groupId>com.microsoft.sqlserver</groupId>
+    <artifactId>mssql-jdbc</artifactId>
+    <version>8.4.1.jre11</version>
+</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>3.0.0-M5</version>
+</plugin>
+			<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.8.1</version>
+    <configuration>
+        <source>11</source>
+        <target>11</target>
+    </configuration>
+</plugin>
+
+		</plugins>
+	</build>
+
+</project>
+
+----pom===
+package com.example.emailcontent.service;
+
+import com.example.emailcontent.model.FVReleaseEmailContent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class FVReleaseEmailContentService {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    // Fetch all file names from the database
+    public List<String> getAllFileNames() {
+        String sql = "SELECT FileName FROM FVRelease_eMails_Content";  // Correct column name
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
+
+    // Fetch all email content with details (e.g., fileName, folder, etc.)
+    public List<FVReleaseEmailContent> getAllEmailContent() {
+        String sql = "SELECT ID, FileName, Folder, ParentFolder, Path FROM FVRelease_eMails_Content";  // Correct column names
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            FVReleaseEmailContent emailContent = new FVReleaseEmailContent();
+            emailContent.setFileName(rs.getString("FileName"));
+            emailContent.setFolder(rs.getString("Folder"));
+            emailContent.setParentFolder(rs.getString("ParentFolder"));
+            emailContent.setPath(rs.getString("Path"));
+            return emailContent;
+        });
+    }
+}
+
+======service-----
+package com.example.emailcontent.model;
+
+public class FVReleaseEmailContent {
+    private String fileName;
+    private String folder;
+    private String parentFolder;
+    private String path;
+
+    // Getters and Setters
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFolder() {
+        return folder;
+    }
+
+    public void setFolder(String folder) {
+        this.folder = folder;
+    }
+
+    public String getParentFolder() {
+        return parentFolder;
+    }
+
+    public void setParentFolder(String parentFolder) {
+        this.parentFolder = parentFolder;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+}
+
+---model---
+package com.example.emailcontent.controller;
+
+import com.example.emailcontent.model.FVReleaseEmailContent;
+import com.example.emailcontent.service.FVReleaseEmailContentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/emails")
+public class FVReleaseEmailContentController {
+
+    @Autowired
+    private FVReleaseEmailContentService service;
+
+    // Endpoint to get all file names
+    @GetMapping("/filenames")
+    public List<String> getAllFileNames() {
+        return service.getAllFileNames();
+    }
+
+    // Endpoint to get all email content details
+    @GetMapping
+    public List<FVReleaseEmailContent> getAllEmailContent() {
+        return service.getAllEmailContent();
+    }
+}
+
+=========================================================================================================
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
