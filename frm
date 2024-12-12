@@ -1,3 +1,57 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+urls = [
+    "https://www.wordstream.com/blog/ws/2022/07/14/website-examples",
+    "https://www.nytimes.com/"
+]
+
+# Set up headless Chrome
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+
+# Specify the path to ChromeDriver
+service = Service("C:\\chromedriver.exe")
+driver = webdriver.Chrome(service=service, options=chrome_options)
+
+for url in urls:
+    driver.get(url)
+    
+    # Wait until the document.readyState is "complete"
+    try:
+        WebDriverWait(driver, 30).until(
+            lambda d: d.execute_script("return document.readyState") == "complete"
+        )
+    except Exception as e:
+        print(f"{url} might not have fully loaded (document.readyState never complete). Error: {e}")
+        continue
+
+    # Now wait for a key element that signifies the page has rendered its main content.
+    # Adjust selectors based on the actual structure of the page.
+
+    try:
+        if "nytimes.com" in url:
+            # On NYTimes homepage, top stories block is a good indicator
+            WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "section[data-testid='block-TopStories']"))
+            )
+        else:
+            # For the Wordstream article page, the post title is a good indicator
+            WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "h1.post-title"))
+            )
+
+        print(f"{url} is up and fully running.")
+    except Exception as e:
+        print(f"{url} might not have fully loaded. Error: {e}")
+
+driver.quit()
+
+============
 import boto3
 import json
 
