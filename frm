@@ -1,3 +1,89 @@
+/* release.component.css */
+
+/* Group container spacing */
+.group {
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* The clickable bar for the year-month heading */
+  .group-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e6e6e6; /* subtle gray */
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    user-select: none; /* avoid text selection on click */
+  }
+  
+  .group-bar:hover {
+    background-color: #d9d9d9; /* slightly darker on hover */
+  }
+  
+  /* Title on the left of the group bar */
+  .group-title {
+    font-size: 1.1rem;
+  }
+  
+  /* +/- icon on the right */
+  .toggle-icon {
+    font-size: 1.2rem;
+  }
+  
+  /* Container for cards within a group */
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem; /* indentation inside group */
+    background-color: #fafafa;
+  }
+  
+  /* Each email card */
+  .email-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    flex: 0 0 calc(33.33% - 1rem); 
+    /* tries to show 3 cards per row, 
+       or adjust as needed (50% for 2 cards, etc.) */
+    min-width: 250px; 
+    max-width: 350px; 
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Card header can have a distinct background or styling */
+  .card-header {
+    padding: 0.5rem 1rem;
+    background-color: #007bff; /* a blue header color */
+    color: #fff;
+    border-bottom: 1px solid #ddd;
+    border-radius: 4px 4px 0 0;
+  }
+  
+  .card-title {
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  
+  /* Card body with email details */
+  .card-body {
+    padding: 0.75rem 1rem;
+    color: #333;
+  }
+  
+  .card-body div {
+    margin-bottom: 0.4rem; /* space between lines */
+  }
+  
+  .card-body strong {
+    color: #555; /* subtle emphasis */
+  }
+  
+............
 <!-- release.component.html -->
 <h2>Release Page</h2>
 
