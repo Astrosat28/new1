@@ -1,3 +1,67 @@
+import pyodbc
+
+def fetch_all_records():
+    # Replace the following placeholders with your actual server, database, username, and password
+    server_name = 'YOUR_SERVER_NAME'         # e.g., 'localhost\\SQLEXPRESS'
+    database_name = 'YOUR_DATABASE_NAME'     # e.g., 'TestDB'
+    username = 'YOUR_USERNAME'               # e.g., 'sa'
+    password = 'YOUR_PASSWORD'               # e.g., 'your_password'
+
+    # Ensure all connection parameters are strings
+    if not all(isinstance(param, str) for param in [server_name, database_name, username, password]):
+        print("All connection parameters must be strings.")
+        return
+
+    # Construct the connection string as a single line
+    connection_string = (
+        "DRIVER={ODBC Driver 17 for SQL Server};"
+        f"SERVER={server_name};"
+        f"DATABASE={database_name};"
+        f"UID={username};"
+        f"PWD={password}"
+    )
+
+    try:
+        # Establish connection
+        conn = pyodbc.connect(connection_string)
+        cursor = conn.cursor()
+
+        # Define the SQL query
+        query = "SELECT * FROM [dbo].[release data]"
+
+        # Ensure the query is a string
+        if not isinstance(query, str):
+            raise TypeError("The SQL query must be a string.")
+
+        # Execute the query
+        cursor.execute(query)
+
+        # Fetch all results
+        rows = cursor.fetchall()
+
+        # Print each row in the terminal
+        for row in rows:
+            print(row)
+
+        # Close cursor and connection
+        cursor.close()
+        conn.close()
+
+        print("Query executed successfully and all records have been printed.")
+    except TypeError as te:
+        print("TypeError:", te)
+    except pyodbc.Error as db_err:
+        print("Database error:")
+        print(db_err)
+    except Exception as e:
+        print("An unexpected error occurred:")
+        print(e)
+
+if __name__ == "__main__":
+    fetch_all_records()
+
+....
+
 /* release.component.css */
 
 /* Group container spacing */
