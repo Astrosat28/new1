@@ -1,4 +1,151 @@
-import pyodbc
+package com.example.websitestatus.controller;
+
+import com.example.websitestatus.model.Website;
+import com.example.websitestatus.service.WebsiteStatusService;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/websites")
+public class WebsiteStatusController {
+    private final WebsiteStatusService statusService;
+
+    public WebsiteStatusController(WebsiteStatusService statusService) {
+        this.statusService = statusService;
+    }
+
+    @PostMapping("/check")
+    public String checkWebsiteStatus(@RequestBody Website website) {
+        return statusService.checkWebsiteStatus(website);
+    }
+}
+
+........................................................
+package com.example.websitestatus.service;
+
+import com.example.websitestatus.model.Website;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class WebsiteStatusService {
+    private final HttpClientService httpClientService;
+
+    public WebsiteStatusService(HttpClientService httpClientService) {
+        this.httpClientService = httpClientService;
+    }
+
+    public String checkWebsiteStatus(Website website) {
+        if (!httpClientService.isWebsiteUp(website.getUrl())) {
+            return "Website is Down";
+        }
+
+        if (website.getLoginUrl() != null && !website.getLoginUrl().isEmpty()) {
+            System.setProperty("webdriver.chrome.driver", "/path/to/chromedriver");
+            WebDriver driver = new ChromeDriver();
+
+            try {
+                driver.get(website.getLoginUrl());
+                WebElement usernameField = driver.findElement(By.name("username"));
+                WebElement passwordField = driver.findElement(By.name("password"));
+                WebElement submitButton = driver.findElement(By.name("submit"));
+
+                usernameField.sendKeys(website.getUsername());
+                passwordField.sendKeys(website.getPassword());
+                submitButton.click();
+
+                return "Website Login Successful";
+            } catch (Exception e) {
+                return "Website Login Failed";
+            } finally {
+                driver.quit();
+            }
+        }
+
+        return "Website is Up";
+    }
+}
+
+........
+package com.example.websitestatus.service;
+
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+
+@Service
+public class HttpClientService {
+    public boolean isWebsiteUp(String url) {
+        try {
+            Connection.Response response = Jsoup.connect(url).timeout(5000).execute();
+            return response.statusCode() == 200;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+}
+
+..............
+package com.example.websitestatus.model;
+
+public class Website {
+    private String url;
+    private String loginUrl;
+    private String username;
+    private String password;
+
+    // Constructors, Getters, and Setters
+    public Website() {}
+
+    public Website(String url, String loginUrl, String username, String password) {
+        this.url = url;
+        this.loginUrl = loginUrl;
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getLoginUrl() {
+        return loginUrl;
+    }
+
+    public void setLoginUrl(String loginUrl) {
+        this.loginUrl = loginUrl;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+}
+
+/.....
+
+......import pyodbc
 
 def fetch_all_records():
     # Replace the following placeholders with your actual server, database, username, and password
