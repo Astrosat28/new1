@@ -1,3 +1,69 @@
+@Autowired
+private HttpClientService httpClientService;
+
+@GetMapping("/check")
+public ResponseEntity<String> checkWebsite(@RequestParam String url) {
+    boolean isUp = httpClientService.isWebsiteUp(url);
+    return ResponseEntity.ok(isUp ? "Website is up" : "Website is down");
+}
+
+..
+package com.example.websitestatus.service;
+
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.fluent.Executor;
+import org.apache.hc.client5.http.fluent.Request;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.ssl.SSLContexts;
+import org.apache.hc.core5.ssl.TrustAllStrategy;
+import org.apache.hc.core5.util.Timeout;
+import org.springframework.stereotype.Service;
+
+import javax.net.ssl.SSLContext;
+import java.io.IOException;
+
+@Service
+public class HttpClientService {
+
+    private SSLContext createIgnoreSSLContext() {
+        try {
+            return SSLContexts.custom()
+                    .loadTrustMaterial(null, TrustAllStrategy.INSTANCE)
+                    .build();
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating SSL context", e);
+        }
+    }
+
+    public boolean isWebsiteUp(String url) {
+        try {
+            SSLContext sslContext = createIgnoreSSLContext();
+
+            // Create a custom HTTP client with SSL context
+            CloseableHttpClient httpClient = HttpClients.custom()
+                    .setSslContext(sslContext)
+                    .build();
+
+            // Use Executor to execute the request with the custom client
+            int statusCode = Executor.newInstance(httpClient)
+                    .execute(Request.get(url)
+                            .connectTimeout(Timeout.ofSeconds(10))
+                            .responseTimeout(Timeout.ofSeconds(10))
+                    )
+                    .returnResponse()
+                    .getCode();
+
+            return statusCode == 200 || statusCode == 302 || statusCode == 401;
+
+        } catch (IOException e) {
+            System.err.println("Error accessing website: " + e.getMessage());
+            return false;
+        }
+    }
+}
+
+.......
 package com.example.websitestatus.controller;
 
 import com.example.websitestatus.model.Website;
