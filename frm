@@ -1,3 +1,24 @@
+    @GetMapping("/api/status/summary")
+    public Map<String, Object> getWebsiteStatusesSummary() {
+        List<WebsiteStatus> statuses = websiteStatusService.checkAllWebsites();
+
+        long upCount = statuses.stream().filter(WebsiteStatus::isUp).count();
+        long downCount = statuses.size() - upCount;
+
+        Map<String, List<WebsiteStatus>> groupedByStatusMessage = statuses.stream()
+                .collect(Collectors.groupingBy(WebsiteStatus::getStatusMessage));
+
+        // Build the summary response
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("totalWebsites", statuses.size());
+        response.put("upCount", upCount);
+        response.put("downCount", downCount);
+        response.put("groupedByStatusMessage", groupedByStatusMessage);
+        response.put("allStatuses", statuses);
+
+        return response;
+    }
+....
 package com.example.websitestatuschecker.controller;
 
 import com.example.websitestatuschecker.model.WebsiteStatus;
