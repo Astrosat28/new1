@@ -1,3 +1,16 @@
+import Dashboard from './Dashboard';
+
+function App() {
+  return (
+    <div className="App">
+      <Dashboard />
+    </div>
+  );
+}
+
+
+
+
 .npm install bootstrap
 "styles": [
   "node_modules/bootstrap/dist/css/bootstrap.min.css",
