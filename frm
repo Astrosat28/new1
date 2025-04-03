@@ -1044,6 +1044,193 @@ export class Jim2Component {
 
 
 
+.................
+
+
+
+
+import React from 'react';
+import './Dashboard.css';
+
+const cardDescriptions = {
+  card1: 'This is the description for Card 1. It shows transaction statistics. This is the description for Card 1. It shows transaction statistics. This is the description for Card 1. It shows transaction statistics. This is the description for Card 1. It shows transaction statistics. This is the description for Card 1. It shows transaction statistics.',
+  card2: 'This is the description for Card 2. It displays system health metrics.'
+};
+
+export default function Dashboard() {
+  return (
+    <div className="main-container">
+      {/* === Row 1 === */}
+      <div className="custom-row row-1">
+        <div className="custom-col row-1-div-1">
+          <div className="card business-card">
+            <div className="card-body">Key Business Transaction</div>
+          </div>
+        </div>
+        {[2,3,4,5,6].map(num => (
+          <div className={`custom-col row-1-div-${num}`} key={num}>
+            <div className="card card-top">
+              <div className="card-body">Top Card Content</div>
+            </div>
+            <div className="card card-bottom">
+              <div className="card-body">Bottom Card Content</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* === Row 2 === */}
+      <div className="custom-row row-2">
+        <div className="custom-col row-2-div-1">
+          <div className="card systems-interaction-card">
+            <div className="card-body">Systems Interaction</div>
+          </div>
+        </div>
+        <div className="custom-col row-2-div-2">
+          <div className="card-grid-2x3">
+            <div className="card card-1" title={cardDescriptions['card1']}><div className="card-body">Card 1</div></div>
+            <div className="card card-2" title={cardDescriptions['card2']}><div className="card-body">Card 2</div></div>
+            <div className="card card-3"><div className="card-body">Card 3</div></div>
+            <div className="card card-4"><div className="card-body">Card 4</div></div>
+            <div className="card card-5"><div className="card-body">Card 5</div></div>
+            <div className="card card-6 invisiblecard"><div className="card-body">Card 6</div></div>
+          </div>
+          <div className="bridge-card">Admin</div>
+        </div>
+        <div className="custom-col row-2-div-3">
+          <div className="card-pair-horizontal">
+            <div className="card horizontal-card card-left"><div className="card-body">Left Card</div></div>
+            <div className="card horizontal-card card-right"><div className="card-body">Right Card</div></div>
+          </div>
+        </div>
+        <div className="custom-col row-2-div-4">Div 4</div>
+        <div className="custom-col row-2-div-5">
+          <div className="card single-card card-div5"><div className="card-body">Operations</div></div>
+        </div>
+        <div className="custom-col row-2-div-6">
+          <div className="card single-card card-div6"><div className="card-body">Monitoring</div></div>
+        </div>
+      </div>
+
+      {/* === Row 3 === */}
+      <div className="custom-row row-3">
+        <div className="custom-col row-3-div-1">
+          <div className="card administration-card"><div className="card-body">Administration</div></div>
+        </div>
+        <div className="custom-col row-3-div-2-3">
+          Policy Admin
+          <div className="card-grid-3x2">
+            {[...'ABCDEF'].map(letter => (
+              <div className={`card card-${letter.toLowerCase()}`} key={letter}><div className="card-body">Card {letter}</div></div>
+            ))}
+          </div>
+        </div>
+        <div className="custom-col row-3-div-4">
+          <div className="card card-top-3-4"><div className="card-body">Top Card</div></div>
+          <div className="card card-bottom-3-4"><div className="card-body">Bottom Card</div></div>
+        </div>
+        <div className="custom-col row-3-div-5">
+          Producer Mgmt
+          <div className="card-grid-3x2-div5">
+            {[...'ABCDEF'].map(letter => (
+              <div className={`card card-5${letter.toLowerCase()}`} key={letter}><div className="card-body">Card {letter}</div></div>
+            ))}
+          </div>
+        </div>
+        <div className="custom-col row-3-div-6">
+          Billing Payments Processing
+          <div className="card-grid-2x2-div6">
+            {[...'ABCD'].map(letter => (
+              <div className={`card card-6${letter.toLowerCase()}`} key={letter}><div className="card-body">Card {letter}</div></div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* === Row 4 === */}
+      <div className="custom-row row-4">
+        <div className="custom-col row-4-div-1">
+          <div className="card administration-card"><div className="card-body">Analytics</div></div>
+        </div>
+        <div className="custom-col row-4-div-2to6">
+          <div className="flex-cards-wrapper">
+            {["Analytics", "Ops", "Compliance", "Security", "Dev", "QA", "Infra Mgmt", "Support"].map((label, i) => (
+              <div className={`flex-card card-${String.fromCharCode(97 + i)}`} key={label}>{label}</div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* === Row 5 === */}
+      <div className="custom-row row-5">
+        <div className="custom-col row-5-div-1">
+          <div className="card administration-card"><div className="card-body">Peripherals Systems</div></div>
+        </div>
+        <div className="custom-col row-5-div-2">
+          <div className="card-grid-2x2-with-footer">
+            <div className="grid-section">
+              {[...'ABCD'].map(letter => (
+                <div className={`card card-5-2${letter.toLowerCase()}`} key={letter}><div className="card-body">Card {letter}</div></div>
+              ))}
+            </div>
+            <div className="card card-5-2-footer"><div className="card-body">Footer Card</div></div>
+          </div>
+        </div>
+        <div className="custom-col row-5-div-3">
+          Accounting
+          <div className="card-grid-2x2-div5-3">
+            {[...'ABCD'].map(letter => (
+              <div className={`card card-5-3${letter.toLowerCase()}`} key={letter}><div className="card-body">Card {letter}</div></div>
+            ))}
+          </div>
+        </div>
+        <div className="custom-col row-5-div-4">
+          <div className="card-pair-row-5-4">
+            <div className="card card-left-5-4"><div className="card-body">Left Card</div></div>
+            <div className="card card-right-5-4"><div className="card-body">Right Card</div></div>
+          </div>
+        </div>
+        <div className="custom-col row-5-div-5">
+          <div className="card-stack-5-5">
+            <div className="card-pair-5-5">
+              <div className="card card-5-5a"><div className="card-body">Card A</div></div>
+              <div className="card card-5-5b"><div className="card-body">Card B</div></div>
+            </div>
+            <div className="card card-5-5c"><div className="card-body">Full Width Card</div></div>
+          </div>
+        </div>
+        <div className="custom-col row-5-div-6">
+          <div className="card card-5-6a"><div className="card-body">Top Card</div></div>
+          <div className="card card-5-6b"><div className="card-body">Bottom Card</div></div>
+        </div>
+      </div>
+
+      {/* === Row 6 === */}
+      <div className="custom-row row-6">
+        <div className="custom-col row-6-div-1">
+          <div className="card business-card">
+            <div className="card-body">Key Business Transaction</div>
+          </div>
+        </div>
+        {[2,3,4,5,6].map(num => (
+          <div className={`custom-col row-6-div-${num}`} key={`row6-${num}`}>
+            <div className="card card-top">
+              <div className="card-body">Top Card Content</div>
+            </div>
+            <div className="card card-bottom">
+              <div className="card-body">Bottom Card Content</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+
+
+
 
 
 
