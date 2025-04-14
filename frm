@@ -1,3 +1,89 @@
+Here’s a concise and professional training session summary you can present to your team:
+
+
+---
+
+Training Session Summary: Email Extraction to Angular Display Workflow
+
+Objective:
+To train the team on the end-to-end workflow for extracting specific Outlook emails, processing them, storing in the database, and displaying categorized email data on the Angular frontend.
+
+
+---
+
+Modules Covered:
+
+1. Email Extraction via Python:
+
+Used win32com.client to connect with Outlook.
+
+Filtered emails based on specific subject patterns (e.g., "FV Release", "CV Update", etc.).
+
+Parsed content such as subject, date, body, and attachments if needed.
+
+
+
+2. Database Insertion:
+
+Cleaned and structured email data.
+
+Connected to MS SQL database using pyodbc or sqlalchemy.
+
+Inserted records into a predefined table schema.
+
+
+
+3. Java REST API Layer:
+
+Created using Spring Boot.
+
+Exposed endpoints to fetch email data by category or latest status.
+
+Included endpoints for deletion or update if applicable.
+
+
+
+4. Angular Frontend:
+
+Consumed the REST API to display categorized emails.
+
+Implemented components with routing and UI filters.
+
+Provided view by categories such as:
+
+FV Release
+
+CV Release
+
+MOPA FV / CV
+
+
+
+
+
+
+---
+
+Training Outcomes:
+
+Understand the full pipeline: Outlook → Python → Database → API → Angular.
+
+Learn how to add new subject filters or modify categories.
+
+Gain ability to troubleshoot data flow and integration issues.
+
+Understand deployment and maintenance best practices.
+
+
+
+---
+
+Let me know if you want slides, flow diagrams, or a more hands-on script for live demo.
+
+
+
+
+
 .
 <h1 style="color: #650030; font-weight: bold; text-align: left; margin-top: 20px;">
   LFG Landscape and Cognizant Involvement - Retail
