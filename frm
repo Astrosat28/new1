@@ -1,3 +1,98 @@
+CREATE TABLE dbo.visitorlog (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    userid NVARCHAR(100),
+    url NVARCHAR(2048),
+    timestamp DATETIME,
+    ipaddress NVARCHAR(45)
+);
+
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" ...>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.office</groupId>
+  <artifactId>visitor-logger</artifactId>
+  <version>1.0.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>12.2.0.jre11</version>
+    </dependency>
+  </dependencies>
+</project>
+
+
+spring.datasource.url=jdbc:sqlserver://YOUR_SERVER;databaseName=YOUR_DB
+spring.datasource.username=your_user
+spring.datasource.password=your_pass
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.show-sql=true
+
+@Entity
+@Table(name = "visitorlog", schema = "dbo")
+public class VisitorLog {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String userid;
+    private String url;
+    private LocalDateTime timestamp;
+    private String ipaddress;
+
+    // Getters and Setters
+}
+
+@Repository
+public interface VisitorLogRepository extends JpaRepository<VisitorLog, Long> {}
+
+
+@Component
+public class VisitorLoggingFilter extends OncePerRequestFilter {
+
+    @Autowired
+    private VisitorLogRepository logRepository;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = (auth != null) ? auth.getName() : "anonymous";
+
+        VisitorLog log = new VisitorLog();
+        log.setUserid(userId);
+        log.setUrl(request.getRequestURL().toString());
+        log.setIpaddress(request.getRemoteAddr());
+        log.setTimestamp(LocalDateTime.now());
+
+        logRepository.save(log);
+        filterChain.doFilter(request, response);
+    }
+}
+
+
+<dependency>
+  <groupId>com.office</groupId>
+  <artifactId>visitor-logger</artifactId>
+  <version>1.0.0</version>
+</dependency>
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
 Here’s a concise and professional training session summary you can present to your team:
 
 
