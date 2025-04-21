@@ -1,3 +1,55 @@
+package com.office.visitorlogger;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class GlobalTrafficLoggerFilter implements Filter {
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmmss");
+
+    @Override
+    public void init(FilterConfig filterConfig) {}
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+        HttpServletRequest httpReq = (HttpServletRequest) request;
+        String timestamp = LocalDateTime.now().format(formatter);
+        String url = httpReq.getRequestURL().toString();
+
+        System.out.println(timestamp + " - " + url);
+
+        chain.doFilter(request, response);
+    }
+
+    @Override
+    public void destroy() {}
+}
+.......
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="3.0">
+
+    <filter>
+        <filter-name>GlobalTrafficLoggerFilter</filter-name>
+        <filter-class>com.office.visitorlogger.GlobalTrafficLoggerFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>GlobalTrafficLoggerFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+</web-app>
+
+
+
+
+mmmmmm
+
 CREATE TABLE dbo.visitorlog (
     id INT IDENTITY(1,1) PRIMARY KEY,
     userid NVARCHAR(100),
