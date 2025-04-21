@@ -1,3 +1,65 @@
+
+// VisitorLoggingFilter.java
+package com.example.demo.filter;
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class VisitorLoggingFilter implements Filter {
+
+    private static final Logger logger = LoggerFactory.getLogger(VisitorLoggingFilter.class);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmmss");
+
+    @Override
+    public void init(FilterConfig filterConfig) {}
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+        HttpServletRequest httpReq = (HttpServletRequest) request;
+        String url = httpReq.getRequestURL().toString();
+        String timestamp = LocalDateTime.now().format(formatter);
+
+        logger.info(timestamp + " - " + url);
+
+        chain.doFilter(request, response);
+    }
+
+    @Override
+    public void destroy() {}
+}
+
+// logback.xml
+<configuration>
+    <appender name="VISIT_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/visit-logger.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${catalina.base}/logs/visit-logger-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="com.example.demo.filter.VisitorLoggingFilter" level="INFO" additivity="false">
+        <appender-ref ref="VISIT_LOG_FILE" />
+    </logger>
+
+    <root level="WARN">
+        <appender-ref ref="VISIT_LOG_FILE"/>
+    </root>
+</configuration>
+
+////
+
 spring.application.name=demo
 server.port=8081
 
