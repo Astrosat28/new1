@@ -1,207 +1,110 @@
-package com.globalfilter;
+
+package com.abi.remoteuserlogger;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GlobalLoggerApplication {
-
+public class RemoteUserLoggerApplication {
     public static void main(String[] args) {
-        SpringApplication.run(GlobalLoggerApplication.class, args);
+        SpringApplication.run(RemoteUserLoggerApplication.class, args);
     }
 }
 
+// --- RemoteUserLoggerFilter.java ---
 
-.........
-package com.globalfilter;
+package com.abi.remoteuserlogger.filter;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
-@SpringBootApplication
-public class GlobalLoggerApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(GlobalLoggerApplication.class, args);
-    }
-}
-
-.....
-....
-package com.globalfilter.config;
-
-import com.globalfilter.filter.GlobalLoggerFilter;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-public class WebConfig {
-
-    @Bean
-    public FilterRegistrationBean<GlobalLoggerFilter> loggingFilter(){
-        FilterRegistrationBean<GlobalLoggerFilter> registrationBean = new FilterRegistrationBean<>();
-
-        registrationBean.setFilter(new GlobalLoggerFilter());
-        registrationBean.addUrlPatterns("/*"); // apply to all URLs
-
-        return registrationBean;
-    }
-}
-
-......
-package com.globalfilter.filter;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.*;
+import java.util.Enumeration;
 
-public class GlobalLoggerFilter implements Filter {
-
-    private static final BlockingQueue<String> logQueue = new LinkedBlockingQueue<>();
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private static Connection connection;
-
-    @Override
-    public void init(FilterConfig filterConfig) {
-        executor.submit(new LogDBWorker());
-
-        try {
-            // Initialize DB connection
-            connection = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/logsdb", "root", "yourpassword"
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+@WebFilter(urlPatterns = "/*")
+public class RemoteUserLoggerFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        if (request instanceof HttpServletRequest) {
-            HttpServletRequest req = (HttpServletRequest) request;
-            if ("GET".equalsIgnoreCase(req.getMethod())) {
-                String url = req.getRequestURL().toString();
-                String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                String user = req.getRemoteUser() != null ? req.getRemoteUser() : "anonymous";
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-                logQueue.offer(timestamp + "," + user + "," + url);
+        // Try to get user from remoteUser
+        String remoteUser = httpRequest.getRemoteUser();
+        System.out.println("Remote User ID: " + remoteUser);
+
+        // Try to get user from session attributes if remoteUser is null
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            Enumeration<String> attributeNames = session.getAttributeNames();
+            while (attributeNames.hasMoreElements()) {
+                String attributeName = attributeNames.nextElement();
+                System.out.println("Session Attribute: " + attributeName + " = " + session.getAttribute(attributeName));
             }
         }
 
         chain.doFilter(request, response);
     }
-
-    @Override
-    public void destroy() {
-        executor.shutdown();
-        try {
-            if (connection != null) connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    static class LogDBWorker implements Runnable {
-        @Override
-        public void run() {
-            while (true) {
-                try {
-                    String logEntry = logQueue.take();
-                    String[] parts = logEntry.split(",", 3);
-
-                    try (PreparedStatement stmt = connection.prepareStatement(
-                            "INSERT INTO visitor_logs (timestamp, username, url) VALUES (?, ?, ?)")) {
-                        stmt.setString(1, parts[0]);
-                        stmt.setString(2, parts[1]);
-                        stmt.setString(3, parts[2]);
-                        stmt.executeUpdate();
-                    }
-                } catch (InterruptedException | SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 }
 
+// --- application.properties ---
 
+# Empty - no configs needed for now
 
-. njn
+// --- pom.xml ---
 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-package com.globalfilter;
+    <groupId>com.abi</groupId>
+    <artifactId>remote-user-logger</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.*;
+    <name>Remote User Logger</name>
 
-public class GlobalLoggerFilter implements Filter {
+    <properties>
+        <java.version>17</java.version>
+        <spring-boot.version>3.2.2</spring-boot.version>
+    </properties>
 
-    private static BlockingQueue<String> logQueue = new LinkedBlockingQueue<>();
-    private static ExecutorService executor = Executors.newSingleThreadExecutor();
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        executor.submit(new LogDBWorker());
-    }
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-            throws IOException, ServletException {
-        if (req instanceof HttpServletRequest) {
-            HttpServletRequest request = (HttpServletRequest) req;
-            if ("GET".equalsIgnoreCase(request.getMethod())) {
-                String url = request.getRequestURL().toString();
-                String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                String user = request.getRemoteUser() != null ? request.getRemoteUser() : "anonymous";
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-                // Queue the log
-                logQueue.offer(timestamp + "," + user + "," + url);
-            }
-        }
-        chain.doFilter(req, res);
-    }
-
-    @Override
-    public void destroy() {
-        executor.shutdown();
-    }
-
-    static class LogDBWorker implements Runnable {
-        @Override
-        public void run() {
-            try (Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/logsdb", "root", "yourpassword")) {
-
-                while (true) {
-                    String logEntry = logQueue.take(); // blocks if empty
-                    String[] parts = logEntry.split(",", 3);
-
-                    try (PreparedStatement stmt = conn.prepareStatement(
-                            "INSERT INTO visitor_logs (timestamp, username, url) VALUES (?, ?, ?)")) {
-                        stmt.setString(1, parts[0]);
-                        stmt.setString(2, parts[1]);
-                        stmt.setString(3, parts[2]);
-                        stmt.executeUpdate();
-                    } catch (SQLException ex) {
-                        ex.printStackTrace(); // you can add retry logic if needed
-                    }
-                }
-
-            } catch (SQLException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
+</project>
