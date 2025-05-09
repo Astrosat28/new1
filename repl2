@@ -1,3 +1,144 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+public static class TfIdfSummarizer
+{
+    public static string Summarize(string inputText, int maxSentences = 3)
+    {
+        var sentences = Regex.Split(inputText.Trim(), @"(?<=[.!?])\s+").Where(s => s.Length > 0).ToList();
+        var totalSentences = sentences.Count;
+
+        // Tokenize sentences and build vocabulary
+        var sentenceTokens = sentences.Select(s => Tokenize(s)).ToList();
+        var allWords = sentenceTokens.SelectMany(s => s).Distinct().ToList();
+
+        // Compute IDF for each word
+        var idf = new Dictionary<string, double>();
+        foreach (var word in allWords)
+        {
+            int containing = sentenceTokens.Count(s => s.Contains(word));
+            idf[word] = Math.Log((double)totalSentences / (1 + containing));  // smoothed IDF
+        }
+
+        // Score each sentence using TF-IDF
+        var scoredSentences = sentences.Select((sentence, index) =>
+        {
+            var words = sentenceTokens[index];
+            var tf = new Dictionary<string, double>();
+            foreach (var word in words)
+                tf[word] = tf.GetValueOrDefault(word, 0) + 1;
+
+            foreach (var key in tf.Keys.ToList())
+                tf[key] /= words.Count;
+
+            double score = tf.Sum(kvp => kvp.Value * idf.GetValueOrDefault(kvp.Key, 0));
+            return new { Sentence = sentence, Score = score };
+        });
+
+        // Select top scoring sentences
+        var best = scoredSentences
+            .OrderByDescending(s => s.Score)
+            .Take(maxSentences)
+            .Select(s => s.Sentence)
+            .ToList();
+
+        return string.Join(" ", best);
+    }
+
+    private static List<string> Tokenize(string sentence)
+    {
+        return Regex.Matches(sentence.ToLower(), @"\b\w+\b")
+                    .Cast<Match>()
+                    .Select(m => m.Value)
+                    .ToList();
+    }
+
+    private static double GetValueOrDefault(this Dictionary<string, double> dict, string key, double defaultValue = 0.0)
+    {
+        return dict.TryGetValue(key, out double value) ? value : defaultValue;
+    }
+}
+
+
+2 d
+......
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        string text = @"Artificial intelligence (AI) is transforming every aspect of our lives. 
+                        From self-driving cars to advanced medical diagnostics, AI is everywhere. 
+                        Despite its rapid growth, ethical concerns about privacy and bias remain. 
+                        Researchers continue to explore ways to make AI more explainable and fair. 
+                        As adoption grows, regulation and transparency will be critical.";
+
+        string summary = TfIdfSummarizer.Summarize(text, maxSentences: 2);
+        Console.WriteLine("SUMMARY:\n" + summary);
+    }
+}
+
+
+
+
+......
+
+public class InputData
+{
+    [VectorType(1, 20)] // max token length
+    public long[] InputIds { get; set; }
+}
+
+
+
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using Microsoft.ML.Transforms.Onnx;
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        var mlContext = new MLContext();
+
+        // 1. Create dummy input
+        var inputText = "Text summarization is the task of shortening a set of data computationally.";
+        var inputs = new List<InputData>
+        {
+            new InputData { InputIds = Tokenizer.Tokenize(inputText) }
+        };
+
+        // 2. Load input as IDataView
+        var inputDataView = mlContext.Data.LoadFromEnumerable(inputs);
+
+        // 3. Define ONNX model path and pipeline
+        var pipeline = mlContext.Transforms.ApplyOnnxModel(
+            modelFile: "Models/model.onnx",
+            inputColumnNames: new[] { "input_ids" },
+            outputColumnNames: new[] { "logits" });
+
+        var model = pipeline.Fit(inputDataView);
+
+        // 4. Use the model
+        var transformed = model.Transform(inputDataView);
+        var predictions = mlContext.Data.CreateEnumerable<OutputData>(transformed, reuseRowObject: false);
+
+        foreach (var prediction in predictions)
+        {
+            Console.WriteLine("Summary tokens: " + string.Join(",", prediction.Logits));
+        }
+    }
+}
+
+
+
+
+..........
 package com.example.saml2login;
 
 import org.springframework.boot.SpringApplication;
