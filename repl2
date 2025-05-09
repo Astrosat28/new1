@@ -1,4 +1,81 @@
+package com.example.saml2login;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Saml2LoginApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(Saml2LoginApplication.class, args);
+    }
+}
+
+
+package com.example.saml2login.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class SecurityConfig {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests()
+            .anyRequest().authenticated()
+            .and()
+            .saml2Login();
+        return http.build();
+    }
+}
+
+
+
+
+
+package com.example.saml2login.controller;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class UserController {
+
+    @GetMapping("/user")
+    public String userInfo(@AuthenticationPrincipal Saml2AuthenticatedPrincipal principal) {
+        return "Logged in as: " + principal.getName();
+    }
+}
+
+package com.example.saml2login.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class RedirectController {
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/user";
+    }
+}
+
+
+
+
+spring:
+  security:
+    saml2:
+      relyingparty:
+        registration:
+          corp-idp:
+            identityprovider:
+              metadata-uri: https://idp.example.com/metadata
+............
 package com.abi.remoteuserlogger;
 
 import org.springframework.boot.SpringApplication;
