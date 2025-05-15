@@ -1,421 +1,199 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
+css
+.circle {
+    border-radius: 50%;
+  }
+  
+  .square {
+    /* No border-radius, keeps square shape */
+  }
+  
+  /* Size rules */
+  .small {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .medium {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .large {
+    width: 200px;
+    height: 200px;
+  }
 
-class Program
-{
-    static void Main()
-    {
-        string inputText = @"Artificial intelligence is transforming industries. 
-                             It enables automation and better decision-making. 
-                             However, ethical concerns remain. 
-                             Responsible AI development is crucial. 
-                             Companies are investing heavily in AI research.";
 
-        string summary = TfIdfSummarizer.Summarize(inputText, 2);
-        Console.WriteLine("SUMMARY:\n" + summary);
-    }
+html
+<div class="container-fluid py-4">
+    <!-- Row 1: 8 Small Circles + 2 Squares -->
+    <div class="row justify-content-center mb-4">
+      <div class="col-auto" *ngFor="let i of [].constructor(8)">
+        <div class="circle small bg-secondary mb-2"></div>
+      </div>
+      <div class="col-auto" *ngFor="let i of [].constructor(2)">
+        <div class="square medium bg-primary"></div>
+      </div>
+    </div>
+  
+    <!-- Row 2: 2 Large Boxes + 2 Vertical Medium Squares -->
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-4">
+        <div class="square large bg-success"></div>
+      </div>
+      <div class="col-md-4">
+        <div class="square large bg-success"></div>
+      </div>
+      <div class="col-md-2 d-flex flex-column justify-content-between">
+        <div class="square medium bg-warning mb-2"></div>
+        <div class="square medium bg-warning"></div>
+      </div>
+    </div>
+  
+    <!-- Row 3: Same as Row 2 -->
+    <div class="row justify-content-center">
+      <div class="col-md-4">
+        <div class="square large bg-danger"></div>
+      </div>
+      <div class="col-md-4">
+        <div class="square large bg-danger"></div>
+      </div>
+      <div class="col-md-2 d-flex flex-column justify-content-between">
+        <div class="square medium bg-info mb-2"></div>
+        <div class="square medium bg-info"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid py-4">
+    <div class="row justify-content-center flex-wrap">
+      <div class="col-auto mb-3" *ngFor="let item of items">
+        <div [ngClass]="[item.type, item.size, 'd-flex', 'align-items-center', 'justify-content-center']"
+             class="text-white text-center border"
+             [style.backgroundImage]="item.imageUrl ? 'url(' + item.imageUrl + ')' : null"
+             style="background-size: cover; background-position: center;">
+          <span class="fw-bold" style="text-shadow: 1px 1px 2px black;">{{ item.label }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  .tscomponenet
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { DashboardItem } from '../dashboard-item.model';
+import { DashboardDataService } from '../dashboard-data.service';
+import { HttpClientModule } from '@angular/common/http';
+
+@Component({
+  selector: 'app-Version1',
+  standalone: true,
+  imports: [CommonModule, HttpClientModule],
+  templateUrl: './Version1.component.html',
+  styleUrls: ['./Version1.component.css']
+})
+export class Version1Component implements OnInit {
+  items: DashboardItem[] = [];
+
+  constructor(private dataService: DashboardDataService) {}
+
+  ngOnInit(): void {
+    this.dataService.getDashboardItems().subscribe(data => {
+      this.items = data;
+    });
+  }
+}
+app.routing module 
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { Version1Component} from './version1/version1.component';
+
+
+const routes: Routes = [
+  {path : 'v1', component: Version1Component},
+
+ 
+  { path: '**', redirectTo: '' },
+ 
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],  // Use forRoot for root-level routing
+  exports: [RouterModule]  
+})
+export class AppRoutingModule { }
+
+
+app.component.ts
+// src/app/app.component.ts
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet, HttpClientModule],
+  template: `<router-outlet></router-outlet>`
+})
+export class AppComponent {}
+
+
+app.config
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
+    provideHttpClient() 
+  ]
+};
+
+app.routes
+import { Routes } from '@angular/router';
+import { Version1Component } from './version1/version1.component';
+
+
+export const routes: Routes = [
+    { path: 'version1', component: Version1Component },
+    { path: '', redirectTo: 'version1', pathMatch: 'full' },
+    { path: '**', redirectTo: 'component1' }
+];
+
+dashborard data service 
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { DashboardItem } from './dashboard-item.model';
+
+@Injectable({ providedIn: 'root' })
+export class DashboardDataService {
+  constructor(private http: HttpClient) {}
+
+  getDashboardItems(): Observable<DashboardItem[]> {
+    // Replace with real API later
+    return of([
+      { type: 'circle', size: 'small', label: 'A', imageUrl: 'https://via.placeholder.com/50' },
+      { type: 'circle', size: 'small', label: 'B' },
+      { type: 'square', size: 'medium', label: 'Box 1' },
+      { type: 'circle', size: 'medium', label: 'C', imageUrl: 'https://via.placeholder.com/100' },
+      { type: 'square', size: 'large', label: 'Big Square' },
+      { type: 'circle', size: 'large', label: 'Big Circle', imageUrl: 'https://via.placeholder.com/200' }
+    ]);
+  }
 }
 
-public static class TfIdfSummarizer
-{
-    // Basic English stopword list (can be expanded)
-    private static readonly HashSet<string> StopWords = new HashSet<string>
-    {
-        "a", "an", "the", "and", "or", "but", "if", "then", "with", "of", "for", "on", "in", "to", "from",
-        "is", "are", "was", "were", "be", "being", "been", "at", "by", "that", "this", "which", "as", "it", 
-        "has", "have", "had", "will", "would", "can", "could", "should", "do", "does", "did", "not"
-    };
-
-    public static string Summarize(string inputText, int maxSentences = 3)
-    {
-        var sentences = Regex.Split(inputText.Trim(), @"(?<=[.!?])\s+").Where(s => s.Length > 0).ToList();
-        if (sentences.Count <= maxSentences)
-            return inputText.Trim(); // If short, return as-is
-
-        var sentenceTokens = sentences.Select(s => Tokenize(s)).ToList();
-        var allWords = sentenceTokens.SelectMany(s => s).Distinct().ToList();
-
-        // Calculate IDF
-        var idf = new Dictionary<string, double>();
-        foreach (var word in allWords)
-        {
-            int containing = sentenceTokens.Count(s => s.Contains(word));
-            idf[word] = Math.Log((double)sentences.Count / (1 + containing));
-        }
-
-        // Score each sentence
-        var scoredSentences = sentences.Select((sentence, index) =>
-        {
-            var words = sentenceTokens[index];
-            var tf = new Dictionary<string, double>();
-            foreach (var word in words.Where(w => !StopWords.Contains(w)))
-                tf[word] = tf.GetValueOrDefault(word, 0) + 1;
-
-            foreach (var key in tf.Keys.ToList())
-                tf[key] /= words.Count == 0 ? 1 : words.Count;
-
-            double score = tf.Sum(kvp => kvp.Value * idf.GetValueOrDefault(kvp.Key, 0));
-
-            // Bonus for position (early or final sentences)
-            if (index == 0 || index == sentences.Count - 1)
-                score += 0.2;
-
-            return new { Sentence = sentence, Score = score };
-        });
-
-        var best = scoredSentences
-            .OrderByDescending(s => s.Score)
-            .Take(maxSentences)
-            .Select(s => s.Sentence)
-            .ToList();
-
-        return string.Join(" ", best);
-    }
-
-    private static List<string> Tokenize(string sentence)
-    {
-        return Regex.Matches(sentence.ToLower(), @"\b[a-z]{3,}\b")  // only meaningful words, min length 3
-                    .Cast<Match>()
-                    .Select(m => m.Value)
-                    .ToList();
-    }
-
-    public static double GetValueOrDefault(this Dictionary<string, double> dict, string key, double defaultValue = 0)
-    {
-        return dict.TryGetValue(key, out double value) ? value : defaultValue;
-    }
-}
-
-/////
-
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-public static class TfIdfSummarizer
-{
-    public static string Summarize(string inputText, int maxSentences = 3)
-    {
-        var sentences = Regex.Split(inputText.Trim(), @"(?<=[.!?])\s+").Where(s => s.Length > 0).ToList();
-        var totalSentences = sentences.Count;
-
-        // Tokenize sentences and build vocabulary
-        var sentenceTokens = sentences.Select(s => Tokenize(s)).ToList();
-        var allWords = sentenceTokens.SelectMany(s => s).Distinct().ToList();
-
-        // Compute IDF for each word
-        var idf = new Dictionary<string, double>();
-        foreach (var word in allWords)
-        {
-            int containing = sentenceTokens.Count(s => s.Contains(word));
-            idf[word] = Math.Log((double)totalSentences / (1 + containing));  // smoothed IDF
-        }
-
-        // Score each sentence using TF-IDF
-        var scoredSentences = sentences.Select((sentence, index) =>
-        {
-            var words = sentenceTokens[index];
-            var tf = new Dictionary<string, double>();
-            foreach (var word in words)
-                tf[word] = tf.GetValueOrDefault(word, 0) + 1;
-
-            foreach (var key in tf.Keys.ToList())
-                tf[key] /= words.Count;
-
-            double score = tf.Sum(kvp => kvp.Value * idf.GetValueOrDefault(kvp.Key, 0));
-            return new { Sentence = sentence, Score = score };
-        });
-
-        // Select top scoring sentences
-        var best = scoredSentences
-            .OrderByDescending(s => s.Score)
-            .Take(maxSentences)
-            .Select(s => s.Sentence)
-            .ToList();
-
-        return string.Join(" ", best);
-    }
-
-    private static List<string> Tokenize(string sentence)
-    {
-        return Regex.Matches(sentence.ToLower(), @"\b\w+\b")
-                    .Cast<Match>()
-                    .Select(m => m.Value)
-                    .ToList();
-    }
-
-    private static double GetValueOrDefault(this Dictionary<string, double> dict, string key, double defaultValue = 0.0)
-    {
-        return dict.TryGetValue(key, out double value) ? value : defaultValue;
-    }
-}
-
-
-2 d
-......
-using System;
-
-class Program
-{
-    static void Main()
-    {
-        string text = @"Artificial intelligence (AI) is transforming every aspect of our lives. 
-                        From self-driving cars to advanced medical diagnostics, AI is everywhere. 
-                        Despite its rapid growth, ethical concerns about privacy and bias remain. 
-                        Researchers continue to explore ways to make AI more explainable and fair. 
-                        As adoption grows, regulation and transparency will be critical.";
-
-        string summary = TfIdfSummarizer.Summarize(text, maxSentences: 2);
-        Console.WriteLine("SUMMARY:\n" + summary);
-    }
-}
-
-
-
-
-......
-
-public class InputData
-{
-    [VectorType(1, 20)] // max token length
-    public long[] InputIds { get; set; }
-}
-
-
-
-using Microsoft.ML;
-using Microsoft.ML.Data;
-using Microsoft.ML.Transforms.Onnx;
-using System;
-using System.Collections.Generic;
-
-class Program
-{
-    static void Main(string[] args)
-    {
-        var mlContext = new MLContext();
-
-        // 1. Create dummy input
-        var inputText = "Text summarization is the task of shortening a set of data computationally.";
-        var inputs = new List<InputData>
-        {
-            new InputData { InputIds = Tokenizer.Tokenize(inputText) }
-        };
-
-        // 2. Load input as IDataView
-        var inputDataView = mlContext.Data.LoadFromEnumerable(inputs);
-
-        // 3. Define ONNX model path and pipeline
-        var pipeline = mlContext.Transforms.ApplyOnnxModel(
-            modelFile: "Models/model.onnx",
-            inputColumnNames: new[] { "input_ids" },
-            outputColumnNames: new[] { "logits" });
-
-        var model = pipeline.Fit(inputDataView);
-
-        // 4. Use the model
-        var transformed = model.Transform(inputDataView);
-        var predictions = mlContext.Data.CreateEnumerable<OutputData>(transformed, reuseRowObject: false);
-
-        foreach (var prediction in predictions)
-        {
-            Console.WriteLine("Summary tokens: " + string.Join(",", prediction.Logits));
-        }
-    }
-}
-
-
-
-
-..........
-package com.example.saml2login;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class Saml2LoginApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(Saml2LoginApplication.class, args);
-    }
-}
-
-
-package com.example.saml2login.config;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
-
-@Configuration
-public class SecurityConfig {
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests()
-            .anyRequest().authenticated()
-            .and()
-            .saml2Login();
-        return http.build();
-    }
-}
-
-
-
-
-
-package com.example.saml2login.controller;
-
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-public class UserController {
-
-    @GetMapping("/user")
-    public String userInfo(@AuthenticationPrincipal Saml2AuthenticatedPrincipal principal) {
-        return "Logged in as: " + principal.getName();
-    }
-}
-
-package com.example.saml2login.controller;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-
-@Controller
-public class RedirectController {
-    @GetMapping("/")
-    public String home() {
-        return "redirect:/user";
-    }
-}
-
-
-
-
-spring:
-  security:
-    saml2:
-      relyingparty:
-        registration:
-          corp-idp:
-            identityprovider:
-              metadata-uri: https://idp.example.com/metadata
-............
-package com.abi.remoteuserlogger;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class RemoteUserLoggerApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(RemoteUserLoggerApplication.class, args);
-    }
-}
-
-// --- RemoteUserLoggerFilter.java ---
-
-package com.abi.remoteuserlogger.filter;
-
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.annotation.WebFilter;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
-import java.io.IOException;
-import java.util.Enumeration;
-
-@WebFilter(urlPatterns = "/*")
-public class RemoteUserLoggerFilter implements Filter {
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-
-        // Try to get user from remoteUser
-        String remoteUser = httpRequest.getRemoteUser();
-        System.out.println("Remote User ID: " + remoteUser);
-
-        // Try to get user from session attributes if remoteUser is null
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            Enumeration<String> attributeNames = session.getAttributeNames();
-            while (attributeNames.hasMoreElements()) {
-                String attributeName = attributeNames.nextElement();
-                System.out.println("Session Attribute: " + attributeName + " = " + session.getAttribute(attributeName));
-            }
-        }
-
-        chain.doFilter(request, response);
-    }
-}
-
-// --- application.properties ---
-
-# Empty - no configs needed for now
-
-// --- pom.xml ---
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.abi</groupId>
-    <artifactId>remote-user-logger</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
-
-    <name>Remote User Logger</name>
-
-    <properties>
-        <java.version>17</java.version>
-        <spring-boot.version>3.2.2</spring-boot.version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.2</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-</project>
+dashboard model 
+export interface DashboardItem {
+    type: 'circle' | 'square';
+    size: 'small' | 'medium' | 'large';
+    label?: string;
+    imageUrl?: string;
+  }
+
+
+
+sthyles angular json 
+ "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/styles.css"
