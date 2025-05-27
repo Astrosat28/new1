@@ -1,3 +1,50 @@
+<div class="container mt-4">
+  <h4>Release Task Status Pie Chart</h4>
+  <canvas baseChart
+          [data]="pieChartData"
+          [type]="pieChartType"
+          [legend]="true">
+  </canvas>
+</div>
+
+
+css
+canvas {
+  max-width: 500px;
+  margin: auto;
+}
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NgChartsModule } from 'ng2-charts';
+import { ChartType, ChartData, ChartOptions } from 'chart.js';
+
+@Component({
+  selector: 'app-v2',
+  standalone: true,
+  imports: [CommonModule, NgChartsModule],
+  templateUrl: './v2.component.html',
+  styleUrls: ['./v2.component.css'] // ✅ Fixed typo
+})
+export class V2Component {
+  public pieChartLabels: string[] = ['Non-DXC IP', 'Dxc', 'out of scope', 'others'];
+
+  public pieChartData: ChartData<'pie', number[], string> = {
+    labels: this.pieChartLabels,
+    datasets: [
+      {
+        data: [60, 20, 15, 5],
+        backgroundColor: ['#28a745', '#007bff', '#ffc107', '#dc3545']
+      }
+    ]
+  };
+
+  public pieChartType: ChartType = 'pie';
+}
+
+
+npm install ng2-charts@4.1.1 chart.js
+
+-------
 css
 .circle {
     border-radius: 50%;
