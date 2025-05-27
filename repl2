@@ -1,3 +1,137 @@
+.circle {
+  border-radius: 50%;
+  background-color: #ffffff !important; /* ensure white bg */
+}
+
+.square {
+  border-radius: 0;
+}
+
+.circle-large {
+  width: 100px;
+  height: 100px;
+}
+.square-medium{
+
+  width: 120px;
+  height: 120px;
+}
+
+.square-small {
+  width: 60px;
+  height: 60px;
+}
+
+.inner-box {
+  font-size: 12px;
+  z-index: 1;
+  padding: 4px;
+}
+
+////
+<div class="container-fluid py-4">
+
+  <!-- ✅ Row 1: 8 large circles + 2 small squares -->
+  <div class="row justify-content-center mb-4 flex-wrap">
+    <!-- 8 Circles -->
+    <div class="col-auto mb-2" *ngFor="let item of items.slice(0, 8)">
+      <div class="circle circle-large border bg-white d-flex align-items-center justify-content-center text-dark text-center">
+  <span class="fw-bold" style="text-shadow: 1px 1px 2px gray;">{{ item.label }}</span>
+</div>
+
+    </div>
+
+    <!-- 2 Squares -->
+    <div class="col-auto mb-2" *ngFor="let item of items.slice(8, 10)">
+      <div class="square square-small border bg-primary d-flex align-items-center justify-content-center text-white text-center">
+        <span class="fw-bold" style="text-shadow: 1px 1px 2px black;">{{ item.label }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Row 2 and 3 kept the same, but now use small squares -->
+  <div class="row justify-content-center mb-4">
+    <!-- First square in Row 2 -->
+<div class="col-md-4">
+  <div class="square square-medium border bg-success d-flex align-items-center justify-content-center text-white text-center position-relative">
+    <span class="fw-bold">{{ items[10]?.label }}</span>
+
+    <!-- ✅ Inner div inside square -->
+    <div class="inner-box bg-dark text-white p-2 rounded position-absolute top-0 start-0">
+      Inner Box<app-v2></app-v2>
+    </div>
+  </div>
+</div>
+
+    <div class="col-md-4">
+      <div class="square square-small border bg-success d-flex align-items-center justify-content-center text-white text-center">
+        <span class="fw-bold">{{ items[11]?.label }}</span>
+      </div>
+    </div>
+    <div class="col-md-2 d-flex flex-column justify-content-between">
+      <div class="square square-small border bg-warning mb-2 d-flex align-items-center justify-content-center text-white text-center">
+        <span class="fw-bold">{{ items[12]?.label }}</span>
+      </div>
+      <div class="square square-small border bg-warning d-flex align-items-center justify-content-center text-white text-center">
+        <span class="fw-bold">{{ items[13]?.label }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Row 3: Copy of Row 2 -->
+  <div class="row justify-content-center">
+    <div class="col-md-4">
+      <div class="square square-small border bg-danger d-flex align-items-center justify-content-center text-white text-center">
+        <span class="fw-bold">{{ items[14]?.label }}</span>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="square square-small border bg-danger d-flex align-items-center justify-content-center text-white text-center">
+        <span class="fw-bold">{{ items[15]?.label }}</span>
+      </div>
+    </div>
+    <div class="col-md-2 d-flex flex-column justify-content-between">
+      <div class="square square-small border bg-info mb-2 d-flex align-items-center justify-content-center text-white text-center">
+        <span class="fw-bold">{{ items[16]?.label }}</span>
+      </div>
+      <div class="square square-small border bg-info d-flex align-items-center justify-content-center text-white text-center">
+        <span class="fw-bold">{{ items[17]?.label }}</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+....
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { DashboardItem } from '../dashboard-item.model';
+import { DashboardDataService } from '../dashboard-data.service';
+import { HttpClientModule } from '@angular/common/http';
+import { NgChartsModule } from 'ng2-charts'; // ✅ still valid
+import { ChartType } from 'chart.js';
+import { V2Component } from "../v2/v2.component";
+@Component({
+  selector: 'app-Version1',
+  standalone: true,
+  imports: [CommonModule, HttpClientModule, NgChartsModule, V2Component],
+  templateUrl: './Version1.component.html',
+  styleUrls: ['./Version1.component.css']
+})
+export class Version1Component implements OnInit {
+  items: DashboardItem[] = [];
+
+  constructor(private dataService: DashboardDataService) {}
+
+  ngOnInit(): void {
+    this.dataService.getDashboardItems().subscribe(data => {
+      this.items = data;
+    });
+  }
+}
+
+////
+
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
