@@ -1,3 +1,109 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NgChartsModule } from 'ng2-charts';
+import {
+  ChartType,
+  ChartData,
+  ChartOptions,
+  ChartConfiguration,
+  Chart,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Plugin
+} from 'chart.js';
+
+Chart.register(ArcElement, Tooltip, Legend); // Make sure Chart.js elements are registered
+
+@Component({
+  selector: 'app-v2',
+  standalone: true,
+  imports: [CommonModule, NgChartsModule],
+  templateUrl: './v2.component.html',
+  styleUrls: ['./v2.component.css']
+})
+export class V2Component {
+  public pieChartLabels: string[] = ['non-axc', 'axc', 'out of scope', 'others'];
+
+  public pieChartData: ChartData<'pie', number[], string> = {
+    labels: this.pieChartLabels,
+    datasets: [
+      {
+        data: [60, 20, 15, 5],
+        backgroundColor: ['#28a745', '#007bff', '#ffc107', '#6c757d'],
+        hoverOffset: 15 // ✅ Pie expands slightly on hover
+      }
+    ]
+  };
+
+  public pieChartType: 'pie' = 'pie';
+
+  // ✅ Chart options including plugin for center text
+  public pieChartOptions: ChartOptions<'pie'> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem) {
+            return `${tooltipItem.label}: ${tooltipItem.raw}%`;
+          }
+        }
+      }
+    }
+  };
+
+  // ✅ Center text plugin
+public pieChartPlugins: Plugin<'pie'>[] = [
+  {
+    id: 'centerText',
+    afterDraw(chart) {
+      const ctx = chart.ctx;
+
+      const meta = chart.getDatasetMeta(0);
+      const arc = meta.data[0] as any;
+      const centerX = arc.x;
+      const centerY = arc.y;
+
+      const outerRadius = arc.outerRadius || 100;
+      const circleRadius = outerRadius * 0.6;
+
+      // ✅ Draw white circle
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, circleRadius, 0, 2 * Math.PI);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.closePath();
+
+      // ✅ Draw centered text
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#333';
+
+      ctx.font = 'bold 14px Arial';
+      ctx.fillText('Total Apps', centerX, centerY - 12);
+
+      const total = chart.data.datasets[0].data.reduce((a: number, b: number) => a + b, 0);
+      ctx.font = 'bold 22px Arial';
+      ctx.fillText(`${total}`, centerX, centerY + 14);
+
+      ctx.restore();
+    }
+  }
+];
+
+
+
+
+
+
+}
+
+............
+
 <div class="container mt-4">
   <h4>Release Task Status Pie Chart</h4>
   <canvas baseChart
