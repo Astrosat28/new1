@@ -1,1 +1,212 @@
 .
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <title>Dashboards</title>
+
+  <style>
+  /* ──────────────────────  GLOBAL  ────────────────────── */
+  body { background:#f8f9fa; font-family: system-ui, sans-serif; }
+  .g-16 { gap:1rem; }                       /* 16-px gutter helper   */
+
+  /* ──────────────────────  TOP BANNER  ────────────────────── */
+  .top-banner       { background:#c1121f; color:#fff; padding:0.75rem 1rem; }
+  .top-banner .logo { max-height:48px; width:auto; }
+  .top-banner h1    { margin:0; font-weight:700; letter-spacing:0.5px; }
+
+  /* ──────────────────────  FIRST ROW  ────────────────────── */
+  .dashboard-row-1 { padding:2rem 1rem; }
+
+  /* Circles */
+  .circle-base      { border-radius:50%; width:60px; height:60px;
+                      display:flex; align-items:center; justify-content:center;
+                      background:#e9ecef; color:#6c757d; font-weight:600; }
+
+  /* Pie placeholders */
+  .pie-base         { position:relative; width:80px; height:80px; border-radius:50%;
+                      background:conic-gradient(#dee2e6 0 90deg,
+                                                #adb5bd 90deg 180deg,
+                                                #dee2e6 180deg 270deg,
+                                                #adb5bd 270deg 360deg); }
+  .pie-base::after  { content:"Pie"; position:absolute; inset:0;
+                      display:flex; align-items:center; justify-content:center;
+                      font-weight:600; color:#495057; }
+
+  /* Small squares (row-1) */
+  .square-base      { width:80px; height:80px; background:#dee2e6;
+                      display:flex; align-items:center; justify-content:center;
+                      color:#6c757d; font-weight:600; }
+
+  /* ──────────────────────  ROW-2  (bars + scatter) ────────────────────── */
+  .dashboard-row-2  { padding:1rem 1rem; }
+
+  /* Large bar placeholders (row-2) */
+  .bar-base         { width:240px; height:140px; background:#e9ecef;
+                      display:flex; align-items:center; justify-content:center;
+                      color:#495057; font-weight:600; border-radius:4px; }
+  .bar-base::after  { content:"Bar"; }
+
+  /* Scatter image tiles */
+  .scatter-col      { width:150px; display:flex; flex-direction:column; gap:1rem; }
+  .scatter-base     { width:100%; height:95px; background:#dee2e6; border-radius:4px;
+                      position:relative; overflow:hidden; }
+  .scatter-base::after { content:none; }
+  .scatter-base img { width:100%; height:100%; object-fit:cover; display:block; }
+
+
+
+  /* ─────  Line-chart placeholder (Row-2, col-1)  ───── */
+.line-base            { width:240px; height:140px; background:#ffffff;
+                        border:1px solid #dee2e6; border-radius:4px;
+                        padding:8px; box-shadow:0 1px 2px rgba(0,0,0,.05); }
+.line-base svg        { width:100%; height:100%; display:block; }
+
+  /* ──────────────────────  ROW-3  (dummy charts + squares) ────────────────────── */
+  .dashboard-row-3  { padding:1rem 1rem; }
+
+  /* Horizontal dummy bar chart */
+  .hbar-base        { width:240px; height:80px; background:#e9ecef;
+                      display:flex; flex-direction:column; justify-content:space-around;
+                      padding:0.5rem 0.75rem; border-radius:4px; }
+  .hbar-base .bar-row      { height:12px; background:#dee2e6; border-radius:4px; overflow:hidden; }
+  .hbar-base .bar-row span { display:block; height:100%; background:#0d6efd; }
+
+  /* Vertical dummy bar chart */
+  .vbar-base        { width:240px; height:140px; background:#e9ecef;
+                      display:flex; align-items:flex-end; padding:4px; border-radius:4px; }
+  .vbar-wrapper     { display:flex; gap:6px; width:100%; height:100%; align-items:flex-end; }
+  .vbar-wrapper span{ flex:1; background:#20c997; border-radius:3px 3px 0 0; }
+
+  /* Two stacked squares (row-3) */
+  .vsquare-col      { width:150px; display:flex; flex-direction:column; gap:0.75rem; }
+  .vsquare-base     { width:100%; height:80px; background:#dee2e6; border-radius:4px; }
+
+  /* ──────────────────────  RESPONSIVE (<576 px) ────────────────────── */
+  @media (max-width:576px){
+    /* row-1 */
+    .circle-base    { width:80px; height:80px; }
+    .pie-base,
+    .square-base    { width:120px; height:120px; }
+
+    /* rows 2 & 3 go full-width */
+    .bar-base,
+    .hbar-base,
+    .vbar-base,
+    .scatter-col,
+    .vsquare-col { width:100%; }
+
+    /* make tall enough */
+    .vbar-base   { height:120px; }
+  }
+  </style>
+</head>
+
+<body>
+  <!-- ─────────────  BANNER  ───────────── -->
+  <header class="top-banner d-flex align-items-center">
+    <img src="logo.png" alt="Company Logo" class="logo me-3">
+    <h1 class="flex-grow-1 text-center">Dashboards</h1>
+  </header>
+
+  <main class="container-fluid">
+
+    <!-- ─────────────  ROW-1  ───────────── -->
+    <div class="row dashboard-row-1 justify-content-center g-16">
+
+      <!-- Circles -->
+      <div class="col-auto"><div class="circle-base">C1</div></div>
+      <div class="col-auto"><div class="circle-base">C2</div></div>
+      <div class="col-auto"><div class="circle-base">C3</div></div>
+      <div class="col-auto"><div class="circle-base">C4</div></div>
+
+      <!-- Pie charts -->
+      <div class="col-auto"><div class="pie-base"></div></div>
+      <div class="col-auto"><div class="pie-base"></div></div>
+      <div class="col-auto"><div class="pie-base"></div></div>
+      <div class="col-auto"><div class="pie-base"></div></div>
+
+      <!-- Small squares -->
+      <div class="col-auto"><div class="square-base">SQ1</div></div>
+      <div class="col-auto"><div class="square-base">SQ2</div></div>
+    </div>
+
+    <!-- ─────────────  ROW-2  ───────────── -->
+    <div class="row dashboard-row-2 justify-content-center g-16">
+
+      <!-- Two big bar placeholders -->
+      <div class="col-auto">
+          <div class="line-base">
+    <svg viewBox="0 0 100 50" preserveAspectRatio="none">
+      <!-- filled area under the line -->
+      <polygon points="0,40 15,30 30,35 45,20 60,25 75,10 90,15 100,5 100,50 0,50"
+               fill="rgba(13,110,253,0.15)"/>
+      <!-- line stroke -->
+      <polyline points="0,40 15,30 30,35 45,20 60,25 75,10 90,15 100,5"
+                stroke="#0d6efd" stroke-width="2" fill="none"
+                stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- baseline -->
+      <line x1="0" y1="49" x2="100" y2="49" stroke="#e9ecef" stroke-width="1"/>
+    </svg>
+  </div>
+  <!-- <div class="bar-base">Bar-1</div> -->
+</div>
+      <div class="col-auto"><div class="bar-base">Bar-2</div></div>
+
+      <!-- Two stacked scatter images -->
+      <div class="col-auto scatter-col">
+        <div class="scatter-base">
+          <a href="https://www.google.com/dashboardimage1" target="_blank" class="d-block w-100 h-100">
+            <img src="one.png" alt="Dashboard image 1">
+          </a>
+        </div>
+        <div class="scatter-base">
+          <a href="https://www.google.com/dashboardimage2" target="_blank" class="d-block w-100 h-100">
+            <img src="two.png" alt="Dashboard image 2">
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────  ROW-3  ───────────── -->
+    <div class="row dashboard-row-3 justify-content-center g-16">
+
+      <!-- Horizontal dummy bar chart -->
+      <div class="col-auto">
+        <div class="hbar-base">
+          <div class="bar-row"><span style="width:70%"></span></div>
+          <div class="bar-row"><span style="width:50%"></span></div>
+          <div class="bar-row"><span style="width:90%"></span></div>
+        </div>
+      </div>
+
+      <!-- Vertical dummy bar chart -->
+      <div class="col-auto">
+        <div class="vbar-base">
+          <div class="vbar-wrapper">
+            <span style="height:60%"></span>
+            <span style="height:85%"></span>
+            <span style="height:40%"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two stacked squares -->
+      <div class="col-auto vsquare-col">
+        <div class="vsquare-base"></div>
+        <div class="vsquare-base"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bootstrap JS (optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
