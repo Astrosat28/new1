@@ -1,3 +1,30 @@
+package com.example.demo;
+
+import org.jasypt.util.text.AES256TextEncryptor;
+
+public class Encryptor {
+    public static void main(String[] args) {
+        // Step 1: Define your secret key
+        String secretKey = "my-secret-key"; // use a secure value
+
+        // Step 2: Define your actual DB password
+        String plainPassword = "YourPlainDBPassword";  // Replace this
+
+        // Step 3: Encrypt
+        AES256TextEncryptor textEncryptor = new AES256TextEncryptor();
+        textEncryptor.setPassword(secretKey);
+        String encryptedPassword = textEncryptor.encrypt(plainPassword);
+
+        // Step 4: Output
+        System.out.println("Encrypted password:");
+        System.out.println("ENC(" + encryptedPassword + ")");
+    }
+}
+
+
+
+
+
 /* ─────  Grouped-column chart (Row-2, col-2)  ───── */
 .column-base           { width:240px; height:140px; background:#ffffff;
                          border:1px solid #dee2e6; border-radius:4px;
