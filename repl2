@@ -1,4 +1,77 @@
-.
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface CmdbServiceModel {
+  name: string;
+  shortDescription: string;
+  itOwner: string;
+  itOwnerManager: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class CmdbService {
+  private apiUrl = 'http://localhost:8080/api/services';
+
+  constructor(private http: HttpClient) {}
+
+  getServices(): Observable<CmdbServiceModel[]> {
+    return this.http.get<CmdbServiceModel[]>(this.apiUrl);
+  }
+}
+....
+import { Component, OnInit } from '@angular/core';
+import { CmdbService, CmdbServiceModel } from '../../services/cmdb.service';
+
+@Component({
+  selector: 'app-manager',
+  templateUrl: './manager.component.html',
+  styleUrls: ['./manager.component.scss']
+})
+export class ManagerComponent implements OnInit {
+  services: CmdbServiceModel[] = [];
+
+  constructor(private cmdbService: CmdbService) {}
+
+  ngOnInit(): void {
+    this.cmdbService.getServices().subscribe({
+      next: data => this.services = data,
+      error: err => console.error('Error loading services', err)
+    });
+  }
+}
+...
+<div class="container mt-4">
+  <h2>IT Services - Manager View</h2>
+  <table class="table table-bordered table-hover mt-3">
+    <thead class="table-dark">
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>IT Owner</th>
+        <th>IT Owner Manager</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let service of services">
+        <td>{{ service.name }}</td>
+        <td>{{ service.shortDescription }}</td>
+        <td>{{ service.itOwner }}</td>
+        <td>{{ service.itOwnerManager }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+..
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.container {
+  max-width: 900px;
+  margin: auto;
+}
+
 
 
 
