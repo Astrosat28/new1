@@ -1,3 +1,189 @@
+html
+<h2 class="title">LFG – Application Overview</h2>
+
+<!-- ░░░ LOB tiles row ░░░ -->
+<div class="lob-row">
+  <div
+    class="lob-card"
+    [class.active]="selectedLob === null"
+    (click)="toggleLob(null)">
+     All
+  </div>
+
+  <div
+    *ngFor="let lob of lobs; let i = index"
+    class="lob-card"
+    [class.active]="selectedLob === lob"
+    [style.background]="colorPalette[i % colorPalette.length]"
+    (click)="toggleLob(lob)">
+    {{ lob }}
+  </div>
+</div>
+
+<!-- ░░░ Data table ░░░ -->
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z1 services-table">
+
+  <!-- Name -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell        *matCellDef="let r">{{ r.name }}</td>
+  </ng-container>
+
+  <!-- Description -->
+  <ng-container matColumnDef="shortDescription">
+    <th mat-header-cell *matHeaderCellDef>Description</th>
+    <td mat-cell        *matCellDef="let r">{{ r.shortDescription }}</td>
+  </ng-container>
+
+  <!-- IT Owner -->
+  <ng-container matColumnDef="itOwner">
+    <th mat-header-cell *matHeaderCellDef>IT Owner</th>
+    <td mat-cell        *matCellDef="let r">{{ r.itOwner }}</td>
+  </ng-container>
+
+  <!-- IT Owner Manager -->
+  <ng-container matColumnDef="itOwnerManager">
+    <th mat-header-cell *matHeaderCellDef>IT Owner Manager</th>
+    <td mat-cell        *matCellDef="let r">{{ r.itOwnerManager }}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row        *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+.ts
+/* src/app/manager-tiles/manager-tiles.component.ts
+   ----------------------------------------------- */
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import {
+  Component,
+  OnInit,
+} from '@angular/core';
+import {
+  MatTableModule,
+  MatTableDataSource,
+} from '@angular/material/table';
+
+/* ✅  adjust this path to where your service lives  */
+import { CmdbService, CmdbServiceModel } from '../cmdb.service';
+
+@Component({
+  selector: 'app-manager-tiles',
+  standalone: true,
+  imports: [CommonModule, HttpClientModule, MatTableModule],
+  templateUrl: './manager-tiles.component.html',
+  styleUrls: ['./manager-tiles.component.scss']
+})
+export class ManagerTilesComponent implements OnInit {
+
+  /* ----------------------------------------------------------------- */
+  /* 1.  raw data from API + Angular-Material table wrapper            */
+  /* ----------------------------------------------------------------- */
+  services: CmdbServiceModel[] = [];
+  dataSource = new MatTableDataSource<CmdbServiceModel>();
+  displayedColumns = ['name', 'shortDescription', 'itOwner', 'itOwnerManager'];
+
+  /* ----------------------------------------------------------------- */
+  /* 2.  LOB tile state                                                */
+  /* ----------------------------------------------------------------- */
+  lobs: string[] = [];           // unique list extracted once on load
+  selectedLob: string | null = null;  // currently-clicked tile; null = “All”
+
+  /* ----------------------------------------------------------------- */
+  /* 3.  Colour palette for tiles                                      */
+  /* ----------------------------------------------------------------- */
+  colorPalette: string[] = [
+    '#2196f3',  // blue
+    '#e91e63',  // pink
+    '#4caf50',  // green
+    '#ff9800',  // orange
+    '#9c27b0',  // purple
+    '#795548',  // brown
+    '#00bcd4',  // cyan
+    '#ff5722'   // deep-orange
+  ];
+
+  /* ----------------------------------------------------------------- */
+  /* 4.  Lifecycle                                                    */
+  /* ----------------------------------------------------------------- */
+  constructor(private cmdbService: CmdbService) {}
+
+  ngOnInit(): void {
+    this.cmdbService.getServices().subscribe({
+      next: data => {
+        /* 4-A store everything once                                            */
+        this.services = data;
+        this.dataSource.data = data;
+
+        /* 4-B derive unique LOB list                                           */
+        this.lobs = Array
+          .from(new Set(data.map(r => r.u_line_of_business)))
+          .sort();
+      },
+      error: err => console.error('Error loading services', err)
+    });
+  }
+
+  /* ----------------------------------------------------------------- */
+  /* 5.  Tile click handler                                            */
+  /* ----------------------------------------------------------------- */
+  toggleLob(lob: string | null): void {
+    /* clicking the same tile again clears filter (“All”) */
+    if (this.selectedLob === lob) {
+      this.selectedLob = null;
+      this.dataSource.data = this.services;
+      return;
+    }
+
+    this.selectedLob = lob;
+    this.dataSource.data = lob
+      ? this.services.filter(s => s.u_line_of_business === lob)
+      : this.services;
+  }
+}
+
+
+css.
+/* --- headline --- */
+.title { text-align: center; margin: 0 0 24px; }
+
+/* --- LOB row --- */
+.lob-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 24px;
+
+  .lob-card {
+    flex: 0 0 110px;           /* fixed square tile */
+    height: 110px;
+    background: #607d8b;       /* default grey for “All” */
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: transform .18s;
+
+    &:hover   { transform: translateY(-4px) scale(1.03); }
+    &.active  { box-shadow: inset 0 -4px 0 rgba(0,0,0,.35); }
+  }
+}
+
+/* --- Material table tweaks (optional) --- */
+.services-table { width: 100%; }
+.mat-header-cell, .mat-cell { padding: 8px 12px; }
+
+........
+
+
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
