@@ -1,3 +1,30 @@
+package com.example.demo.controller;
+
+import com.example.demo.entity.ApplicationWorkstream;
+import com.example.demo.service.ApplicationWorkstreamService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/workstreams")
+public class ApplicationWorkstreamController {
+
+    private final ApplicationWorkstreamService service;
+
+    @Autowired
+    public ApplicationWorkstreamController(ApplicationWorkstreamService service) {
+        this.service = service;
+    }
+
+    @GetMapping("/{lob}")
+    public List<ApplicationWorkstream> getWorkstreamsByLob(@PathVariable String lob) {
+        return service.getWorkstreamsByLob(lob);
+    }
+}
+
+
+
 package com.example.demo.service;
 
 import com.example.demo.entity.ApplicationWorkstream;
