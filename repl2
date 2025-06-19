@@ -1,3 +1,124 @@
+import { Component, OnInit } from '@angular/core';
+import { CmdbService } from '../cmdb.service';
+import { ApplicationWorkstreamService } from '../applicationworkstream.service';
+import { ApplicationWorkstream } from '../applicationworkstream.model';
+
+@Component({
+  selector: 'app-list',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.css']
+})
+export class ListComponent implements OnInit {
+
+  services: any[] = [];
+  jobs: string[] = [];
+  selectedLob: string | null = null;
+  colorPalette: string[] = [
+    '#2196f3', '#e91e63', '#4caf50', '#ff9800',
+    '#9c27b0', '#795548', '#00bcd4', '#ff5722'
+  ];
+  workstreams: ApplicationWorkstream[] = [];
+
+  constructor(
+    private cmdbService: CmdbService,
+    private appWsService: ApplicationWorkstreamService
+  ) {}
+
+  ngOnInit(): void {
+    this.cmdbService.getAllServices().subscribe(data => {
+      this.services = data;
+      this.jobs = [...new Set(this.services.map((s: any) => s.lob))];
+    });
+  }
+
+  toggleLob(lob: string | null): void {
+    this.selectedLob = lob;
+    if (lob === null) {
+      this.workstreams = [];
+      return;
+    }
+
+    this.appWsService.getWorkstreamsByLob(lob).subscribe({
+      next: data => this.workstreams = data,
+      error: err => console.error('Failed to fetch workstreams:', err)
+    });
+  }
+}
+
+
+<div class="lob-container">
+  <div *ngFor="let lob of jobs; let i = index"
+       class="job-row"
+       [ngClass]="{'selected-lob': selectedLob === lob}"
+       [style.background]="colorPalette[i % colorPalette.length]"
+       (click)="toggleLob(lob)">
+    {{ lob }}
+  </div>
+  <div class="job-row clear-btn" *ngIf="selectedLob" (click)="toggleLob(null)">Clear</div>
+</div>
+
+<div *ngIf="workstreams.length > 0" class="workstream-table-container">
+  <h3>Associated Workstreams</h3>
+  <table class="mat-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Workstream</th>
+        <th>Valuestream</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ws of workstreams">
+        <td>{{ ws.name }}</td>
+        <td>{{ ws.workstream }}</td>
+        <td>{{ ws.valuestream }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+.lob-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  gap: 10px;
+}
+
+.job-row {
+  padding: 8px 16px;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.selected-lob {
+  border: 2px solid black;
+}
+
+.clear-btn {
+  background: #b0bec5 !important;
+  color: #000;
+}
+
+.workstream-table-container {
+  margin-top: 20px;
+}
+
+.mat-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mat-table th, .mat-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+
+
 package com.example.demo.controller;
 
 import com.example.demo.entity.ApplicationWorkstream;
