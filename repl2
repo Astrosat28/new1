@@ -17,6 +17,140 @@ export class ListComponent implements OnInit {
     '#2196f3', '#e91e63', '#4caf50', '#ff9800',
     '#9c27b0', '#795548', '#00bcd4', '#ff5722'
   ];
+
+  workstreamsRaw: ApplicationWorkstream[] = [];
+  uniqueWorkstreams: string[] = [];
+  selectedWorkstream: string | null = null;
+
+  uniqueValuestreams: string[] = [];
+  selectedValuestream: string | null = null;
+
+  relatedNames: string[] = [];
+
+  constructor(
+    private cmdbService: CmdbService,
+    private appWsService: ApplicationWorkstreamService
+  ) {}
+
+  ngOnInit(): void {
+    this.cmdbService.getAllServices().subscribe(data => {
+      this.services = data;
+      this.jobs = [...new Set(this.services.map((s: any) => s.lob))];
+    });
+  }
+
+  toggleLob(lob: string | null): void {
+    this.selectedLob = lob;
+    this.selectedWorkstream = null;
+    this.selectedValuestream = null;
+    this.relatedNames = [];
+
+    if (lob === null) {
+      this.uniqueWorkstreams = [];
+      return;
+    }
+
+    this.appWsService.getWorkstreamsByLob(lob).subscribe({
+      next: data => {
+        this.workstreamsRaw = data;
+        this.uniqueWorkstreams = [...new Set(data.map(ws => ws.workstream))];
+      },
+      error: err => console.error('Failed to fetch workstreams:', err)
+    });
+  }
+
+  toggleWorkstream(ws: string): void {
+    this.selectedWorkstream = ws;
+    this.selectedValuestream = null;
+    this.relatedNames = [];
+
+    const filtered = this.workstreamsRaw.filter(w => w.workstream === ws);
+    this.uniqueValuestreams = [...new Set(filtered.map(w => w.valuestream))];
+  }
+
+  toggleValuestream(vs: string): void {
+    this.selectedValuestream = vs;
+
+    const filtered = this.workstreamsRaw.filter(w =>
+      w.workstream === this.selectedWorkstream && w.valuestream === vs
+    );
+    this.relatedNames = [...new Set(filtered.map(w => w.name))];
+  }
+}
+
+<!-- LOB cards -->
+<div class="lob-container">
+  <div *ngFor="let lob of jobs; let i = index"
+       class="job-row"
+       [ngClass]="{'selected-lob': selectedLob === lob}"
+       [style.background]="colorPalette[i % colorPalette.length]"
+       (click)="toggleLob(lob)">
+    {{ lob }}
+  </div>
+  <div class="job-row clear-btn" *ngIf="selectedLob" (click)="toggleLob(null)">Clear</div>
+</div>
+
+<!-- Workstreams -->
+<div *ngIf="uniqueWorkstreams.length > 0" class="lob-container">
+  <div *ngFor="let ws of uniqueWorkstreams"
+       class="job-row"
+       [ngClass]="{'selected-lob': selectedWorkstream === ws}"
+       [style.background]="'#607d8b'"
+       (click)="toggleWorkstream(ws)">
+    {{ ws }}
+  </div>
+</div>
+
+<!-- Valuestreams -->
+<div *ngIf="uniqueValuestreams.length > 0" class="lob-container">
+  <div *ngFor="let vs of uniqueValuestreams"
+       class="job-row"
+       [ngClass]="{'selected-lob': selectedValuestream === vs}"
+       [style.background]="'#9e9e9e'"
+       (click)="toggleValuestream(vs)">
+    {{ vs }}
+  </div>
+</div>
+
+<!-- Application Names -->
+<div *ngIf="relatedNames.length > 0" class="workstream-table-container">
+  <h3>Applications under {{ selectedValuestream }}</h3>
+  <ul>
+    <li *ngFor="let name of relatedNames">{{ name }}</li>
+  </ul>
+</div>
+
+ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  color: #333;
+}
+
+
+
+
+
+mmmmmmmm
+
+import { Component, OnInit } from '@angular/core';
+import { CmdbService } from '../cmdb.service';
+import { ApplicationWorkstreamService } from '../applicationworkstream.service';
+import { ApplicationWorkstream } from '../applicationworkstream.model';
+
+@Component({
+  selector: 'app-list',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.css']
+})
+export class ListComponent implements OnInit {
+
+  services: any[] = [];
+  jobs: string[] = [];
+  selectedLob: string | null = null;
+  colorPalette: string[] = [
+    '#2196f3', '#e91e63', '#4caf50', '#ff9800',
+    '#9c27b0', '#795548', '#00bcd4', '#ff5722'
+  ];
   workstreams: ApplicationWorkstream[] = [];
 
   constructor(
