@@ -1,3 +1,36 @@
+package com.example.demo.service;
+
+import com.example.demo.entity.ApplicationWorkstream;
+import com.example.demo.repository.ApplicationWorkstreamRepository;
+import com.example.demo.repository.CmdbRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class ApplicationWorkstreamService {
+
+    private final CmdbRepository cmdbRepository;
+    private final ApplicationWorkstreamRepository appWsRepo;
+
+    @Autowired
+    public ApplicationWorkstreamService(CmdbRepository cmdbRepository,
+                                        ApplicationWorkstreamRepository appWsRepo) {
+        this.cmdbRepository = cmdbRepository;
+        this.appWsRepo = appWsRepo;
+    }
+
+    public List<ApplicationWorkstream> getWorkstreamsByLob(String lob) {
+        // Step 1: get apm_ids from cmdb_ci_service where lob = :lob
+        List<String> apmIds = cmdbRepository.findApmIdsByLob(lob);
+
+        // Step 2: get workstreams from applicationworkstream using those apm_ids
+        return appWsRepo.findByApmIdIn(apmIds);
+    }
+}
+
+
+
 html
 <h2 class="title">LFG – Application Overview</h2>
 
