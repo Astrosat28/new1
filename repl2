@@ -1,1 +1,19 @@
+public class YamlReader {
 
+    private Map<String, Object> yamlData;
+
+    public YamlReader(String filePath) throws FileNotFoundException {
+        Yaml yaml = new Yaml();
+        InputStream inputStream = new FileInputStream(new File(filePath));
+        yamlData = yaml.load(inputStream);
+    }
+
+    public Object getValue(String key) {
+        return yamlData.get(key);
+    }
+}
+
+
+
+YamlReader yamlReader = new YamlReader("/opt/config/emails.yaml"); // or configurable via system property
+List<String> emails = (List<String>) yamlReader.getValue("emails");
