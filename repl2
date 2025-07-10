@@ -1,4 +1,145 @@
+version 1 separate all code -
+<!-- Top Icon Grid -->
+<div class="icon-bar">
+  <div class="icon-wrapper" *ngFor="let icon of icons">
+    <div class="icon-card">{{ icon.emoji }}</div>
+    <div class="icon-label">{{ icon.label }}</div>
+  </div>
+</div>
 
+<!-- Horizontal Scrollable Masonry Section -->
+<div class="scroll-container">
+  <div class="masonry-wrapper">
+    <div *ngFor="let card of cards" class="card" [ngClass]="card.size">
+      {{ card.content }}
+    </div>
+  </div>
+</div>
+css
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f4f4f4;
+}
+
+.icon-bar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.icon-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.icon-card {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  background-color: #e3f2fd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-size: 24px;
+}
+
+.icon-label {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 20px;
+  height: calc(100vh - 180px);
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.masonry-wrapper {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  text-align: center;
+}
+
+.card.small {
+  width: 200px;
+  height: 200px;
+  background-color: #fce4ec;
+}
+
+.card.medium {
+  width: 250px;
+  height: 300px;
+  background-color: #e8f5e9;
+}
+
+.card.large {
+  width: 300px;
+  height: 400px;
+  background-color: #fff3e0;
+}
+ ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent {
+  icons = [
+    { emoji: '📁', label: 'Folder' },
+    { emoji: '📄', label: 'Document' },
+    { emoji: '📊', label: 'Chart' },
+    { emoji: '📷', label: 'Photo' },
+    { emoji: '🎥', label: 'Video' },
+    { emoji: '🔐', label: 'Secure' },
+  ];
+
+  cards = [
+    { size: 'small', content: 'Small Card' },
+    { size: 'medium', content: 'Medium Card' },
+    { size: 'large', content: 'Large Card' },
+    { size: 'small', content: 'Another Small Card' },
+    { size: 'medium', content: 'Another Medium Card' },
+    { size: 'large', content: 'Another Large Card' },
+    { size: 'small', content: 'Small Again' },
+    { size: 'medium', content: 'Medium Again' },
+    { size: 'large', content: 'Big Card' },
+  ];
+}
+
+
+version 1 separate end 
 Alternative Design: Modern Dashboard with Unified Masonry Layout
 
 
