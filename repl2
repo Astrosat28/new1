@@ -1,3 +1,171 @@
+
+Alternative Design: Modern Dashboard with Unified Masonry Layout
+
+
+---
+
+HTML (home-alt.component.html)
+
+<!-- Header Section with Greeting or Logo -->
+<header class="header">
+  <h1>Welcome to the Dashboard</h1>
+</header>
+
+<!-- Icon Row Section -->
+<section class="icon-bar-alt">
+  <div class="icon-alt" *ngFor="let icon of icons">
+    <div class="icon-emoji">{{ icon.emoji }}</div>
+    <div class="icon-label">{{ icon.label }}</div>
+  </div>
+</section>
+
+<!-- Unified Scrollable Masonry Grid -->
+<section class="grid-scroll">
+  <div class="grid-masonry">
+    <div *ngFor="let card of cards" class="card" [ngClass]="card.size">
+      {{ card.content }}
+    </div>
+  </div>
+</section>
+
+
+---
+
+CSS (home-alt.component.css)
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f7f9fc;
+}
+
+.header {
+  background-color: #1e88e5;
+  color: white;
+  padding: 20px 40px;
+  font-size: 24px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.icon-bar-alt {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.icon-alt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-size: 16px;
+}
+
+.icon-emoji {
+  width: 70px;
+  height: 70px;
+  background-color: #e0f7fa;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 5px;
+}
+
+.grid-scroll {
+  overflow-x: auto;
+  padding: 20px;
+  height: calc(100vh - 200px);
+  scroll-behavior: smooth;
+}
+
+.grid-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.grid-masonry {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, auto);
+  gap: 20px;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  text-align: center;
+}
+
+.card.small {
+  width: 180px;
+  height: 180px;
+  background-color: #ffe0b2;
+}
+
+.card.medium {
+  width: 240px;
+  height: 280px;
+  background-color: #c8e6c9;
+}
+
+.card.large {
+  width: 300px;
+  height: 360px;
+  background-color: #bbdefb;
+}
+
+
+---
+
+TS (home-alt.component.ts)
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-home-alt',
+  templateUrl: './home-alt.component.html',
+  styleUrls: ['./home-alt.component.css']
+})
+export class HomeAltComponent {
+  icons = [
+    { emoji: '📁', label: 'Folder' },
+    { emoji: '📄', label: 'Document' },
+    { emoji: '📊', label: 'Chart' },
+    { emoji: '📷', label: 'Photo' },
+    { emoji: '🎥', label: 'Video' },
+    { emoji: '🔐', label: 'Secure' },
+  ];
+
+  cards = [
+    { size: 'small', content: 'Small Card' },
+    { size: 'medium', content: 'Medium Card' },
+    { size: 'large', content: 'Large Card' },
+    { size: 'small', content: 'Another Small Card' },
+    { size: 'medium', content: 'Another Medium Card' },
+    { size: 'large', content: 'Another Large Card' },
+    { size: 'small', content: 'Small Again' },
+    { size: 'medium', content: 'Medium Again' },
+    { size: 'large', content: 'Big Card' },
+  ];
+}
+
+Let me know if you want routing setup or dark-mode version too!
+
+
+version 1 
+
+
 You're absolutely right. From your screenshots, the blank spaces in rows 2 and 3 make the layout feel unpolished and less professional. This happens because:
 
 You’re forcing cards into two separate horizontal rows, but their heights and widths vary.
