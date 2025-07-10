@@ -1,3 +1,82 @@
+Absolutely! Here's a complete, clean, and professional prompt that you can use with GitHub Copilot (or ChatGPT) to generate your desired layout in HTML + CSS (or Angular/React component structure).
+
+
+---
+
+✅ Full Prompt to Use:
+
+> Create a responsive homepage layout with the following specifications using HTML and CSS (or Angular component with external CSS):
+
+1. The page should have 3 rows, scrollable horizontally (not vertically), filling the full height of the page.
+
+
+2. Row 1: Icon Grid
+
+Display 6 square cards, evenly spaced horizontally.
+
+Each card should be a 100x100px square, with slightly rounded corners.
+
+Each card should have a centered icon or placeholder (can be text or emoji).
+
+Below each square, display a label or name (provided manually) centered horizontally.
+
+The look should be clean, minimal, with soft shadows and modern pastel or material design colors.
+
+
+
+3. Row 2 & Row 3: Masonry-style News Feed
+
+Use a horizontal scrolling masonry layout (Pinterest-style).
+
+Cards should be of 3 sizes (small, medium, large) with varying heights.
+
+Cards should be arranged in 2 visible rows (Row 2 and 3) and flow horizontally with wrapping.
+
+Colors should be visually appealing and differentiate cards.
+
+Ensure cards fill the page height and avoid white space at the bottom.
+
+Add smooth horizontal scrolling (hide scrollbar if needed).
+
+
+
+4. General Styling:
+
+Use Flexbox or CSS Grid as needed.
+
+The entire layout should be visually professional, responsive, and client-presentable.
+
+Fonts should be clean and modern (like Roboto or Segoe UI).
+
+Background: light grey or subtle gradient for elegance.
+
+
+
+
+The layout must resemble high-end web dashboards or the MSN/Outlook homepage format.
+
+
+
+
+---
+
+✅ Optional Add-on (for Angular):
+
+> Also generate this as an Angular component using SCSS or external CSS, with one TopIconsComponent for the first row and a MasonryCardsComponent for rows 2 and 3, so I can reuse it anywhere.
+
+
+
+
+---
+
+Let me know if you’d like the actual code output based on this prompt — in HTML/CSS, Angular, or React — and I’ll give you the full structure!
+
+
+
+
+
+
+
 public class YamlReader {
 
     private Map<String, Object> yamlData;
