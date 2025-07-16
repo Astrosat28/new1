@@ -1,3 +1,14 @@
+SELECT 
+    CONCAT('<a href="https://lfg.sharepoint.com/sites/OpExcellence/Healthchecks/screenshots/', MAX(ScreenshotName), '.png?web=1">', ScreenName, '</a>') AS ScreenshotLink
+FROM newload.HealthCheckBotHistory 
+WHERE AppName = :appName AND ScreenshotPath IS NOT NULL
+GROUP BY ScreenName
+
+
+
+
+
+
 public String generateHtmlTable(List<EmailEntity> emailEntities) {
     StringBuilder htmlTable = new StringBuilder();
 
