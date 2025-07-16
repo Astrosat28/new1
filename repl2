@@ -1,6 +1,52 @@
 Map<String, List<EmailEntity>> groupedByApp = emailEntities.stream()
     .collect(Collectors.groupingBy(EmailEntity::getAppName));
 
+for (Map.Entry<String, List<EmailEntity>> entry : groupedByApp.entrySet()) {
+    String appName = entry.getKey();
+    List<EmailEntity> entities = entry.getValue();
+
+    // Get screen links
+    Set<String> seenScreenNames = new HashSet<>();
+    StringBuilder formattedLinks = new StringBuilder();
+
+    for (EmailEntity entity : entities) {
+        List<ScreenList> links = emailRepository.getScreenshotLinks(entity.getAppName(), entity.getScreenshotPath());
+        for (ScreenList link : links) {
+            String screenName = link.getScreenName();
+            if (seenScreenNames.add(screenName)) {
+                if (formattedLinks.length() > 0) {
+                    formattedLinks.append(", ");
+                }
+                formattedLinks.append(link.getScreenshotLink());
+            }
+        }
+    }
+
+    
+    EmailEntity first = entities.get(0);
+
+    htmlTable.append("<tr>");
+    htmlTable.append("<td style=\"border: 2px solid black; text-align:left\">")
+             .append(appName).append("</td>");
+    htmlTable.append("<td style=\"border: 2px solid black; text-align:left\">")
+             .append(formattedLinks.toString()).append("</td>");
+    htmlTable.append("<td style=\"border: 2px solid black; text-align:left\">")
+             .append(first.getStatus()).append("</td>");
+    htmlTable.append("<td style=\"border: 2px solid black; text-align:left\">")
+             .append(first.getTimestamp()).append("</td>");
+    htmlTable.append("<td style=\"border: 2px solid black; text-align:left\">")
+             .append("ErrorCode:").append(first.getErrorCode())
+             .append(" - ").append(first.getMessage()).append("</td>");
+    htmlTable.append("</tr>");
+}
+
+
+
+
+. ...
+Map<String, List<EmailEntity>> groupedByApp = emailEntities.stream()
+    .collect(Collectors.groupingBy(EmailEntity::getAppName));
+
 
 
 
