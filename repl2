@@ -1,3 +1,12 @@
+Map<String, List<EmailEntity>> groupedByApp = emailEntities.stream()
+    .collect(Collectors.groupingBy(EmailEntity::getAppName));
+
+
+
+
+
+
+
 Set<String> seenScreens = new HashSet<>();
 StringBuilder formattedLinks = new StringBuilder();
 for (ScreenList link : links) {
