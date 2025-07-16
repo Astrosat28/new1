@@ -1,3 +1,16 @@
+Set<String> seenScreens = new HashSet<>();
+StringBuilder formattedLinks = new StringBuilder();
+for (ScreenList link : links) {
+    String screenName = link.getScreenName();
+    if (seenScreens.add(screenName)) { // Only adds if not already present
+        if (formattedLinks.length() > 0) formattedLinks.append(", ");
+        formattedLinks.append(link.getScreenshotLink());
+    }
+}
+
+
+........
+
 version 2 separate code 
 css
 body {
