@@ -1,3 +1,61 @@
+Here’s a professional summary of your meeting update in note format:
+
+
+---
+
+📝 Meeting Notes – ICAS Application Access & Automation
+
+🔹 Discussion Summary
+
+1. Accessing ICAS Application – Automation Need
+
+Rishika raised a query on how ICAS is currently accessed manually and mentioned the requirement to automate the process.
+
+Kate responded by asking for clarity:
+
+Do we need to log in, just ping, or perform more advanced access?
+
+She also asked if ID and password are required and directed this query to Pradeep.
+
+
+
+
+2. Credentials and Next Steps
+
+Pradeep discussed the issue in response to Kate’s questions.
+
+Ritu mentioned that the team is currently looking for the application credentials (ID).
+
+Once credentials are obtained, they plan to proceed step by step to implement access.
+
+
+
+3. Reference to Bot Team
+
+Kate noted that the Bot team is already accessing ICAS, and recommended discussing with them for insights or existing solutions.
+
+
+
+4. Screen Sharing and Further Contacts
+
+Ritu and Joe had a separate discussion where Ritu shared her screen to demonstrate the current process.
+
+It was decided that the team needs to connect with Kelly to proceed further.
+
+
+
+
+
+---
+
+Would you like this turned into an action item list or shared in email format?
+
+
+
+
+
+
+
 SELECT 
     CONCAT('<a href="https://lfg.sharepoint.com/sites/OpExcellence/Healthchecks/screenshots/', MAX(ScreenshotName), '.png?web=1">', ScreenName, '</a>') AS ScreenshotLink
 FROM newload.HealthCheckBotHistory 
