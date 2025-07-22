@@ -1,3 +1,70 @@
+# Project: WebPulse – AI-Powered Website Health Check Dashboard (Python Only)
+# Goal: Build a dashboard that monitors the health of websites (public, login-based, APIs) using Python-only tools.
+# Requirements:
+# - Python 3.9+
+# - No Angular, Node, or Java used.
+# - Everything is built using Python with either Dash or Streamlit frontend.
+
+# Features to include:
+# 1. Website Health Checker:
+#    - For public websites: use requests to ping URLs, check response time and status code.
+#    - For login-protected websites: use Selenium to perform login and check screenshot or response.
+#    - For APIs: call API endpoint and validate response JSON structure or keywords.
+
+# 2. Health Logging:
+#    - Store results (timestamp, URL, status, response time, errors) in SQLite.
+#    - Keep history of previous checks for graph display.
+
+# 3. Anomaly Detection (Optional ML):
+#    - Use scikit-learn to detect anomalies in response time (e.g., IsolationForest).
+#    - Display any anomalies on dashboard using red indicators.
+
+# 4. Website Classifier (Optional AI):
+#    - Build a simple model to classify websites into public/login/API based on URL or metadata.
+#    - Use GPT via OpenAI API for optional analysis (e.g., root cause suggestions or log interpretation).
+
+# 5. Email Notification:
+#    - If website status is 'down' or response time is very high, send email using smtplib.
+
+# 6. Streamlit/Dash Dashboard:
+#    - Build a responsive dashboard using Dash (preferred) or Streamlit.
+#    - Show status cards: Website Name, Status (UP/DOWN), Last checked time, Response Time, Type
+#    - Add filters: by type (API, public, login), status, owner
+#    - Add a trend line graph of response time
+#    - Use green/red/yellow indicators for visual clarity
+#    - Display latest screenshot if available (for login check)
+
+# 7. Scheduler:
+#    - Use schedule or apscheduler to run health checks every 5–15 minutes.
+#    - Separate script or function to run as background job (cron or forever script).
+
+# 8. Directory Structure:
+# ─ webpulse/
+#   ├── app.py                  # Entry point for Streamlit or Dash app
+#   ├── health_checker.py      # Core health check functions
+#   ├── selenium_login.py      # Selenium login logic (if type = login)
+#   ├── anomaly_detector.py    # ML model for response time anomaly
+#   ├── notifier.py            # Email or Teams alert
+#   ├── db.py                  # SQLite database schema & operations
+#   ├── utils.py               # Helper functions
+#   ├── scheduler.py           # Periodic checker
+#   ├── screenshots/           # Store screenshots from Selenium
+#   └── data/health_log.db     # SQLite DB
+
+# Copilot, generate:
+# - health_checker.py: use requests for GET, SSL cert check, log latency
+# - selenium_login.py: log into a dummy site and take a screenshot
+# - db.py: SQLite table creation for logs
+# - app.py: Build Dash or Streamlit app with metrics and interactive dashboard
+# - anomaly_detector.py: Use scikit-learn IsolationForest or rolling z-score
+# - notifier.py: SMTP mail with message if status=DOWN
+# - scheduler.py: Loop every 10 minutes to run health_checker for all sites in DB
+
+# Reminder: No JS or frontend frameworks. All must be Pythonic, deployable with `python app.py` or `streamlit run app.py`
+
+
+......
+
 Here’s a professional summary of your meeting update in note format:
 
 
