@@ -1,3 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WebPulse Live Waves</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background: #ffffff;
+      overflow: hidden;
+    }
+    #tooltip {
+      position: absolute;
+      background-color: #333;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      display: none;
+      pointer-events: none;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+<div id="tooltip"></div>
+<script>
+let waveData = [];
+let pausedWaves = new Set();
+let colorPalette = ["#FF69B4", "#6A5ACD", "#20B2AA", "#FFA500", "#008080", "#DC143C", "#4682B4", "#228B22"];
+
+let tooltip;
+let dataLoaded = false;
+
+function setup() {
+  createCanvas(window.innerWidth, 300);
+  tooltip = document.getElementById("tooltip");
+
+  fetch("wave_data.json")
+    .then((res) => res.json())
+    .then((data) => {
+      data.forEach((site, index) => {
+        waveData.push({
+          url: site.url,
+          color: colorPalette[index % colorPalette.length],
+          amplitude: 30 + Math.random() * 15,
+          freq: 0.04 + Math.random() * 0.03,
+          speed: 2.2 + Math.random() * 1.2, // ⏩ Increased speed
+          status: site.status,
+          lastChecked: site.timestamp,
+          points: [],
+          phase: 0
+        });
+      });
+      dataLoaded = true;
+    })
+    .catch(err => {
+      console.error("Failed to load JSON:", err);
+    });
+}
+
+function draw() {
+  background(255);
+  if (!dataLoaded) return;
+
+  tooltip.style.display = "none";
+  pausedWaves.clear();
+
+  waveData.forEach((wave, idx) => {
+    let hover = false;
+
+    for (let i = 0; i < wave.points.length; i += 10) {
+      let p = wave.points[i];
+      if (dist(mouseX, mouseY, p.x, p.y) < 8) {
+        hover = true;
+        tooltip.style.left = mouseX + 15 + 'px';
+        tooltip.style.top = mouseY + 15 + 'px';
+        tooltip.style.display = 'block';
+        tooltip.innerHTML = `
+          <strong>${p.url}</strong><br>
+          Status: ${p.status}<br>
+          Time: ${p.timestamp}
+        `;
+        break;
+      }
+    }
+
+    if (!hover) {
+      wave.phase += wave.freq;
+      for (let p of wave.points) p.x -= wave.speed;
+      wave.points = wave.points.filter(p => p.x > -50);
+
+      let y = height / 2 + sin(wave.phase + idx) * wave.amplitude;
+      wave.points.push({
+        x: width + 10,
+        y,
+        url: wave.url,
+        timestamp: wave.lastChecked,
+        status: wave.status
+      });
+    } else {
+      pausedWaves.add(wave.url);
+    }
+
+    // Draw wave line
+    stroke(wave.color);
+    strokeWeight(2.7);
+    noFill();
+    beginShape();
+    for (let p of wave.points) {
+      curveVertex(p.x, p.y);
+    }
+    endShape();
+
+    // Draw wave points
+    noStroke();
+    fill(wave.color);
+    for (let i = 0; i < wave.points.length; i += 10) {
+      let p = wave.points[i];
+      ellipse(p.x, p.y, 9, 9);
+    }
+  });
+}
+</script>
+</body>
+</html>
+
+....
+import streamlit as st
+import pandas as pd
+import sqlite3
+import plotly.express as px
+import os
+from streamlit_autorefresh import st_autorefresh
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.text_rank import TextRankSummarizer
+import streamlit.components.v1 as components
+
+# Auto-refresh every 60 seconds
+st_autorefresh(interval=60000, key="health-check-refresh")
+
+# Page config
+st.set_page_config(page_title="WebPulse Dashboard", layout="wide")
+st.title("🌐 WebPulse - Website Health Dashboard")
+
+# Load data
+conn = sqlite3.connect("data/health_log.db")
+df = pd.read_sql("SELECT * FROM website_status ORDER BY timestamp DESC", conn)
+
+# Sidebar filters
+st.sidebar.header("🔍 Filters")
+status_filter = st.sidebar.multiselect("Select Status", options=["UP", "DOWN"], default=["UP", "DOWN"])
+type_filter = st.sidebar.multiselect("Select Type", options=df["type"].unique(), default=list(df["type"].unique()))
+
+filtered_df = df[df["status"].isin(status_filter) & df["type"].isin(type_filter)]
+
+# KPIs
+col1, col2, col3, col4 = st.columns(4)
+col1.metric("Total Checks", len(df))
+col2.metric("Sites Monitored", df["url"].nunique())
+col3.metric("Currently UP", len(df[df["status"] == "UP"]))
+col4.metric("Currently DOWN", len(df[df["status"] == "DOWN"]))
+
+# Pie chart of UP/DOWN
+st.subheader("📊 Uptime Distribution")
+pie = px.pie(filtered_df, names="status", title="Uptime Ratio", hole=0.3)
+st.plotly_chart(pie, use_container_width=True)
+
+# Response time line chart
+st.subheader("📈 Response Time Trend")
+if not filtered_df.empty:
+    chart = px.line(filtered_df.sort_values(by='timestamp'), x='timestamp', y='response_time', color='url',
+                    markers=True, title="Response Time Over Time")
+    st.plotly_chart(chart, use_container_width=True)
+else:
+    st.info("No data matching filter criteria.")
+
+# Average response bar chart
+st.subheader("🔧 Average Response Time per Website")
+avg_df = df[df['response_time'] > 0].groupby('url')['response_time'].mean().reset_index()
+bar_fig = px.bar(avg_df, x='url', y='response_time', color='url', labels={'response_time': 'Avg Response (s)'})
+st.plotly_chart(bar_fig, use_container_width=True)
+
+# Screenshot section
+st.subheader("🖼️ Screenshots (Login-based Sites)")
+show_ss = st.checkbox("Show Screenshots")
+if show_ss:
+    screens = df[~df['screenshot'].isnull()].drop_duplicates('url')
+    for i, row in screens.iterrows():
+        if os.path.exists(row['screenshot']):
+            st.image(row['screenshot'], caption=f"{row['url']} [{row['timestamp']}]", width=350)
+
+# Status table
+st.subheader("📋 Latest Status Table")
+styled_df = filtered_df.copy()
+styled_df["status"] = styled_df["status"].apply(
+    lambda x: f"🟢 {x}" if x == "UP" else f"🔴 {x}"
+)
+st.dataframe(styled_df.head(50), use_container_width=True)
+
+# Export to CSV
+st.download_button("📤 Export Data as CSV", data=styled_df.to_csv(index=False), file_name="webpulse_logs.csv")
+
+# TextRank-based downtime summary
+st.subheader("🧠 Downtime Summary (Offline TextRank)")
+if st.button("Generate Summary"):
+    error_df = df[df['status'] == 'DOWN'].sort_values(by='timestamp', ascending=False).head(10)
+    if error_df.empty:
+        st.info("No recent failures to summarize.")
+    else:
+        log_text = "\n".join([f"{row['timestamp']} - {row['url']} - {row['type']}" for _, row in error_df.iterrows()])
+        parser = PlaintextParser.from_string(log_text, Tokenizer('english'))
+        summarizer = TextRankSummarizer()
+        summary = summarizer(parser.document, 3)
+        st.success("📄 Summary:")
+        for sentence in summary:
+            st.markdown(f"- {sentence}")
+
+# Snake-style visualization
+import plotly.graph_objects as go
+
+st.subheader("🐍 Snake Path Simulation for Website Checks")
+
+# Generate simulated path data
+import random
+
+snake_steps = 10
+grid_w, grid_h = 20, 10
+snake_path = [(random.randint(0, grid_w), random.randint(0, grid_h)) for _ in range(snake_steps)]
+
+# X and Y split
+x_vals = [p[0] for p in snake_path]
+y_vals = [p[1] for p in snake_path]
+
+# Create Plotly figure
+fig = go.Figure()
+
+# Line for snake body
+fig.add_trace(go.Scatter(
+    x=x_vals,
+    y=y_vals,
+    mode='lines+markers',
+    line=dict(shape='spline', color='green', width=4),
+    marker=dict(size=12, color='orange'),
+    name='Check Path'
+))
+
+# Highlight “check points” (like food)
+for i, (x, y) in enumerate(zip(x_vals, y_vals)):
+    fig.add_trace(go.Scatter(
+        x=[x],
+        y=[y],
+        mode='markers+text',
+        marker=dict(color='red', size=10),
+        text=[f"✔️ {i+1}"],
+        textposition="top center",
+        showlegend=False
+    ))
+
+fig.update_layout(
+    title="Snake-style Check Visualization",
+    xaxis=dict(showgrid=False),
+    yaxis=dict(showgrid=False),
+    height=400,
+    plot_bgcolor='white'
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+
+# 🌊 WebPulse Wave Visualization (animated pulse-style)
+st.subheader("🌊 Live Web Health Check Wave")
+
+try:
+    with open("frontend/webpulse_wave.html", "r", encoding="utf-8") as f:
+        st.components.v1.html(f.read(), height=320)
+except FileNotFoundError:
+    st.warning("Wave animation file not found.")
+.
+...
+
+# scheduler.py
+import schedule, time
+from health_checker import check_website
+from auth_checker import check_login_site
+from db import init_db
+import json
+import sqlite3
+import pandas as pd  # ✅ Required for read_sql
+
+sites = [
+    {"url": "https://www.google.com", "type": "public"},
+    {"url": "https://www.wikipedia.org", "type": "public"},
+    {"url": "https://www.github.com", "type": "public"},
+    {"url": "https://www.stackoverflow.com", "type": "public"},
+    {"url": "https://httpstat.us/200", "type": "public"},
+    {"url": "https://httpstat.us/503", "type": "public"},
+    {"url": "https://example.com/login", "type": "login", "screenshot": "example_login"},
+    {"url": "https://www.python.org", "type": "public"},
+]
+
+def job():
+    for site in sites:
+        if site['type'] == 'public':
+            check_website(site['url'], site['type'])
+        elif site['type'] == 'login':
+            check_login_site(site['url'], site['screenshot'])
+    
+    export_latest_status_to_json()  # ✅ Call here after checks
+
+def export_latest_status_to_json():
+    conn = sqlite3.connect("data/health_log.db")
+    df = pd.read_sql("SELECT * FROM website_status ORDER BY timestamp DESC", conn)
+    latest = df.groupby('url').first().reset_index()
+    
+    data = []
+    for _, row in latest.iterrows():
+        data.append({
+            "url": row["url"],
+            "status": row["status"],
+            "timestamp": row["timestamp"]
+        })
+
+    with open("frontend/wave_data.json", "w") as f:
+        json.dump(data, f, indent=2)  # ✅ Optional: make JSON pretty
+
+if __name__ == '__main__':
+    init_db()
+    job()
+    schedule.every(15).minutes.do(job)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+.....
+# health_checker.py
+# Module for health checking logic
+import requests, time, datetime
+from db import log_status
+
+def check_website(url, wtype):
+    try:
+        start = time.time()
+        response = requests.get(url, timeout=10)
+        response_time = round(time.time() - start, 2)
+        status = "UP" if response.status_code == 200 else "DOWN"
+    except:
+        status = "DOWN"
+        response_time = -1
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_status(url, status, response_time, wtype, timestamp, None)
+.....
+# db.py
+# Database connection and operations
+
+import sqlite3
+
+def init_db():
+    conn = sqlite3.connect("data/health_log.db")
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS website_status (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        url TEXT,
+        status TEXT,
+        response_time REAL,
+        type TEXT,
+        timestamp TEXT,
+        screenshot TEXT
+    )''')
+    conn.commit()
+    conn.close()
+
+def log_status(url, status, response_time, wtype, timestamp, screenshot):
+    conn = sqlite3.connect("data/health_log.db")
+    c = conn.cursor()
+    c.execute("INSERT INTO website_status (url, status, response_time, type, timestamp, screenshot) VALUES (?, ?, ?, ?, ?, ?)",
+              (url, status, response_time, wtype, timestamp, screenshot))
+    conn.commit()
+    conn.close()
+
+..........
+# auth_checker.py
+# Module for authentication checking logic
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+import time, datetime
+from db import log_status
+
+def check_login_site(url, screenshot_name):
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    try:
+        start = time.time()
+        driver.get(url)
+        time.sleep(5)
+        response_time = round(time.time() - start, 2)
+        status = "UP"
+        ss_path = f"screenshots/{screenshot_name}.png"
+        driver.save_screenshot(ss_path)
+    except:
+        status = "DOWN"
+        response_time = -1
+        ss_path = None
+    driver.quit()
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_status(url, status, response_time, "login", timestamp, ss_path)
+
+.......
 # Project: WebPulse – AI-Powered Website Health Check Dashboard (Python Only)
 # Goal: Build a dashboard that monitors the health of websites (public, login-based, APIs) using Python-only tools.
 # Requirements:
