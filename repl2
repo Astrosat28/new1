@@ -1,3 +1,234 @@
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Router } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
+/** Adjust to your actual User & Auth service types */
+interface User {
+  userName?: string;
+  fullName?: string;
+  id?: string;
+}
+
+type WidgetType = 'tableau' | 'external' | 'image';
+
+interface BaseWidget {
+  id: string;
+  title: string;
+  url: string;
+  type: WidgetType;
+}
+
+type SmallWidget  = BaseWidget;
+type MediumWidget = BaseWidget;
+type LargeWidget  = BaseWidget;
+
+@Component({
+  selector: 'app-staticdashboard3',
+  templateUrl: './staticdashboard3.component.html',
+  styleUrls: ['./staticdashboard3.component.css'],
+  // Standalone components can keep this; if you’re using NgModule, put it in the module instead.
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+})
+export class Staticdashboard3Component implements OnInit {
+  currentUser: User | null = null;
+
+  /** ====== YOUR DATA ARRAYS ======
+   * Keep your existing arrays here. Only the types matter. */
+  smallWidgets: SmallWidget[] = [
+    // { id: '1', title: 'P1 Incident Count', url: 'https://tableau-aws.lfg.com/…', type: 'tableau' },
+    // …
+  ];
+
+  mediumWidgets: MediumWidget[] = [
+    // …
+  ];
+
+  largeWidgets: LargeWidget[] = [
+    // …
+  ];
+
+  constructor(
+    // private authService: AuthService,    // <- keep your auth service if you use one
+    private router: Router,
+    private sanitizer: DomSanitizer
+  ) {}
+
+  ngOnInit(): void {
+    // If you have an auth service, load/set current user here.
+    // this.currentUser = this.authService.getCurrentUser();
+
+    // Fallback demo — remove if you set real currentUser above:
+    if (!this.currentUser) {
+      this.currentUser = { userName: 'demo.user' };
+    }
+
+    const userIdToUse =
+      this.currentUser?.userName ||
+      this.currentUser?.fullName ||
+      this.currentUser?.id ||
+      '';
+
+    this.updateTableauURLs(userIdToUse);
+  }
+
+  /** Update all Tableau URLs to include/replace ?user=<id> and add embed flags */
+  private updateTableauURLs(userId: string): void {
+    const updater = (w: BaseWidget) => {
+      if (w.type === 'tableau') {
+        w.url = this.addUserAndEmbedParams(w.url, userId);
+      }
+    };
+
+    this.smallWidgets.forEach(updater);
+    this.mediumWidgets.forEach(updater);
+    this.largeWidgets.forEach(updater);
+  }
+
+  /** Build the final src for <tableau-viz>. Called by the template. */
+  buildVizSrc(url: string): string {
+    const userId =
+      this.currentUser?.userName ||
+      this.currentUser?.fullName ||
+      this.currentUser?.id ||
+      '';
+    return this.addUserAndEmbedParams(url, userId);
+    // If you prefer sanitization here:
+    // return this.sanitizer.bypassSecurityTrustResourceUrl(finalUrl) as unknown as string;
+  }
+
+  /** For external iframes */
+  getsafeurl(url: string): SafeResourceUrl {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+
+  /** Core helper: ensures we carry existing params, set embed flags, and set user=<id> */
+  private addUserAndEmbedParams(baseUrl: string, userId: string): string {
+    // Handles both absolute and relative URLs
+    let u: URL;
+    try {
+      u = new URL(baseUrl);
+    } catch {
+      // If it’s relative, create URL against current location
+      u = new URL(baseUrl, window.location.origin);
+    }
+
+    // Keep existing params; set Tableau embed hints if missing
+    if (!u.searchParams.has(':showVizHome')) u.searchParams.set(':showVizHome', 'no');
+    if (!u.searchParams.has(':embed'))       u.searchParams.set(':embed', 'y');
+
+    // Add/replace user param
+    if (userId) u.searchParams.set('user', userId);
+
+    return u.toString();
+  }
+}
+mmmmmmmmmmmmm
+<div class="static-dashboard3">
+
+  <!-- Row 1: Small Widgets -->
+  <div class="row small-widgets">
+    <div class="small-widget-container" *ngFor="let widget of smallWidgets">
+      <div class="widget small">
+        <div class="widget-header">{{ widget.title }}</div>
+
+        <!-- Tableau small -->
+        <tableau-viz
+          *ngIf="widget.type === 'tableau'"
+          [src]="buildVizSrc(widget.url)"
+          width="100%"
+          height="100%"
+          hide-tabs
+          toolbar="bottom">
+        </tableau-viz>
+
+        <!-- External small (non-Tableau) -->
+        <iframe
+          *ngIf="widget.type === 'external'"
+          class="external-iframe"
+          [src]="getsafeurl(widget.url)"
+          [title]="widget.title">
+        </iframe>
+
+        <!-- Image small (optional) -->
+        <img
+          *ngIf="widget.type === 'image'"
+          [src]="widget.url"
+          [alt]="widget.title"
+          style="width:100%; height:100%; object-fit:contain; border-radius:8px;" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: Large Widgets on the left -->
+  <div class="row row-2">
+    <div class="large-widgets">
+      <div class="widget large" *ngFor="let widget of largeWidgets">
+        <div class="widget-header">{{ widget.title }}</div>
+
+        <!-- Tableau large -->
+        <tableau-viz
+          *ngIf="widget.type === 'tableau'"
+          [src]="buildVizSrc(widget.url)"
+          width="100%"
+          height="100%"
+          hide-tabs
+          toolbar="bottom">
+        </tableau-viz>
+
+        <!-- External large -->
+        <iframe
+          *ngIf="widget.type === 'external'"
+          class="external-iframe"
+          [src]="getsafeurl(widget.url)"
+          [title]="widget.title">
+        </iframe>
+
+        <!-- Image large (optional) -->
+        <img
+          *ngIf="widget.type === 'image'"
+          [src]="widget.url"
+          [alt]="widget.title"
+          style="width:100%; height:100%; object-fit:contain; border-radius:8px;" />
+      </div>
+    </div>
+
+    <!-- Medium Widgets on the right -->
+    <div class="medium-widgets">
+      <div class="widget medium" *ngFor="let widget of mediumWidgets">
+        <div class="widget-header">{{ widget.title }}</div>
+
+        <!-- Tableau medium -->
+        <tableau-viz
+          *ngIf="widget.type === 'tableau'"
+          [src]="buildVizSrc(widget.url)"
+          width="100%"
+          height="100%"
+          hide-tabs
+          toolbar="bottom">
+        </tableau-viz>
+
+        <!-- External medium -->
+        <iframe
+          *ngIf="widget.type === 'external'"
+          class="external-iframe"
+          [src]="getsafeurl(widget.url)"
+          [title]="widget.title">
+        </iframe>
+
+        <!-- Image medium (optional) -->
+        <img
+          *ngIf="widget.type === 'image'"
+          [src]="widget.url"
+          [alt]="widget.title"
+          style="width:100%; height:100%; object-fit:contain; border-radius:8px;" />
+      </div>
+    </div>
+  </div>
+</div>
+
+............................
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
