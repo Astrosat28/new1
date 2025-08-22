@@ -162,3 +162,171 @@ jmeter_test:
     - changes:
         - jmeter/**/*
         - .gitlab-ci.yml
+..........................
+# app.py — Streamlit Professional Dashboard
+# Run:  streamlit run app.py
+import streamlit as st
+import pandas as pd
+import numpy as np
+import plotly.express as px
+from datetime import datetime, timedelta
+
+# ----------------------------
+# Basic Config
+# ----------------------------
+CONFIG = {
+    "COMPANY_NAME": "3S Solutions",
+    "PRIMARY_RED": "#C1121F",  # banner color
+    "LOGO_SVG": """
+<svg width="28" height="28" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="1" stop-color="#ffe4e4" stop-opacity="1"/>
+    </linearGradient>
+  </defs>
+  <rect rx="56" ry="56" width="256" height="256" fill="url(#g)"/>
+  <path d="M64 160c20-40 56-56 104-56v-24c-48 0-84 16-104 56z" fill="#C1121F"/>
+  <path d="M88 192c16-28 44-40 80-40v-20c-36 0-64 12-80 40z" fill="#9A0D16"/>
+  <circle cx="172" cy="84" r="22" fill="#C1121F"/>
+</svg>
+""",
+}
+
+st.set_page_config(
+    page_title=f"{CONFIG['COMPANY_NAME']} Dashboard",
+    page_icon="📊",
+    layout="wide",
+)
+
+# ----------------------------
+# Global Styles
+# ----------------------------
+st.markdown(
+    f"""
+    <style>
+      :root {{ --primary-red: {CONFIG['PRIMARY_RED']}; }}
+      /* Tidy up the base page */
+      .stApp {{ background: #f6f7fb; }}
+      .block-container {{ padding-top: 0.6rem; padding-bottom: 2rem; max-width: 1600px; }}
+      
+      /* Top Banner */
+      .top-banner {{
+        position: sticky; top: 0; z-index: 1000;
+        display: flex; align-items: center; gap: 10px;
+        padding: 10px 16px;
+        height: 64px;
+        background: var(--primary-red);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,.15);
+        margin-bottom: 12px;
+      }}
+      .brand {{ display:flex; align-items:center; gap:10px; font-weight:700; font-size: 18px; letter-spacing:.3px; }}
+      .brand svg {{ display:block; filter: drop-shadow(0 2px 4px rgba(0,0,0,.25)); }}
+      
+      /* Make metrics & charts look like cards */
+      div[data-testid="stMetric"] {{
+        background: #fff; border: 1px solid #ececec;
+        border-radius: 14px; padding: 10px 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,.05);
+      }}
+      /* Plotly card */
+      div[data-testid="stPlotlyChart"] {{
+        background: #fff; border: 1px solid #ececec;
+        border-radius: 16px; padding: 8px 8px 0 8px;
+        box-shadow: 0 3px 10px rgba(0,0,0,.06);
+      }}
+
+      /* Section titles */
+      .section-title {{ font-weight: 700; font-size: 18px; margin: 8px 0 4px 4px; color: #263238; }}
+
+      /* Reduce horizontal space between columns */
+      [data-testid="column"] > div:has(> div[data-testid="stMetric"]) {{ margin-bottom: 6px; }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# ----------------------------
+# Top Banner
+# ----------------------------
+st.markdown(
+    f"""
+    <div class="top-banner">
+      <div class="brand">
+        {CONFIG['LOGO_SVG']}
+        <span>{CONFIG['COMPANY_NAME']} • Executive Overview</span>
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# ----------------------------
+# Demo Data Generators
+# ----------------------------
+np.random.seed(42)
+
+def make_time_series(days=30, trend=0.2, noise=1.0, base=50):
+    idx = pd.date_range(datetime.today() - timedelta(days=days-1), periods=days, freq="D")
+    vals = base + np.cumsum(np.random.randn(days)*noise + trend)
+    return pd.DataFrame({"date": idx, "value": vals})
+
+def kpi_value(base=1000, spread=100):
+    val = base + np.random.randint(-spread, spread)
+    delta = np.random.randint(-15, 15)
+    return val, delta
+
+# ----------------------------
+# Row 1 — Ten small widgets (metrics)
+# ----------------------------
+small_kpis = [
+    "Active Users", "New Signups", "Churn (%)", "NPS", "Orders",
+    "Gross Revenue", "Net Margin", "Support Tickets", "Latency (ms)", "Uptime (%)"
+]
+
+cols = st.columns(10, gap="small")
+for i, label in enumerate(small_kpis):
+    with cols[i]:
+        val, delta = kpi_value(base=1000 + i*50, spread=200)
+        suffix = "" if "%" in label or "(ms)" in label else ""
+        st.metric(label=label, value=f"{val}{suffix}", delta=f"{delta}%")
+
+st.markdown("")  # a little breathing room
+
+# ----------------------------
+# Row 2 — 60/40 split
+# Left: 2x2 large widgets; Right: 2x3 medium widgets
+# ----------------------------
+left, right = st.columns([3, 2], gap="large")  # ~60/40
+
+# Left 2x2 large charts
+with left:
+    st.markdown('<div class="section-title">Key Trends</div>', unsafe_allow_html=True)
+    for _ in range(2):
+        row = st.columns(2, gap="medium")
+        for c in row:
+            df = make_time_series(days=60, trend=np.random.uniform(-0.1, 0.4), noise=np.random.uniform(0.5, 1.2), base=np.random.randint(40, 120))
+            fig = px.area(df, x="date", y="value", title="Performance", height=280)
+            fig.update_traces(line=dict(width=2), hovertemplate="%{x|%b %d}: %{y:.2f}")
+            fig.update_layout(
+                margin=dict(l=8, r=8, t=40, b=8),
+                xaxis_title=None, yaxis_title=None,
+                hovermode="x unified",
+            )
+            c.plotly_chart(fig, use_container_width=True)
+
+# Right 2x3 medium widgets
+with right:
+    st.markdown('<div class="section-title">Snapshot</div>', unsafe_allow_html=True)
+    for _ in range(3):
+        row = st.columns(2, gap="medium")
+        for c in row:
+            df = make_time_series(days=30, trend=np.random.uniform(-0.2, 0.2), noise=0.8, base=np.random.randint(30, 80))
+            latest = df["value"].iloc[-1]
+            change = latest - df["value"].iloc[0]
+            c.metric("This Month", f"{latest:.1f}", f"{change:+.1f}")
+            fig = px.line(df.tail(14), x="date", y="value", height=150)
+            fig.update_layout(margin=dict(l=8, r=8, t=8, b=8), xaxis_title=None, yaxis_title=None)
+            fig.update_traces(line=dict(width=2))
+            c.plotly_chart(fig, use_container_width=True)
