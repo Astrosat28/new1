@@ -1,332 +1,672 @@
-<!-- dashboard.html — Standalone HTML/CSS Professional Layout -->
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>3S Solutions • Executive Dashboard</title>
-  <style>
-    :root{
-      --bg:#f6f7fb;
-      --card:#ffffff;
-      --line:#ececec;
-      --ink:#1f2937;
-      --muted:#6b7280;
-      --red:#C1121F;
-      --radius-lg:16px;
-      --radius-md:14px;
-      --shadow:0 3px 10px rgba(0,0,0,.06);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";}
-    .container{max-width:1600px; margin:0 auto; padding:12px 18px 48px}
-
-    /* Top banner */
-    .top{position:sticky; top:0; z-index:10; background:var(--red); color:#fff; height:64px; box-shadow:0 2px 8px rgba(0,0,0,.15);}
-    .top .inner{height:64px; display:flex; align-items:center; gap:12px; padding:0 18px;}
-    .brand{display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.3px}
-    .brand svg{filter: drop-shadow(0 2px 4px rgba(0,0,0,.25));}
-
-    /* Cards */
-    .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius-md); box-shadow:var(--shadow); padding:12px}
-    .card h4{margin:0 0 6px; font-size:13px; color:var(--muted); font-weight:600; letter-spacing:.2px; text-transform:uppercase}
-    .value{font-size:22px; font-weight:700; margin:4px 0 0}
-    .delta{font-size:12px; color:#16a34a; font-weight:700}
-
-    /* Layout */
-    .small-row{display:grid; grid-template-columns: repeat(10, 1fr); gap:12px; margin:12px 0 20px}
-    .main{display:grid; grid-template-columns: 3fr 2fr; gap:20px;}
-    .left-grid{display:grid; grid-template-columns: repeat(2, 1fr); gap:16px; grid-auto-rows: 240px;}
-    .right-grid{display:grid; grid-template-columns: repeat(2, 1fr); gap:16px; grid-auto-rows: 180px;}
-    .title{font-weight:800; font-size:18px; margin:2px 0 8px 4px}
-
-    /* Responsive tweaks */
-    @media (max-width: 1400px){
-      .small-row{grid-template-columns: repeat(5, 1fr);}
-    }
-    @media (max-width: 900px){
-      .main{grid-template-columns: 1fr;}
-      .small-row{grid-template-columns: repeat(3, 1fr);}
-    }
-  </style>
-</head>
-<body>
-  <header class="top">
-    <div class="inner">
-      <!-- Inline logo (same as Streamlit) -->
-      <svg width="28" height="28" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img">
-        <defs>
-          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
-            <stop offset="1" stop-color="#ffe4e4" stop-opacity="1"/>
-          </linearGradient>
-        </defs>
-        <rect rx="56" ry="56" width="256" height="256" fill="url(#g)"/>
-        <path d="M64 160c20-40 56-56 104-56v-24c-48 0-84 16-104 56z" fill="#C1121F"/>
-        <path d="M88 192c16-28 44-40 80-40v-20c-36 0-64 12-80 40z" fill="#9A0D16"/>
-        <circle cx="172" cy="84" r="22" fill="#C1121F"/>
-      </svg>
-      <div class="brand">3S Solutions • Executive Overview</div>
-    </div>
-  </header>
-
-  <div class="container">
-    <!-- Row 1 — 10 small widgets -->
-    <section>
-      <div class="small-row">
-        <!-- Generate 10 sample cards -->
-        <div class="card"><h4>Active Users</h4><div class="value">12,340</div><div class="delta">+4.1%</div></div>
-        <div class="card"><h4>New Signups</h4><div class="value">1,028</div><div class="delta">+2.3%</div></div>
-        <div class="card"><h4>Churn</h4><div class="value">3.2%</div><div class="delta">-0.4%</div></div>
-        <div class="card"><h4>NPS</h4><div class="value">54</div><div class="delta">+1</div></div>
-        <div class="card"><h4>Orders</h4><div class="value">8,230</div><div class="delta">+5.0%</div></div>
-        <div class="card"><h4>Gross Revenue</h4><div class="value">₹ 1.2 Cr</div><div class="delta">+3.1%</div></div>
-        <div class="card"><h4>Net Margin</h4><div class="value">18.4%</div><div class="delta">+0.7%</div></div>
-        <div class="card"><h4>Tickets</h4><div class="value">214</div><div class="delta">-3.2%</div></div>
-        <div class="card"><h4>Latency</h4><div class="value">182 ms</div><div class="delta">-12 ms</div></div>
-        <div class="card"><h4>Uptime</h4><div class="value">99.94%</div><div class="delta">+0.02%</div></div>
-      </div>
-    </section>
-
-    <!-- Row 2 — 60/40 split -->
-    <section class="main">
-      <!-- Left: 2x2 large widgets -->
-      <div>
-        <div class="title">Key Trends</div>
-        <div class="left-grid">
-          <div class="card">Large Widget 1</div>
-          <div class="card">Large Widget 2</div>
-          <div class="card">Large Widget 3</div>
-          <div class="card">Large Widget 4</div>
-        </div>
-      </div>
-
-      <!-- Right: 2x3 medium widgets -->
-      <div>
-        <div class="title">Snapshot</div>
-        <div class="right-grid">
-          <div class="card">Medium 1</div>
-          <div class="card">Medium 2</div>
-          <div class="card">Medium 3</div>
-          <div class="card">Medium 4</div>
-          <div class="card">Medium 5</div>
-          <div class="card">Medium 6</div>
-        </div>
-      </div>
-    </section>
-  </div>
-</body>
-</html>
-...................
-stages: [test]
-
-variables:
-  JMETER_TEST_FILE: "jmeter/MainframeHealthCheck_V1.jmx"
-  JMETER_RESULTS_DIR: "jmeter-results"
-  JMETER_REPORT_DIR: "jmeter-report"
-  RTE_JAR_URL: "https://github.com/Blazemeter/RTEPlugin/releases/download/v3.3.1/jmeter-rte-plugin-3.3.1.jar"
-
-jmeter_test:
-  stage: test
-  image: justb4/jmeter:5.6.3
-  before_script:
-    - mkdir -p lib/ext "$JMETER_RESULTS_DIR" "$JMETER_REPORT_DIR"
-    - curl -fsSL "$RTE_JAR_URL" -o lib/ext/jmeter-rte-plugin.jar
-    # pass secrets from CI/CD variables to JMeter
-    - |
-      cat > runtime.properties <<EOF
-      MAINFRAME_HOST=${MAINFRAME_HOST}
-      MAINFRAME_PORT=${MAINFRAME_PORT}
-      MF_USER=${MF_USER}
-      MF_PASS=${MF_PASS}
-      EOF
-  script: |
-    jmeter -n \
-      -t "$JMETER_TEST_FILE" \
-      -q runtime.properties \
-      -Jjmeter.save.saveservice.output_format=csv \
-      -l "$JMETER_RESULTS_DIR/results.csv" \
-      -e -o "$JMETER_REPORT_DIR"
-    # fail if any sample failed
-    if grep -q ",false" "$JMETER_RESULTS_DIR/results.csv"; then
-      echo "❌ Failing samples found"; exit 1; else echo "✅ All good"; fi
-  artifacts:
-    when: always
-    paths:
-      - jmeter-results/
-      - jmeter-report/
-    expire_in: 7 days
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
-    - changes:
-        - jmeter/**/*
-        - .gitlab-ci.yml
-..........................
-# app.py — Streamlit Professional Dashboard
-# Run:  streamlit run app.py
-import streamlit as st
-import pandas as pd
-import numpy as np
-import plotly.express as px
+# app/app.py
+from pathlib import Path
 from datetime import datetime, timedelta
+from contextlib import contextmanager
+from base64 import b64encode
+import mimetypes
+import os
 
-# ----------------------------
-# Basic Config
-# ----------------------------
-CONFIG = {
-    "COMPANY_NAME": "3S Solutions",
-    "PRIMARY_RED": "#C1121F",  # banner color
-    "LOGO_SVG": """
-<svg width="28" height="28" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
-      <stop offset="1" stop-color="#ffe4e4" stop-opacity="1"/>
-    </linearGradient>
-  </defs>
-  <rect rx="56" ry="56" width="256" height="256" fill="url(#g)"/>
-  <path d="M64 160c20-40 56-56 104-56v-24c-48 0-84 16-104 56z" fill="#C1121F"/>
-  <path d="M88 192c16-28 44-40 80-40v-20c-36 0-64 12-80 40z" fill="#9A0D16"/>
-  <circle cx="172" cy="84" r="22" fill="#C1121F"/>
-</svg>
-""",
+import streamlit as st
+import streamlit.components.v1 as components
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from data_service import DataService
+
+# ---------- Settings ----------
+COMPANY_NAME = "ZBI Dashboards"
+VALID_USERS = {
+    "coope": {"name": "Coope", "department": "IT Operations"},
+    "alili": {"name": "Alili", "department": "Business Operations"},
 }
 
-st.set_page_config(
-    page_title=f"{CONFIG['COMPANY_NAME']} Dashboard",
-    page_icon="📊",
-    layout="wide",
-)
+# External pages to embed (must allow iframing; otherwise the placeholder appears)
+EMBED_SERVICENOW_URL  = ""  # e.g., "https://your-internal/sn-demo"
+EMBED_SHAREPOINT_URL  = ""  # e.g., "https://your-internal/sp-demo"
 
-# ----------------------------
-# Global Styles
-# ----------------------------
+# Local file to embed in M6 (PDF/HTML/Image/CSV supported). Put your file here.
+LOCAL_EMBED_M6_PATH   = "data/demo-data/embeds/m6_demo.pdf"  # change to your local path
+
+st.set_page_config(page_title="Wireframe Dashboard (Demo)", layout="wide")
+
+# ---------- Styles (compact & professional) ----------
+st.markdown("""
+<style>
+/* Tighter page padding */
+.block-container { padding-top: 0.75rem; padding-bottom: 1.25rem; }
+
+/* Compact headings */
+h1, h2, h3, h4, h5 { margin: 0 0 .4rem 0; }
+.small-title { font-size: 0.95rem; font-weight: 700; letter-spacing:.2px; color:#1f2937; }
+.section-title { font-size: 0.90rem; font-weight: 600; color:#374151; margin-bottom:.25rem; }
+.card-title { font-size: 0.92rem; font-weight: 600; color:#111827; margin-bottom: .35rem; }
+.card-subtle { font-size: .80rem; color:#6b7280; margin-bottom: .25rem; }
+
+/* KPI cards: uniform fixed height */
+.kpi-title { font-size: .82rem; font-weight: 600; color:#374151; margin-bottom: .1rem; }
+.kpi-value { font-size: 1.05rem; font-weight: 700; color:#111827; }
+.kpi-inner { height: 90px; display:flex; flex-direction:column; justify-content:center; gap:.15rem; }
+
+/* Top red banner */
+.topbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  background: #b91c1c; /* red-700 */
+  color: #fff;
+  border-radius: 10px;
+  padding: .55rem .9rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+  margin-bottom: .65rem;
+}
+.topbar .center { text-align: center; font-weight: 800; letter-spacing: .5px; font-size: 1.05rem; }
+.topbar .right { text-align: right; font-size: .90rem; opacity: .95; }
+
+/* Reduce dataframe top margin a bit */
+.stDataFrame { margin-top: .25rem; }
+</style>
+""", unsafe_allow_html=True)
+
+# ---------- Native "card" helper ----------
+@contextmanager
+def card(title: str, subtitle: str | None = None):
+    with st.container(border=True):
+        st.markdown(f'<div class="card-title">{title}</div>', unsafe_allow_html=True)
+        if subtitle:
+            st.markdown(f'<div class="card-subtle">{subtitle}</div>', unsafe_allow_html=True)
+        yield
+
+# ---------- Login Screen ----------
+def show_login():
+    st.markdown(
+        """
+        <style>
+        .stApp { 
+            background: radial-gradient(1200px 600px at 20% -10%, #fde2e2 0%, transparent 60%),
+                        radial-gradient(1000px 800px at 120% 120%, #fee2e2 0%, transparent 50%),
+                        linear-gradient(180deg, #fff 0%, #fff 100%);
+        }
+        .brand { color:#b91c1c; font-weight:800; font-size:1.25rem; text-align:center; margin-bottom:.2rem; }
+        .subtitle { text-align:center; color:#4b5563; margin-bottom:.9rem; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.write("")  # small spacer
+    cols = st.columns([1, 1.2, 1])
+    with cols[1]:
+        with st.container(border=True):
+            st.markdown(f'<div class="brand">{COMPANY_NAME}</div>', unsafe_allow_html=True)
+            st.markdown('<div class="subtitle">Please enter user id to continue</div>', unsafe_allow_html=True)
+            uid = st.text_input("User ID", placeholder="coope or alili").strip().lower()
+            login = st.button("Sign in", use_container_width=True)
+            st.caption("Allowed for demo: **coope**, **alili**")
+
+    if login:
+        if uid in VALID_USERS:
+            st.session_state["user"] = VALID_USERS[uid]
+            st.session_state["user"]["uid"] = uid
+            # reset background to white after login
+            st.markdown("<style>.stApp{background:#fff;}</style>", unsafe_allow_html=True)
+            st.rerun()
+        else:
+            st.error("Invalid user id. Use **coope** or **alili**.")
+
+# If not logged in, show login and stop
+if "user" not in st.session_state:
+    show_login()
+    st.stop()
+
+# ---------- Sidebar ----------
+st.sidebar.title("Controls")
+mode = st.sidebar.radio("Mode", ["Demo", "Live"], index=0, help="Live is non-functional in this demo.")
+persona = st.sidebar.selectbox("Persona", ["Adam (Business)", "Cooper (IT/App Owner)"], index=0)
+date_filter_days = st.sidebar.slider("Lookback (days)", 7, 30, 14, help="Filters time-based charts.")
+simulate_error = st.sidebar.checkbox("Simulate data load error", value=False)
+# Optional: allow overriding local embed path for M6 from the UI
+LOCAL_EMBED_M6_PATH = st.sidebar.text_input("M6 local file path", value=LOCAL_EMBED_M6_PATH)
+st.sidebar.caption("Data from local files under `data/demo-data`.")
+
+# ---------- Data Loading ----------
+root = Path(__file__).resolve().parents[1]
+ds = DataService(root)
+
+try:
+    kpis = ds.load_kpis()
+except Exception as e:
+    st.error(f"Failed to load KPIs: {e}")
+    kpis = pd.DataFrame()
+
+try:
+    if simulate_error:
+        incidents = pd.DataFrame(columns=["number","priority","state","assignment_group","opened_at","resolved_at"])
+    else:
+        incidents = ds.load_incidents_df()
+    changes = ds.load_changes_df()
+    sp = ds.load_sharepoint_df()
+    trend = ds.load_trend_csv()
+except Exception as e:
+    st.error(f"Data load error: {e}")
+    st.stop()
+
+# ---------- Top Red Banner ----------
+user = st.session_state["user"]
 st.markdown(
     f"""
-    <style>
-      :root {{ --primary-red: {CONFIG['PRIMARY_RED']}; }}
-      /* Tidy up the base page */
-      .stApp {{ background: #f6f7fb; }}
-      .block-container {{ padding-top: 0.6rem; padding-bottom: 2rem; max-width: 1600px; }}
-      
-      /* Top Banner */
-      .top-banner {{
-        position: sticky; top: 0; z-index: 1000;
-        display: flex; align-items: center; gap: 10px;
-        padding: 10px 16px;
-        height: 64px;
-        background: var(--primary-red);
-        color: #fff;
-        box-shadow: 0 2px 8px rgba(0,0,0,.15);
-        margin-bottom: 12px;
-      }}
-      .brand {{ display:flex; align-items:center; gap:10px; font-weight:700; font-size: 18px; letter-spacing:.3px; }}
-      .brand svg {{ display:block; filter: drop-shadow(0 2px 4px rgba(0,0,0,.25)); }}
-      
-      /* Make metrics & charts look like cards */
-      div[data-testid="stMetric"] {{
-        background: #fff; border: 1px solid #ececec;
-        border-radius: 14px; padding: 10px 12px;
-        box-shadow: 0 2px 6px rgba(0,0,0,.05);
-      }}
-      /* Plotly card */
-      div[data-testid="stPlotlyChart"] {{
-        background: #fff; border: 1px solid #ececec;
-        border-radius: 16px; padding: 8px 8px 0 8px;
-        box-shadow: 0 3px 10px rgba(0,0,0,.06);
-      }}
-
-      /* Section titles */
-      .section-title {{ font-weight: 700; font-size: 18px; margin: 8px 0 4px 4px; color: #263238; }}
-
-      /* Reduce horizontal space between columns */
-      [data-testid="column"] > div:has(> div[data-testid="stMetric"]) {{ margin-bottom: 6px; }}
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# ----------------------------
-# Top Banner
-# ----------------------------
-st.markdown(
-    f"""
-    <div class="top-banner">
-      <div class="brand">
-        {CONFIG['LOGO_SVG']}
-        <span>{CONFIG['COMPANY_NAME']} • Executive Overview</span>
-      </div>
+    <div class="topbar">
+      <div></div>
+      <div class="center">{COMPANY_NAME}</div>
+      <div class="right">👤 {user.get('name','User')} • {user.get('department','')}</div>
     </div>
     """,
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
 
-# ----------------------------
-# Demo Data Generators
-# ----------------------------
-np.random.seed(42)
+# ---------- Row A: 10 KPI cards (uniform height; no delta markers) ----------
+st.markdown('<div class="small-title">Top KPIs</div>', unsafe_allow_html=True)
+if not kpis.empty:
+    n = len(kpis)
+    cols = st.columns(10 if n >= 10 else n)
+    for i, (_, row) in enumerate(kpis.iterrows()):
+        with cols[i % len(cols)]:
+            with st.container(border=True):
+                st.markdown(
+                    f'<div class="kpi-inner"><div class="kpi-title">{row.get("metric", f"KPI {i+1}")}</div>'
+                    f'<div class="kpi-value">{row.get("value","")} {row.get("unit","")}</div></div>',
+                    unsafe_allow_html=True,
+                )
+else:
+    st.info("No KPI data.")
+st.markdown("---")
 
-def make_time_series(days=30, trend=0.2, noise=1.0, base=50):
-    idx = pd.date_range(datetime.today() - timedelta(days=days-1), periods=days, freq="D")
-    vals = base + np.cumsum(np.random.randn(days)*noise + trend)
-    return pd.DataFrame({"date": idx, "value": vals})
+# ---------- Time Window Filters ----------
+lookback = timedelta(days=int(date_filter_days))
+now = datetime.now()
+min_dt = now - lookback
+inc_period = incidents[incidents["opened_at_dt"] >= min_dt] if "opened_at_dt" in incidents else incidents
+chg_period = changes[changes["requested_at_dt"] >= min_dt] if "requested_at_dt" in changes else changes
 
-def kpi_value(base=1000, spread=100):
-    val = base + np.random.randint(-spread, spread)
-    delta = np.random.randint(-15, 15)
-    return val, delta
+# ---------- Chart sizes & fixed embed heights ----------
+LARGE_FIGSIZE = (4.9, 3.0)
+MED_FIGSIZE   = (4.4, 2.6)
+EMBED_HEIGHT_LARGE = 330
+EMBED_HEIGHT_MED   = 260
 
-# ----------------------------
-# Row 1 — Ten small widgets (metrics)
-# ----------------------------
-small_kpis = [
-    "Active Users", "New Signups", "Churn (%)", "NPS", "Orders",
-    "Gross Revenue", "Net Margin", "Support Tickets", "Latency (ms)", "Uptime (%)"
-]
+# ---------- Embed helpers ----------
+def _data_uri(file_path: Path) -> str | None:
+    """Return a data: URI for known binary/text types; None if unsupported."""
+    if not file_path.exists():
+        return None
+    mime, _ = mimetypes.guess_type(str(file_path))
+    if not mime:
+        return None
+    try:
+        if mime.startswith("text/"):
+            txt = file_path.read_text(encoding="utf-8", errors="ignore")
+            # For text/html we prefer to render raw HTML via components.html, not data URI.
+            if mime == "text/html":
+                return None
+            data = b64encode(txt.encode("utf-8")).decode()
+        else:
+            data = b64encode(file_path.read_bytes()).decode()
+        return f"data:{mime};base64,{data}"
+    except Exception:
+        return None
 
-cols = st.columns(10, gap="small")
-for i, label in enumerate(small_kpis):
-    with cols[i]:
-        val, delta = kpi_value(base=1000 + i*50, spread=200)
-        suffix = "" if "%" in label or "(ms)" in label else ""
-        st.metric(label=label, value=f"{val}{suffix}", delta=f"{delta}%")
-
-st.markdown("")  # a little breathing room
-
-# ----------------------------
-# Row 2 — 60/40 split
-# Left: 2x2 large widgets; Right: 2x3 medium widgets
-# ----------------------------
-left, right = st.columns([3, 2], gap="large")  # ~60/40
-
-# Left 2x2 large charts
-with left:
-    st.markdown('<div class="section-title">Key Trends</div>', unsafe_allow_html=True)
-    for _ in range(2):
-        row = st.columns(2, gap="medium")
-        for c in row:
-            df = make_time_series(days=60, trend=np.random.uniform(-0.1, 0.4), noise=np.random.uniform(0.5, 1.2), base=np.random.randint(40, 120))
-            fig = px.area(df, x="date", y="value", title="Performance", height=280)
-            fig.update_traces(line=dict(width=2), hovertemplate="%{x|%b %d}: %{y:.2f}")
-            fig.update_layout(
-                margin=dict(l=8, r=8, t=40, b=8),
-                xaxis_title=None, yaxis_title=None,
-                hovermode="x unified",
+def render_embed_card(title: str, url: str = "", local_path: str = "", height: int = 300, subtitle: str | None = None):
+    """Embed external URL (iframe) or local file (pdf/html/image/csv) with a FIXED card height."""
+    with card(title, subtitle):
+        # Priority 1: External URL (iframe)
+        if url:
+            # Use an HTML iframe for predictable sizing
+            components.html(
+                f'''
+                <div style="height:{height}px; overflow:hidden; border-radius:8px;">
+                  <iframe src="{url}" style="width:100%; height:100%; border:0;" scrolling="yes"></iframe>
+                </div>
+                ''',
+                height=height + 8,
             )
-            c.plotly_chart(fig, use_container_width=True)
+            return
 
-# Right 2x3 medium widgets
+        # Priority 2: Local file
+        p = Path(local_path) if local_path else None
+        if p and p.exists():
+            suffix = p.suffix.lower()
+            if suffix in (".html", ".htm"):
+                # Render raw HTML inside a fixed-height pane
+                html = p.read_text(encoding="utf-8", errors="ignore")
+                components.html(
+                    f'''
+                    <div style="height:{height}px; overflow:auto; border-radius:8px; border:1px solid #e7e7ea; background:#fff;">
+                        {html}
+                    </div>
+                    ''',
+                    height=height + 8,
+                )
+                return
+            elif suffix in (".pdf", ".png", ".jpg", ".jpeg", ".gif", ".svg"):
+                data_uri = _data_uri(p)
+                if data_uri:
+                    # Use <embed> for PDF; <img> for images — both constrained to fixed height via container
+                    if suffix == ".pdf":
+                        components.html(
+                            f'''
+                            <div style="height:{height}px; overflow:hidden; border-radius:8px; background:#f9fafb; border:1px solid #e7e7ea;">
+                              <embed src="{data_uri}" type="application/pdf" style="width:100%; height:100%;" />
+                            </div>
+                            ''',
+                            height=height + 8,
+                        )
+                    else:
+                        components.html(
+                            f'''
+                            <div style="height:{height}px; display:flex; align-items:center; justify-content:center; 
+                                        border-radius:8px; background:#fff; border:1px solid #e7e7ea;">
+                              <img src="{data_uri}" style="max-width:100%; max-height:100%; object-fit:contain;" />
+                            </div>
+                            ''',
+                            height=height + 8,
+                        )
+                    return
+            elif suffix == ".csv":
+                try:
+                    df = pd.read_csv(p)
+                    st.dataframe(df, use_container_width=True, height=height)
+                    return
+                except Exception as e:
+                    st.error(f"Failed to read CSV: {e}")
+
+            # Unknown file type → show link
+            st.info(f"Cannot embed file type '{suffix}'. File: {p}")
+            st.download_button("Download file", data=p.read_bytes(), file_name=p.name, use_container_width=True)
+            return
+
+        # Fallback demo panel
+        components.html(
+            f"""
+            <div style="height:{height}px;display:flex;align-items:center;justify-content:center;
+                 background:linear-gradient(135deg,#f9fafb 0%,#f3f4f6 100%);border-radius:8px;border:1px dashed #c7c9d1;">
+              <div style="text-align:center;color:#374151;">
+                <div style="font-weight:700;margin-bottom:6px;">Embedded Content (Demo)</div>
+                <div style="font-size:12.5px;color:#6b7280;">
+                  Set a URL or local path to display content in this card.
+                </div>
+              </div>
+            </div>
+            """,
+            height=height + 6,
+        )
+
+# ---------- Row B: 2 columns (60% / 40%) ----------
+left, right = st.columns([0.60, 0.40])
+
+# LEFT: 2×2 Large widgets (L1–L4)
+with left:
+    # Row 1 (L1, L2)
+    lrow1 = st.columns(2)
+    # L1: Incidents by Priority (kept as chart)
+    with lrow1[0]:
+        with card("L1 · Incidents by Priority"):
+            if not inc_period.empty:
+                counts = inc_period["priority"].value_counts().sort_index()
+                fig, ax = plt.subplots(figsize=LARGE_FIGSIZE)
+                counts.plot(kind="bar", ax=ax)
+                ax.set_xlabel("Priority"); ax.set_ylabel("Count"); ax.set_title("")
+                plt.tight_layout()
+                st.pyplot(fig, clear_figure=True, use_container_width=True)
+            else:
+                st.info("No incidents in period.")
+    # L2: Embedded SharePoint page (fixed height)
+    with lrow1[1]:
+        render_embed_card(
+            title="L2 · SharePoint (Embedded Page)",
+            url=EMBED_SHAREPOINT_URL,
+            height=EMBED_HEIGHT_LARGE,
+            subtitle=None
+        )
+
+    # Row 2 (L3, L4)
+    lrow2 = st.columns(2)
+    # L3: Embedded ServiceNow page (fixed height)
+    with lrow2[0]:
+        render_embed_card(
+            title="L3 · ServiceNow (Embedded Page)",
+            url=EMBED_SERVICENOW_URL,
+            height=EMBED_HEIGHT_LARGE,
+            subtitle=None
+        )
+
+    # L4: Trend line (same as M6 earlier), chart height is controlled by figsize
+    with lrow2[1]:
+        with card("L4 · 30-day Uptime Trend (CSV)"):
+            if not trend.empty:
+                fig, ax = plt.subplots(figsize=LARGE_FIGSIZE)
+                ax.plot(trend["date"], trend["uptime_percent"])
+                ax.set_ylabel("Uptime (%)"); ax.set_title("")
+                ax.set_xticklabels(trend["date"].dt.strftime("%Y-%m-%d"), rotation=45, ha="right")
+                plt.tight_layout()
+                st.pyplot(fig, clear_figure=True, use_container_width=True)
+            else:
+                st.caption("No trend CSV data.")
+
+# RIGHT: 2×3 Medium widgets (M1–M6)
 with right:
-    st.markdown('<div class="section-title">Snapshot</div>', unsafe_allow_html=True)
-    for _ in range(3):
-        row = st.columns(2, gap="medium")
-        for c in row:
-            df = make_time_series(days=30, trend=np.random.uniform(-0.2, 0.2), noise=0.8, base=np.random.randint(30, 80))
-            latest = df["value"].iloc[-1]
-            change = latest - df["value"].iloc[0]
-            c.metric("This Month", f"{latest:.1f}", f"{change:+.1f}")
-            fig = px.line(df.tail(14), x="date", y="value", height=150)
-            fig.update_layout(margin=dict(l=8, r=8, t=8, b=8), xaxis_title=None, yaxis_title=None)
-            fig.update_traces(line=dict(width=2))
-            c.plotly_chart(fig, use_container_width=True)
+    # Row 1 (M1, M2)
+    mrow1 = st.columns(2)
+    with mrow1[0]:
+        with card("M1 · Open Incidents by Assignment Group"):
+            if not inc_period.empty:
+                open_inc = inc_period[~inc_period["state"].isin(["Resolved","Closed"])]
+                counts = open_inc["assignment_group"].value_counts().sort_values(ascending=False)
+                fig, ax = plt.subplots(figsize=MED_FIGSIZE)
+                counts.plot(kind="bar", ax=ax)
+                ax.set_xlabel("Group"); ax.set_ylabel("Open"); ax.set_title("")
+                plt.tight_layout()
+                st.pyplot(fig, clear_figure=True, use_container_width=True)
+            else:
+                st.info("No incidents.")
+    with mrow1[1]:
+        with card("M2 · SLA Breach Trend (Derived)"):
+            try:
+                breach = DataService.sla_breach_rate_by_day(incidents, threshold_hrs=24, days=14)
+                if breach.empty:
+                    st.caption("No resolved incidents.")
+                else:
+                    fig, ax = plt.subplots(figsize=MED_FIGSIZE)
+                    ax.plot(breach["date"], breach["breach_rate_pct"])
+                    ax.set_ylabel("%"); ax.set_title("")
+                    ax.set_xticklabels(breach["date"], rotation=45, ha="right")
+                    plt.tight_layout()
+                    st.pyplot(fig, clear_figure=True, use_container_width=True)
+            except Exception as e:
+                st.warning(f"Breach trend not available: {e}")
+
+    # Row 2 (M3, M4)
+    mrow2 = st.columns(2)
+    with mrow2[0]:
+        with card("M3 · MTTR — Last 14 Days"):
+            mttr = DataService.mttr_by_day(incidents, days=14)
+            if mttr.empty:
+                st.caption("No MTTR data.")
+            else:
+                current = mttr["mttr_hrs"].iloc[-1]
+                st.metric(label="Current MTTR (hrs)", value=round(float(current), 1))
+                fig, ax = plt.subplots(figsize=MED_FIGSIZE)
+                ax.plot(mttr["date"], mttr["mttr_hrs"])
+                ax.set_ylabel("Hours"); ax.set_title("")
+                ax.set_xticklabels(mttr["date"], rotation=45, ha="right")
+                plt.tight_layout()
+                st.pyplot(fig, clear_figure=True, use_container_width=True)
+    with mrow2[1]:
+        with card("M4 · Change Type Mix"):
+            if not chg_period.empty:
+                type_counts = chg_period["type"].value_counts()
+                fig, ax = plt.subplots(figsize=MED_FIGSIZE)
+                ax.pie(type_counts.values, labels=type_counts.index, autopct="%1.1f%%")
+                ax.set_title("")
+                plt.tight_layout()
+                st.pyplot(fig, clear_figure=True, use_container_width=True)
+            else:
+                st.caption("No change data.")
+
+    # Row 3 (M5, M6)
+    mrow3 = st.columns(2)
+    with mrow3[0]:
+        with card("M5 · Top Owners by Updates (7d)"):
+            if not sp.empty:
+                rows = []
+                for _, r in sp.iterrows():
+                    owners = r.get("owners", [])
+                    share = (r["files_updated_last7d"] / max(len(owners), 1)) if len(owners) else 0
+                    for o in owners:
+                        rows.append({"owner": o, "updates": share})
+                df = pd.DataFrame(rows)
+                if df.empty:
+                    st.caption("No owner updates data.")
+                else:
+                    agg = df.groupby("owner")["updates"].sum().sort_values(ascending=False).head(10)
+                    fig, ax = plt.subplots(figsize=MED_FIGSIZE)
+                    agg.plot(kind="bar", ax=ax)
+                    ax.set_ylabel("Est. Updates (7d)"); ax.set_title("")
+                    plt.tight_layout()
+                    st.pyplot(fig, clear_figure=True, use_container_width=True)
+            else:
+                st.caption("No SharePoint data.")
+    with mrow3[1]:
+        # M6: Local file embed with fixed height
+        render_embed_card(
+            title="M6 · Embedded Local File",
+            local_path=LOCAL_EMBED_M6_PATH,
+            height=EMBED_HEIGHT_MED,
+            subtitle="Put your file at the configured path (PDF/HTML/Image/CSV)."
+        )
+
+st.markdown("---")
+st.caption("© Demo wireframe — replace data loaders for Live mode after the presentation.")
+
+
+
+
+data service -
+import json
+from pathlib import Path
+import pandas as pd
+from utils import parse_dt   # NOTE: no leading dot (same folder import)
+
+class DataService:
+    def __init__(self, project_root: Path):
+        self.root = project_root
+        self.demo_manifest = self.root / "data" / "demo-data" / "data_manifest.json"
+        with open(self.demo_manifest, "r") as f:
+            self.manifest = json.load(f)
+        self.config = self.root / "data" / "demo-data" / "config" / "demo_config.json"
+
+    def read_config(self):
+        with open(self.config, "r") as f:
+            return json.load(f)
+
+    # --- Excel KPIs ---
+    def load_kpis(self) -> pd.DataFrame:
+        kpi_path = Path(self.manifest["excel"]["kpis"])
+        return pd.read_excel(kpi_path, sheet_name="KPIData")
+
+    # --- ServiceNow JSONs ---
+    def load_incidents_df(self) -> pd.DataFrame:
+        p = Path(self.manifest["servicenow"]["incidents"])
+        data = json.loads(Path(p).read_text())
+        df = pd.DataFrame(data["incidents"])
+        df["opened_at_dt"] = df["opened_at"].apply(parse_dt)
+        df["resolved_at_dt"] = df["resolved_at"].apply(parse_dt)
+        def _hours(row):
+            if row["resolved_at_dt"] and row["opened_at_dt"]:
+                delta = (row["resolved_at_dt"] - row["opened_at_dt"]).total_seconds() / 3600.0
+                return max(delta, 0.0)
+            return None
+        df["resolution_hrs"] = df.apply(_hours, axis=1)
+        return df
+
+    def load_changes_df(self) -> pd.DataFrame:
+        p = Path(self.manifest["servicenow"]["changes"])
+        data = json.loads(Path(p).read_text())
+        df = pd.DataFrame(data["changes"])
+        for col in ["requested_at", "scheduled_start", "scheduled_end"]:
+            df[col + "_dt"] = df[col].apply(parse_dt)
+        return df
+
+    # --- SharePoint JSON ---
+    def load_sharepoint_df(self) -> pd.DataFrame:
+        p = Path(self.manifest["sharepoint"]["libraries"])
+        data = json.loads(Path(p).read_text())
+        return pd.DataFrame(data["libraries"])
+
+    # --- Trend CSV ---
+    def load_trend_csv(self) -> pd.DataFrame:
+        p = Path(self.manifest["trends"]["uptime"])
+        return pd.read_csv(p, parse_dates=["date"])
+
+    # --- Derived helpers ---
+    @staticmethod
+    def mttr_by_day(inc_df: pd.DataFrame, days=14):
+        if inc_df.empty:
+            return pd.DataFrame({"date": [], "mttr_hrs": []})
+        df = inc_df.dropna(subset=["resolved_at_dt", "opened_at_dt"]).copy()
+        df["date"] = df["resolved_at_dt"].dt.date
+        series = df.groupby("date")["resolution_hrs"].mean().reset_index()
+        series = series.sort_values("date").tail(days)
+        series.rename(columns={"resolution_hrs": "mttr_hrs"}, inplace=True)
+        return series
+
+    @staticmethod
+    def sla_breach_rate_by_day(inc_df: pd.DataFrame, threshold_hrs=24, days=14):
+        # Simplified: breach if resolution time > threshold
+        df = inc_df.dropna(subset=["resolved_at_dt", "opened_at_dt"]).copy()
+        if df.empty:
+            return pd.DataFrame({"date": [], "breach_rate_pct": []})
+        df["date"] = df["resolved_at_dt"].dt.date
+        df["breach"] = df["resolution_hrs"].apply(lambda h: 1 if (h and h > threshold_hrs) else 0)
+        g = df.groupby("date").agg(total=("number", "count"), breaches=("breach", "sum")).reset_index()
+        g["breach_rate_pct"] = (g["breaches"] / g["total"]) * 100.0
+        g = g.sort_values("date").tail(days)
+        return g[["date", "breach_rate_pct"]]
+
+
+utils.py
+from datetime import datetime
+
+def parse_dt(s, fmt="%Y-%m-%d %H:%M:%S"):
+    if not s or s in ("", None, "null"):
+        return None
+    try:
+        return datetime.strptime(s, fmt)
+    except Exception:
+        try:
+            return datetime.fromisoformat(s)
+        except Exception:
+            return None
+
+
+
+bootstrap -
+# Run: python bootstrap_demo_data.py
+import os, json, random
+from datetime import datetime, timedelta
+from pathlib import Path
+import pandas as pd
+
+root = Path(__file__).resolve().parent
+base = root / "data" / "demo-data"
+(base / "excel").mkdir(parents=True, exist_ok=True)
+(base / "servicenow").mkdir(parents=True, exist_ok=True)
+(base / "sharepoint").mkdir(parents=True, exist_ok=True)
+(base / "trends").mkdir(parents=True, exist_ok=True)
+(base / "config").mkdir(parents=True, exist_ok=True)
+
+# 1) Excel KPIs
+kpi_rows = [
+    {"metric_id":"kpi_01","metric":"Incidents Open","value":128,"unit":"count","delta_vs_yesterday":-7,"target":100},
+    {"metric_id":"kpi_02","metric":"Incidents Resolved Today","value":34,"unit":"count","delta_vs_yesterday":5,"target":40},
+    {"metric_id":"kpi_03","metric":"Change Requests Pending","value":19,"unit":"count","delta_vs_yesterday":2,"target":15},
+    {"metric_id":"kpi_04","metric":"SLA Breach Rate","value":2.8,"unit":"%","delta_vs_yesterday":-0.4,"target":2.0},
+    {"metric_id":"kpi_05","metric":"Avg Resolution Time","value":6.3,"unit":"hrs","delta_vs_yesterday":-0.9,"target":5.0},
+    {"metric_id":"kpi_06","metric":"Bugs Open","value":57,"unit":"count","delta_vs_yesterday":3,"target":40},
+    {"metric_id":"kpi_07","metric":"Deployments Today","value":3,"unit":"count","delta_vs_yesterday":1,"target":2},
+    {"metric_id":"kpi_08","metric":"Servers Healthy","value":96.2,"unit":"%","delta_vs_yesterday":0.3,"target":99.0},
+    {"metric_id":"kpi_09","metric":"Tickets Backlog","value":212,"unit":"count","delta_vs_yesterday":-11,"target":180},
+    {"metric_id":"kpi_10","metric":"User Satisfaction","value":4.3,"unit":"/5","delta_vs_yesterday":0.1,"target":4.5},
+]
+pd.DataFrame(kpi_rows).to_excel(base / "excel" / "kpis.xlsx", index=False, sheet_name="KPIData")
+
+# 2) ServiceNow-like JSON
+priorities = ["1 - Critical","2 - High","3 - Moderate","4 - Low"]
+states = ["New","In Progress","On Hold","Resolved","Closed"]
+groups = ["APP-Support","DBA","Network","Security","ServiceDesk"]
+now = datetime.now()
+
+incidents = []
+for i in range(60):
+    opened = now - timedelta(days=random.randint(0,20), hours=random.randint(0,23))
+    state = random.choice(states)
+    resolved = (opened + timedelta(hours=random.randint(1,48))).strftime("%Y-%m-%d %H:%M:%S") if state in ["Resolved","Closed"] else None
+    incidents.append({
+        "number": f"INC00{1000+i}",
+        "priority": random.choice(priorities),
+        "state": state,
+        "assignment_group": random.choice(groups),
+        "short_description": f"Sample incident {i}",
+        "opened_at": opened.strftime("%Y-%m-%d %H:%M:%S"),
+        "resolved_at": resolved,
+        "caller": f"user{i}@example.com"
+    })
+(Path(base / "servicenow" / "incidents.json")).write_text(json.dumps({"incidents": incidents}, indent=2))
+
+changes = []
+for i in range(25):
+    req = now - timedelta(days=random.randint(3,30))
+    sched = req + timedelta(days=random.randint(0,10))
+    changes.append({
+        "number": f"CHG00{2000+i}",
+        "type": random.choice(["Standard","Normal","Emergency"]),
+        "state": random.choice(["Assess","Authorize","Scheduled","Implement","Review","Closed"]),
+        "requested_by": f"user{i}@example.com",
+        "requested_at": req.strftime("%Y-%m-%d %H:%M:%S"),
+        "scheduled_start": sched.strftime("%Y-%m-%d %H:%M:%S"),
+        "scheduled_end": (sched + timedelta(hours=random.randint(1,6))).strftime("%Y-%m-%d %H:%M:%S")
+    })
+(Path(base / "servicenow" / "changes.json")).write_text(json.dumps({"changes": changes}, indent=2))
+
+# 3) SharePoint-like JSON
+libraries = []
+for lib in ["Engineering Docs","Runbooks","Release Notes","Design Specs"]:
+    libraries.append({
+        "library": lib,
+        "files_total": random.randint(20,200),
+        "files_updated_last7d": random.randint(0,25),
+        "last_major_update": (now - timedelta(days=random.randint(1,60))).date().isoformat(),
+        "owners": ["adam@example.com","cooper@example.com"]
+    })
+(Path(base / "sharepoint" / "libraries.json")).write_text(json.dumps({"libraries": libraries}, indent=2))
+
+# 4) Trend CSV 30 days
+dates = [(now - timedelta(days=d)).date().isoformat() for d in range(29,-1,-1)]
+val = 97.0
+vals = []
+for _ in range(30):
+    val += random.uniform(-0.5, 0.5)
+    vals.append(round(max(90.0, min(99.9, val)), 2))
+pd.DataFrame({"date": dates, "uptime_percent": vals}).to_csv(base / "trends" / "uptime_trend.csv", index=False)
+
+# 5) Manifest + config (absolute paths for reliability)
+manifest = {
+    "excel": {"kpis": str((base / "excel" / "kpis.xlsx").resolve())},
+    "servicenow": {
+        "incidents": str((base / "servicenow" / "incidents.json").resolve()),
+        "changes": str((base / "servicenow" / "changes.json").resolve())
+    },
+    "sharepoint": {"libraries": str((base / "sharepoint" / "libraries.json").resolve())},
+    "trends": {"uptime": str((base / "trends" / "uptime_trend.csv").resolve())}
+}
+(Path(base / "data_manifest.json")).write_text(json.dumps(manifest, indent=2))
+config = {
+    "mode": "demo",
+    "sources": {
+        "excel_top_kpis": "local",
+        "servicenow_widgets": "local",
+        "sharepoint_widgets": "local",
+        "trend_widget": "local_csv"
+    },
+    "files": manifest
+}
+(Path(base / "config" / "demo_config.json")).write_text(json.dumps(config, indent=2))
+
+print("Demo data created under:", base)
+
+
+
+requiremnts -
+# requirements.txt
+# Add your Python dependencies here
+pandas>=2.0.0
+openpyxl>=3.1.0
+streamlit>=1.28.0
+matplotlib>=3.7.0
