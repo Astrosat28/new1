@@ -1,3 +1,6 @@
+py -3.11 -m pip install --no-cache-dir numpy==1.26.4
+py -3.11 -m pip install --no-cache-dir pandas==2.2.2 matplotlib==3.8.4 streamlit==1.32.2 openpyxl==3.1.2
+
 # app/app.py
 from pathlib import Path
 from datetime import datetime, timedelta
