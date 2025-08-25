@@ -1,3 +1,49 @@
+with mrow3[1]:
+    with card("M6 · Change Requests (Table)", "Filtered by Lookback"):
+        if chg_period.empty:
+            st.caption("No change request data in this window.")
+        else:
+            df = chg_period.copy()
+
+            # If datetime columns exist (created by DataService), add pretty string columns.
+            # We keep originals for sorting but display the pretty ones.
+            if "requested_at_dt" in df.columns:
+                df["requested_at"] = df["requested_at_dt"].dt.strftime("%Y-%m-%d %H:%M")
+            if "scheduled_start_dt" in df.columns:
+                df["scheduled_start"] = df["scheduled_start_dt"].dt.strftime("%Y-%m-%d %H:%M")
+            if "scheduled_end_dt" in df.columns:
+                df["scheduled_end"] = df["scheduled_end_dt"].dt.strftime("%Y-%m-%d %H:%M")
+
+            # Choose clean display columns based on what's available
+            preferred_cols = [
+                "number", "type", "state",
+                "requested_by", "assignment_group",
+                "requested_at", "scheduled_start", "scheduled_end"
+            ]
+            display_cols = [c for c in preferred_cols if c in df.columns]
+            if not display_cols:
+                display_cols = list(df.columns)  # fallback: show whatever exists
+
+            # Sort by most recent request if we have the datetime
+            if "requested_at_dt" in df.columns:
+                df = df.sort_values("requested_at_dt", ascending=False)
+            elif "requested_at" in df.columns:
+                df = df.sort_values("requested_at", ascending=False)
+
+            # Show a scrollable, fixed-height table to keep the grid aligned
+            st.dataframe(
+                df[display_cols],
+                use_container_width=True,
+                height=EMBED_CARD_TOTAL_MED,   # same height as your previous M6 card
+                hide_index=True
+            )
+
+            # Optional: quick export
+            csv_bytes = df[display_cols].to_csv(index=False).encode("utf-8")
+            st.download_button("Download CSV", data=csv_bytes, file_name="change_requests.csv", use_container_width=True)
+
+
+ram
 # app/app.py
 from pathlib import Path
 from datetime import datetime, timedelta
